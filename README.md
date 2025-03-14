@@ -102,7 +102,7 @@ mvn -f target-platform/pom.xml clean install
 Build the examples:
 
 ```bash
-mvn -f kura/examples/pom.xml clean install
+mvn -f kura-examples/pom.xml clean install
 ```
 
 > [!TIP]
