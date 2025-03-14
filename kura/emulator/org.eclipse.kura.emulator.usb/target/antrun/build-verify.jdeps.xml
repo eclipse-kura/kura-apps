@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<project name="maven-antrun-" default="verify.jdeps"  >
-<target name="verify.jdeps">
-  <available file="jdeps" filepath="/home/simone/.nvm/versions/node/v20.12.2/bin:/home/simone/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/simone/flutter/flutter/bin" property="jdeps.present"/>
-</target>
-</project>

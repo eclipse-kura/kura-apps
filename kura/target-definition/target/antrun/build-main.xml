@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<project name="maven-antrun-" default="main"  >
-<target name="main">
-  <echo file="/home/simone/git/kura/kura/target-definition/../distrib/build.properties" append="false">kura.build.version=202503140929</echo>
-</target>
-</project>
