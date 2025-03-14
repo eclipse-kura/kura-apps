@@ -1,8 +1,0 @@
-#Fri Mar 14 12:48:25 CET 2025
-configuration*?=4613E6CB158589F874DD06FC1C5AEBB5FFCD1ED
-/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.multiport.provider/src/main/java/org/eclipse/kura/example/wire/math/multiport/AbstractDualportMathComponent.java=1740665041879
-/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.multiport.provider/src/main/java/org/eclipse/kura/example/wire/math/multiport/difference/DifferenceComponent.java=1740665041879
-/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.multiport.provider/src/main/java/org/eclipse/kura/example/wire/math/multiport/sum/SumComponent.java=1740665041879
-/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.multiport.provider/src/main/java/org/eclipse/kura/example/wire/math/multiport/multiplication/MultiplicationComponent.java=1740665041879
-/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.multiport.provider/src/main/java/org/eclipse/kura/example/wire/math/multiport/AbstractDualportMathComponentOptions.java=1740665041879
-/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.multiport.provider/src/main/java/org/eclipse/kura/example/wire/math/multiport/division/DivisionComponent.java=1740665041879

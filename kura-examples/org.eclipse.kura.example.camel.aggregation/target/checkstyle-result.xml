@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<checkstyle version="8.19">
-<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.camel.aggregation/src/main/java/org/eclipse/kura/example/camel/aggregation/AverageAggregationStrategy.java">
-</file>
-<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.camel.aggregation/src/main/java/org/eclipse/kura/example/camel/aggregation/GatewayRouter.java">
-</file>
-<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.camel.aggregation/src/main/java/org/eclipse/kura/example/camel/aggregation/RandomTemperatureGenerator.java">
-</file>
-</checkstyle>

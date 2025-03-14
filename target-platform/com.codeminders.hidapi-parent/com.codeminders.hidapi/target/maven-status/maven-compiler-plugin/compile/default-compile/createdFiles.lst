@@ -1,7 +1,0 @@
-com/codeminders/hidapi/HIDDeviceNotFoundException.class
-com/codeminders/hidapplet/HidApplet.class
-com/codeminders/hidapi/HIDManager.class
-com/codeminders/hidapi/HIDDevice.class
-com/codeminders/hidapi/ClassPathLibraryLoader.class
-com/codeminders/hidapi/HIDAPITest.class
-com/codeminders/hidapi/HIDDeviceInfo.class

@@ -1,7 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.kura.example.wire.math.singleport.sqrt.test.SqrtComponentTest
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.406 s -- in org.eclipse.kura.example.wire.math.singleport.sqrt.test.SqrtComponentTest
-org.eclipse.kura.example.wire.math.singleport.sqrt.test.SqrtComponentTest.sqrtWireComponentHasDefaultProperties -- Time elapsed: 0.182 s
-org.eclipse.kura.example.wire.math.singleport.sqrt.test.SqrtComponentTest.sqrtWireComponentExists -- Time elapsed: 0.083 s
-org.eclipse.kura.example.wire.math.singleport.sqrt.test.SqrtComponentTest.testSquareRoot -- Time elapsed: 0.102 s

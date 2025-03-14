@@ -1,7 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.kura.example.identity.configuration.extension.test.ExampleIdentityConfigurationExtensionTest
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.075 s -- in org.eclipse.kura.example.identity.configuration.extension.test.ExampleIdentityConfigurationExtensionTest
-org.eclipse.kura.example.identity.configuration.extension.test.ExampleIdentityConfigurationExtensionTest.shouldReturnOCD -- Time elapsed: 0.023 s
-org.eclipse.kura.example.identity.configuration.extension.test.ExampleIdentityConfigurationExtensionTest.shouldReturnDefaultIdentityConfigurationProperties -- Time elapsed: 0.011 s
-org.eclipse.kura.example.identity.configuration.extension.test.ExampleIdentityConfigurationExtensionTest.shouldRememberUpdatedValues -- Time elapsed: 0.012 s

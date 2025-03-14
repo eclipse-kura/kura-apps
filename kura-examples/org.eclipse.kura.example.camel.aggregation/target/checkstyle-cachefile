@@ -1,5 +1,0 @@
-#Fri Mar 14 12:48:24 CET 2025
-configuration*?=131E5963D9BB268BA155240A1E9EDCB29845C46B
-/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.camel.aggregation/src/main/java/org/eclipse/kura/example/camel/aggregation/RandomTemperatureGenerator.java=1740665041849
-/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.camel.aggregation/src/main/java/org/eclipse/kura/example/camel/aggregation/AverageAggregationStrategy.java=1740665041848
-/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.camel.aggregation/src/main/java/org/eclipse/kura/example/camel/aggregation/GatewayRouter.java=1740665041848

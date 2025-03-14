@@ -1,7 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.kura.example.wire.math.singleport.maximum.test.MaximumComponentTest
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.221 s -- in org.eclipse.kura.example.wire.math.singleport.maximum.test.MaximumComponentTest
-org.eclipse.kura.example.wire.math.singleport.maximum.test.MaximumComponentTest.maximumWireComponentHasDefaultProperties -- Time elapsed: 0.071 s
-org.eclipse.kura.example.wire.math.singleport.maximum.test.MaximumComponentTest.maximumWireComponentExists -- Time elapsed: 0.072 s
-org.eclipse.kura.example.wire.math.singleport.maximum.test.MaximumComponentTest.testMaximum -- Time elapsed: 0.077 s
