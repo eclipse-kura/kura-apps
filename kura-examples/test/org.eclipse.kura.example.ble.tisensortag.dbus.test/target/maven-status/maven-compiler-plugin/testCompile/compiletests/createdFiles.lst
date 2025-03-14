@@ -1,0 +1,4 @@
+org/eclipse/kura/example/ble/tisensortag/dbus/TiSensorTagTest.class
+org/eclipse/kura/example/ble/tisensortag/dbus/TiSensorTagBuilder.class
+org/eclipse/kura/example/ble/tisensortag/dbus/BluetoothLeTest.class
+org/eclipse/kura/example/ble/tisensortag/dbus/Assertion.class

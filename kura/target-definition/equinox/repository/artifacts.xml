@@ -1,0 +1,366 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<repository name='file:/home/simone/git/kura-apps/target-platform/p2-repo-equinox/target/repository - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1'>
+  <properties size='2'>
+    <property name='p2.timestamp' value='1741949547254'/>
+    <property name='p2.compressed' value='false'/>
+  </properties>
+  <mappings size='3'>
+    <rule filter='(&amp; (classifier=osgi.bundle))' output='${repoUrl}/plugins/${id}_${version}.jar'/>
+    <rule filter='(&amp; (classifier=binary))' output='${repoUrl}/binary/${id}_${version}'/>
+    <rule filter='(&amp; (classifier=org.eclipse.update.feature))' output='${repoUrl}/features/${id}_${version}.jar'/>
+  </mappings>
+  <artifacts size='39'>
+    <artifact classifier='osgi.bundle' id='org.eclipse.equinox.event' version='1.7.100.v20240321-1445'>
+      <properties size='5'>
+        <property name='artifact.size' value='36371'/>
+        <property name='download.size' value='36371'/>
+        <property name='download.checksum.sha-512' value='23e03d4beeee08ac0155df3aa10beb80d7c862773c0bfb56de81417909773a52b3562926a9bc651b60d7af67144f873a04d4479c9de1c2a189d654d0ce25c4ac'/>
+        <property name='download.checksum.sha-1' value='c2a58078ee0d559a84a7732453659c0aa6d6cc42'/>
+        <property name='download.checksum.sha-256' value='9f7dbc1ced29e627cb228ec205be7f4e496330eee450b31cb94c7973e4459561'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.service.prefs' version='1.1.2.202109301733'>
+      <properties size='5'>
+        <property name='artifact.size' value='20165'/>
+        <property name='download.size' value='20165'/>
+        <property name='download.checksum.sha-512' value='bdf3afdd59b791ad415706cc892ec5cc1e83f622c79a08d82a8f5192e03af74e96709d4bc6a3105b8a2950fe3440b930767cc03c3f9022d878e7e83d2a46b286'/>
+        <property name='download.checksum.sha-1' value='44351fdfb119ee920394c1a27c938288c93c03c8'/>
+        <property name='download.checksum.sha-256' value='43c7c870710e363405d422da653cce0d798a4537f76e4930f79bceadd3a55345'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.equinox.app' version='1.7.200.v20240722-2103'>
+      <properties size='5'>
+        <property name='artifact.size' value='95771'/>
+        <property name='download.size' value='95771'/>
+        <property name='download.checksum.sha-512' value='9206267495786ea6492763d39a6fb046a15d72ef29084fb3ffe1dbb85d6400b2ae9e6ba8e3c87d1c5137eb0c60c327b99a4ae4114620be065c1e181acdbfe26b'/>
+        <property name='download.checksum.sha-1' value='54c66827c459309d419460fec5004d5a51241049'/>
+        <property name='download.checksum.sha-256' value='4584f6a46013aa3ecaf5b1ac67ac6e1bdc5ce7ba89ce61d857047cff30bd92f4'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.service.event' version='1.4.1.202109301733'>
+      <properties size='5'>
+        <property name='artifact.size' value='47710'/>
+        <property name='download.size' value='47710'/>
+        <property name='download.checksum.sha-512' value='3c324d94e2852c31410ebdecd9a16845652d080fc0fc6fc708d58227b9708ed4c34de5d6d17aa841c430cab706b5f9df926a6bf1c0c313575533d2fd37f619ab'/>
+        <property name='download.checksum.sha-1' value='0f6d98f06834a911d04be512b751de3563d6b909'/>
+        <property name='download.checksum.sha-256' value='9f11c68980dbd931850f3f27fc7c35e1d710ecc728fe872bd6d786cd7e4b7b5e'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.apache.felix.scr' version='2.2.12'>
+      <properties size='5'>
+        <property name='artifact.size' value='409222'/>
+        <property name='download.size' value='409222'/>
+        <property name='download.checksum.sha-512' value='1c9a48941ec9105a5b4a5dae6ef4ac5a2d09bdbf37fbf91d8972c0f9d6a7a210b3e7937f5de2afc05f7fb3196acc4ff97e117da7f6d03730c04308f9d5452496'/>
+        <property name='download.checksum.sha-1' value='bed71a2e73346e4bd4d35bc38dafdbbc6ae178f1'/>
+        <property name='download.checksum.sha-256' value='c35bdaa7e366cf7f8806305105890e2731f29d173e593e441f401cfbf1017696'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.equinox.util' version='1.1.300.v20190714-1852'>
+      <properties size='5'>
+        <property name='artifact.size' value='83352'/>
+        <property name='download.size' value='83352'/>
+        <property name='download.checksum.sha-512' value='15ef2c5b16b78c35d754af0779917dac210ed5de0b2e512a8bc911de42ba632f23f99399635ed74306cdcb29c2cb8f50d6443b69012320234fadda9f05b005d2'/>
+        <property name='download.checksum.sha-1' value='d24b1b0a97935cfb57978905da47171ce1443333'/>
+        <property name='download.checksum.sha-256' value='fb7b32cd6a0a68fc36d660e2d83990bec5f130551fc8d97859582a3bda2f707f'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.service.upnp' version='1.2.1.202109301733'>
+      <properties size='5'>
+        <property name='artifact.size' value='31309'/>
+        <property name='download.size' value='31309'/>
+        <property name='download.checksum.sha-512' value='af26f95ebf7b85cfdb74f8f44a9af267c566cd0826b212f90a6048833936782c08ff7bfcdc412430a37511c67cc63ef8f113a65c01cf3f92095221b89735207f'/>
+        <property name='download.checksum.sha-1' value='928120b7d36cb41d1f43bb53bdead28e308ae191'/>
+        <property name='download.checksum.sha-256' value='f76ddece1420351cbbe6e19e17b00fb3b4b1633c3e4afdcbe9d0b8b2db4bdd7f'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.service.coordinator' version='1.0.2.201505202024'>
+      <properties size='5'>
+        <property name='artifact.size' value='40740'/>
+        <property name='download.size' value='40740'/>
+        <property name='download.checksum.sha-512' value='c62d6cab034efa2d7d51b306560aa1309b4a8eee70ca3742ddcfddcfec261d90e1b2f1c5d56154310674333ce08be232f54ece97710c1d34a69a5a19db3613b8'/>
+        <property name='download.checksum.sha-1' value='1e16482d86640d296584b0fa23129c73bb4a4123'/>
+        <property name='download.checksum.sha-256' value='b00dcb507b8243fbe54ee6e7f853449a845af8e7d84313c7d4974949fdaab22b'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.service.provisioning' version='1.2.0.201505202024'>
+      <properties size='5'>
+        <property name='artifact.size' value='13697'/>
+        <property name='download.size' value='13697'/>
+        <property name='download.checksum.sha-512' value='30b3360cd06370053dd8835b4da044763041c323de138fd9e560fb6a83a294c14619eb33ebdeaeeb1aa4b3c18682a4967c7893443920cbe22b3e1bbdba472f33'/>
+        <property name='download.checksum.sha-1' value='556c89f6b2bd483ffe416b296392a816aac4bc1a'/>
+        <property name='download.checksum.sha-256' value='59bf433907fe38b46acac4b771a8ffd3a4d693248bbd205968129d25c1a7d019'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.apache.felix.gogo.command' version='1.1.2'>
+      <properties size='5'>
+        <property name='artifact.size' value='39691'/>
+        <property name='download.size' value='39691'/>
+        <property name='download.checksum.sha-512' value='9bc4b30f212d56f809e69cbe83fe2a777ffd2681b99f23bd64adef431d13c73625fde5c683b7af86260be2a5c0f61a895c282b511b35f83777bc2d4648adfab7'/>
+        <property name='download.checksum.sha-1' value='dedce643b473090526c6583f86c19debea612737'/>
+        <property name='download.checksum.sha-256' value='cc9cb7205ff0be5149bc3b5355ce0e5ba4ab182b5bb8a1e96b91252f31a3d324'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.apache.felix.gogo.runtime' version='1.1.6'>
+      <properties size='5'>
+        <property name='artifact.size' value='203481'/>
+        <property name='download.size' value='203481'/>
+        <property name='download.checksum.sha-512' value='ce70082493c43c17763de7354eaf5567ce5febc3f4e9270f7c5989b93b911cafd559fe557de9b2038adbe85ad3df14cabec59485817a1816e687a62c4ff91f98'/>
+        <property name='download.checksum.sha-1' value='298ac251a696e44f354fa6e1ba69797aba864133'/>
+        <property name='download.checksum.sha-256' value='270be725262d10902929320178ebfdcfd7fcec05bd8d59796e83353c08d4af20'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.osgi' version='3.21.0.v20240717-2103'>
+      <properties size='5'>
+        <property name='artifact.size' value='1556090'/>
+        <property name='download.size' value='1556090'/>
+        <property name='download.checksum.sha-512' value='2c52709de83cb1bba71d19e81cc3f8bbc71be3e4ce55bb846633983c4b709995c958b823de3b46d29a15450ebf3c027f14b3ec1d358ee9e788315aa9a167a499'/>
+        <property name='download.checksum.sha-1' value='807e90eff2be764b6227926d378cd32461b4d3ee'/>
+        <property name='download.checksum.sha-256' value='f2ef6a0d423d38d375bbbd126cdd77569fd8237ca0b4736d8d8614be6dd2f850'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.util.position' version='1.0.1.201505202026'>
+      <properties size='5'>
+        <property name='artifact.size' value='14057'/>
+        <property name='download.size' value='14057'/>
+        <property name='download.checksum.sha-512' value='5f1db1484b06e718df2458e790449211f5c766ed402519163170dc9ae8772bb25ccbcb0a6a11f49954d98e218b67efd7ff4f3a0ee2733cc21c90e4e187f1b7f9'/>
+        <property name='download.checksum.sha-1' value='506f364fb3cc6887e26d40ff3fb46f36e5e6f3fa'/>
+        <property name='download.checksum.sha-256' value='02b7f6900efd470b612ecd755971164e1e6c5cf98f587c201d0da3bbc9cb5f3a'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.util.pushstream' version='1.1.0.202212101352'>
+      <properties size='5'>
+        <property name='artifact.size' value='137098'/>
+        <property name='download.size' value='137098'/>
+        <property name='download.checksum.sha-512' value='33d478314fe7832f609920859a30cfe96a1b0d3f8c917ee5b639f93905075cc13da68cf56fc3de7f8fce9787abe330740898c1068e072ddedd650a5b44e16ce5'/>
+        <property name='download.checksum.sha-1' value='2e8b36f757d1bf873bdf491082f0de357c032ac4'/>
+        <property name='download.checksum.sha-256' value='cf56949ffa99675f75b682b518a53527360fd9f4f0261fd1f3180c13f16849b8'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.equinox.registry' version='3.12.100.v20240524-2011'>
+      <properties size='5'>
+        <property name='artifact.size' value='206024'/>
+        <property name='download.size' value='206024'/>
+        <property name='download.checksum.sha-512' value='d8c853732ca8eb7e8cd4a33f9e0c93059ce728f1a602d922f36e66ede5e8c71d883ee56159e227996cbb44c1f58e662672aafd22247c36dc1ee7be3a65339f5a'/>
+        <property name='download.checksum.sha-1' value='cb02adada5f812abc4269890c7339db860ad3f05'/>
+        <property name='download.checksum.sha-256' value='23ded56b950ae846e006870f836c29b8d545f3a7bf9ced28baf41b5a2e5e8dbb'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.equinox.console' version='1.4.800.v20240513-1104'>
+      <properties size='5'>
+        <property name='artifact.size' value='140401'/>
+        <property name='download.size' value='140401'/>
+        <property name='download.checksum.sha-512' value='842eea98851c29351ad55cb7a3e6cfd51f8c876edf2df9b1b96ba8ac37754370b569a277e13744c80b59b4af598a02121eea5ca2a192516311e675820d4de555'/>
+        <property name='download.checksum.sha-1' value='ef53086af5b2dd9bd2b020a58043232af64b4650'/>
+        <property name='download.checksum.sha-256' value='09f561434ecb1402ba5955104a19538217956eaaa4379903e6cd226384ca3105'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.core.runtime' version='3.31.100.v20240524-2010'>
+      <properties size='5'>
+        <property name='artifact.size' value='83054'/>
+        <property name='download.size' value='83054'/>
+        <property name='download.checksum.sha-512' value='661281ba5d5b1e7d44f576a0df00e9ee14e9f34f63e401e59d2408d8ef01259092f84fec3c327cfb65051c3dabb1b3daaa438c184b6fe947e015427d8ff2c0f1'/>
+        <property name='download.checksum.sha-1' value='112c1db21e04080fd90194a40b0eaa0f8e4f055f'/>
+        <property name='download.checksum.sha-256' value='aa484a9f9ecb6a2575d19d1a73bd943dbc9b2292751f4874109b7ac67fd904a8'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.service.useradmin' version='1.1.1.202109301733'>
+      <properties size='5'>
+        <property name='artifact.size' value='36679'/>
+        <property name='download.size' value='36679'/>
+        <property name='download.checksum.sha-512' value='ffb9eeece651de92ef5440c98259f96c0e31c7cf257d5d4a0ca5445e060d9b839ab91c078a6b513cfb5d12b0da7756770524bab0342f702b7ca6427557ebe3b6'/>
+        <property name='download.checksum.sha-1' value='8bc0747550a67ecc237169e4b071995d9aa9cd20'/>
+        <property name='download.checksum.sha-256' value='e9af5301dbc71f548c8f9b85fdd4a8532fc1290f5388867b94da57657298f8b1'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.service.component' version='1.5.1.202212101352'>
+      <properties size='5'>
+        <property name='artifact.size' value='66447'/>
+        <property name='download.size' value='66447'/>
+        <property name='download.checksum.sha-512' value='302fe459fdb74c1005883ceb19aa9f41f63c1d264e45535e2808524751892b4ab68fb1f617b26cfd5e90d74c410e7af260e608b30d5c8bfc71e8e5f114ab816f'/>
+        <property name='download.checksum.sha-1' value='5e4804b15f3d99c52d0be15b51736699c434396b'/>
+        <property name='download.checksum.sha-256' value='0653852deab5c6f6e9c84e3aa8f72e72b9ce7dfaf7a6431f3d80f6f9d7a433ad'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.core.jobs' version='3.15.400.v20240619-0602'>
+      <properties size='5'>
+        <property name='artifact.size' value='120226'/>
+        <property name='download.size' value='120226'/>
+        <property name='download.checksum.sha-512' value='1fc4ad217350efb3b8c472d3649bc060e8a0fa450f67fe81bfc65184cf6e777ca6043f4bfcf187c0df5a46922e9231df5c93cd9e277a9e16863b906aa4b99175'/>
+        <property name='download.checksum.sha-1' value='c2b1b204b5680f2dca86bb2f3cc3cda55b69bfd3'/>
+        <property name='download.checksum.sha-256' value='2be3d118c967756858c612d834cc121393e6c2743e83f1559fd3ae867a82d7b9'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.service.cm' version='1.6.1.202109301733'>
+      <properties size='5'>
+        <property name='artifact.size' value='55580'/>
+        <property name='download.size' value='55580'/>
+        <property name='download.checksum.sha-512' value='6912a42379d59ef081dbaeefadf987e6e9119703b1a76af5c7fe527d33399c23a0016ad71dc0c82bf17e227e65a64a2fd8b986640a7217a814c2c8bd854ad205'/>
+        <property name='download.checksum.sha-1' value='2153bb7f8b45ca4130b96dbf3be6ce0d25170325'/>
+        <property name='download.checksum.sha-256' value='529da7b6806af4d788acc0aef0079c9c920f6cb1d2679c8f392ca552fb2e1d35'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.equinox.preferences' version='3.11.100.v20240327-0645'>
+      <properties size='5'>
+        <property name='artifact.size' value='128242'/>
+        <property name='download.size' value='128242'/>
+        <property name='download.checksum.sha-512' value='10a344b44b0718273534930d39cc7e522ef1eca211885ccfc2ad85e57ce061e77f916200a2ff51f0130cf2905fe947a5bbf735b67e73de64a4fddc48b481ed40'/>
+        <property name='download.checksum.sha-1' value='3a2760a36d484a465644c986eeb3bfb3ba616849'/>
+        <property name='download.checksum.sha-256' value='2dece57392142293cd35b58132b7f6bb0ac599a35f2ce734fd2551440ec27b47'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.util.promise' version='1.3.0.202212101352'>
+      <properties size='5'>
+        <property name='artifact.size' value='85659'/>
+        <property name='download.size' value='85659'/>
+        <property name='download.checksum.sha-512' value='be222309f4ac8b8cc48da708ba3a51b4aa6e9d714571dfb14a116823b3b91cc8519f89f46ba64e79b84816aa58a4b810e389b2c6005b0cf987810ebfadd7013b'/>
+        <property name='download.checksum.sha-1' value='8c9fe683028fdcfd8d8b3fb9175ea0d4f582a3c3'/>
+        <property name='download.checksum.sha-256' value='7053c57e7d7d88fec6b90979a3af125e1d2bb847268a328a2f1ed65ad0a4c185'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.equinox.launcher' version='1.6.900.v20240613-2009'>
+      <properties size='5'>
+        <property name='artifact.size' value='49672'/>
+        <property name='download.size' value='49672'/>
+        <property name='download.checksum.sha-512' value='ba55f1178a562c4fccec2d60d21d66fbca2a7cb13e5cd5553eccc9eb46c7e3ce0dcb1181bab85c1a7436a7843051facbc84e4ed676b8174fcc26b062b550582c'/>
+        <property name='download.checksum.sha-1' value='b98e6b1447437ea39dacc3bebd6f913e8b733867'/>
+        <property name='download.checksum.sha-256' value='1f054651eccee03bc7e0efc1c10cdb4f97e5d58ebe8adf3fea5f29d2425a751b'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.util.function' version='1.2.0.202109301733'>
+      <properties size='5'>
+        <property name='artifact.size' value='23641'/>
+        <property name='download.size' value='23641'/>
+        <property name='download.checksum.sha-512' value='3b60eeca88cfcb5b48bcae38c2e9c387648f014932b175c1343ad975ecac0bc0afe0aa7bcfffc1b520faccb36c75bd85b2f8cbac136b22e15460388becfa870e'/>
+        <property name='download.checksum.sha-1' value='9fe65a02596b68e06aad340f41e33d53e3f7b8a7'/>
+        <property name='download.checksum.sha-256' value='208819c7c71690c15a6bb8b187474e7f9d0147946b680182a62b9f222ae014ec'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.apache.felix.gogo.shell' version='1.1.4'>
+      <properties size='5'>
+        <property name='artifact.size' value='59076'/>
+        <property name='download.size' value='59076'/>
+        <property name='download.checksum.sha-512' value='b4edd7a8c055cab15ff04e2fc0c7e3cbb19b8b324c3f3cd2d32331520c948845920433e39be5bcbcf1ca605642210f0c2c7b1671e64f1178d4837a75accd6d40'/>
+        <property name='download.checksum.sha-1' value='490a428a2e1f4e6740e46834140c8e2e1eae1424'/>
+        <property name='download.checksum.sha-256' value='68ea9d25cc8184cd39c34ebcf84e62c57377ae24b0923b75c2b12216492b53a1'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.equinox.wireadmin' version='1.0.800.v20180827-1235'>
+      <properties size='5'>
+        <property name='artifact.size' value='41767'/>
+        <property name='download.size' value='41767'/>
+        <property name='download.checksum.sha-512' value='a1637c7bdbb049c9dd520ff4cff8e157e30cb03a3845b0d5ac91eda027d422c18754eaa26dd1e6873b745d3cf54cd0cf645791f4c55721703fa1821d7b404baf'/>
+        <property name='download.checksum.sha-1' value='c5a792007f81cb61e506a44786e6e4f46c1cd84e'/>
+        <property name='download.checksum.sha-256' value='8c916caa23c48c67759fd5249b40b1f428b77531cfe5057db6bf3ce50005a4aa'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.equinox.cm' version='1.6.100.v20240329-0940'>
+      <properties size='5'>
+        <property name='artifact.size' value='85404'/>
+        <property name='download.size' value='85404'/>
+        <property name='download.checksum.sha-512' value='c8e70761dfc00ad558e9411b58ada5e2c7f2bbb90735b3da032253ae168838218e43b4a27a041c18fac67247d7edbe2de9e86f980783304442d788aff071e137'/>
+        <property name='download.checksum.sha-1' value='c13af228597dc07c3b342b9bcb018cee7085e604'/>
+        <property name='download.checksum.sha-256' value='fb6a0d23c625564df308b2dedd126fd6c644ea0506d725e83015d177c55e43a8'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.util.measurement' version='1.0.2.201802012109'>
+      <properties size='5'>
+        <property name='artifact.size' value='26354'/>
+        <property name='download.size' value='26354'/>
+        <property name='download.checksum.sha-512' value='3aca2b0b5868371a45e3a8a0b45c673ae97ee75dd2a1970e2aef952f84c13b3ad15a6c1f6171a8f93f0a5e16e0e90a433235e8a1efae6d55ab1a1266a5ad2ebb'/>
+        <property name='download.checksum.sha-1' value='adeb47db1323665e23d74fa77e928a825a0a44b2'/>
+        <property name='download.checksum.sha-256' value='48b9f38674c04f9386cd87ec8ed5718138381b14fe5a6d3e156f86a092e0c222'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.service.device' version='1.1.1.202109301733'>
+      <properties size='5'>
+        <property name='artifact.size' value='20356'/>
+        <property name='download.size' value='20356'/>
+        <property name='download.checksum.sha-512' value='061120e55c9ca9748a8317756730288238357048659c6036fb9e37d12b05e8316bc465d79feefe13524886703b012e5f6ba36ec77f51b76dbb476bd04b2f266e'/>
+        <property name='download.checksum.sha-1' value='a2366b06f31045b8277493edd97240cf5bbe5661'/>
+        <property name='download.checksum.sha-256' value='c1763296d98638b4e78519209de71681568d2afbcd31119d33da2c16358beb25'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.core.contenttype' version='3.9.500.v20240708-0707'>
+      <properties size='5'>
+        <property name='artifact.size' value='107141'/>
+        <property name='download.size' value='107141'/>
+        <property name='download.checksum.sha-512' value='23a08dd9fb30cded180c3814b9803118800db53fe1c701740ac7b18dcc21b63e34ac8f14038f46f92ab7e6a37e33eb144fee568c953076cbeca6ef31dad1cea4'/>
+        <property name='download.checksum.sha-1' value='33776f3c2b3d4e6c4b940568b1899160ea7f48ab'/>
+        <property name='download.checksum.sha-256' value='e8dc00d23f805675bca15cfc8ee502ef8035411651cdbed11d4663d81ef5b7d7'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.util.xml' version='1.0.2.202109301733'>
+      <properties size='5'>
+        <property name='artifact.size' value='18738'/>
+        <property name='download.size' value='18738'/>
+        <property name='download.checksum.sha-512' value='3e26eba7e1ac83ec27b89af6720f0762b58fa981aba92f3d64c64d101b9593d36299e7db518a73b0da874c08daf433b73392a8e18dae338dbd3162d1dbd450e6'/>
+        <property name='download.checksum.sha-1' value='984b3991d8b881ccffd46e0e961cadd04511cc8b'/>
+        <property name='download.checksum.sha-256' value='d28c9a8a747d39de73805dc91f840f99a8a177ae2f85f6052a532a204f6f7538'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.equinox.io' version='1.1.300.v20180827-1235'>
+      <properties size='5'>
+        <property name='artifact.size' value='45005'/>
+        <property name='download.size' value='45005'/>
+        <property name='download.checksum.sha-512' value='cce1149fb29e28a3072d45ef27683ef8816b5a968f60f61fff326f660dac859523f51caca4910d4b8ca0e78401f53163ea27c2a6f651fd45d53a60983be7b0b7'/>
+        <property name='download.checksum.sha-1' value='5b41cf4668b43072514775c542c3581c3e8ffabf'/>
+        <property name='download.checksum.sha-256' value='5e65ea557983168951517d42bf5493ac27cdaa6ce79f852786138fc30400f6a8'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.service.log.stream' version='1.0.0.202109301733'>
+      <properties size='5'>
+        <property name='artifact.size' value='12947'/>
+        <property name='download.size' value='12947'/>
+        <property name='download.checksum.sha-512' value='44deb821f41fa8ea8e35a4baabb441c0b51fe2da057544dd5a4264b448951713b4191b65e3a2b0a060445d69e952e6e2e5fd8ce9dd3f8fc481c25c70035f32b2'/>
+        <property name='download.checksum.sha-1' value='3c4fd80bbc67f27d2ed9cbc0cdfdb0a131b52e1c'/>
+        <property name='download.checksum.sha-256' value='2d97889bbbb7fd101063c3f143e85c3c1b8a660714c2b756fa1612aac5f89102'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.service.wireadmin' version='1.0.2.202109301733'>
+      <properties size='5'>
+        <property name='artifact.size' value='43876'/>
+        <property name='download.size' value='43876'/>
+        <property name='download.checksum.sha-512' value='f0868568e4c94d43e192f308adda16d1518b43f318f225ba9be2579c527e34d033ec1f029fa666c2f2ae23bc4ccff1bc17a07263c715f169587010dcdc37d4d1'/>
+        <property name='download.checksum.sha-1' value='66f720098cc1ed54afdab542214f580e376e34f3'/>
+        <property name='download.checksum.sha-256' value='e78911f12f8823e24a3dde68ba16502a7dd7f4c630386215b0ac7c2ede25b9a7'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.osgi.service.metatype' version='1.4.1.202109301733'>
+      <properties size='5'>
+        <property name='artifact.size' value='30379'/>
+        <property name='download.size' value='30379'/>
+        <property name='download.checksum.sha-512' value='fd602d21bf1870fc4695b3c07ab385e7da6e19cf5ac3091e573b75ede0c8d89e4e02f14ddce040315bf39cae06c338997e945cb0490770dd7aa7aac297d26a82'/>
+        <property name='download.checksum.sha-1' value='e9834f148346bf3f698e2179a287c29d1196a894'/>
+        <property name='download.checksum.sha-256' value='83d9cc2b62500d2e438be91c157659c2d693a262cfd14eb9b916286ca627ed00'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.equinox.common' version='3.19.100.v20240524-2011'>
+      <properties size='5'>
+        <property name='artifact.size' value='163334'/>
+        <property name='download.size' value='163334'/>
+        <property name='download.checksum.sha-512' value='48404e46159fe0ff7786a031b6d9bafb639dc06df886681ba3f760613f573c94955f3dc47021972c6a77303ab3fb8e1ee72a8ed43cf0fdccf2b7a0352ece460e'/>
+        <property name='download.checksum.sha-1' value='553c3c7f4561044c4333cc76e98607aff185a6eb'/>
+        <property name='download.checksum.sha-256' value='77da20b3d040b9a00509add8583c659243a62e9f9633bc3f82b55e96b0a09427'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.equinox.metatype' version='1.6.600.v20240513-1104'>
+      <properties size='5'>
+        <property name='artifact.size' value='102654'/>
+        <property name='download.size' value='102654'/>
+        <property name='download.checksum.sha-512' value='90b123fa04ba57b4bd93d92ca4603651c0939c96d4294733d116a4405bb4edcf883962a8a53c3a6080af19a21dcb4aa5d3b00a117e5e5307f6b01a659ef01366'/>
+        <property name='download.checksum.sha-1' value='e4a9739dec0a4a1db80acdf19445def8ac340719'/>
+        <property name='download.checksum.sha-256' value='0c11243805c7f9bb5b2f49961e53f8685751b7c0a180e290b5219f6bd34b8816'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.eclipse.osgi.util' version='3.7.300.v20231104-1118'>
+      <properties size='5'>
+        <property name='artifact.size' value='14765'/>
+        <property name='download.size' value='14765'/>
+        <property name='download.checksum.sha-512' value='cac3e3bbad80fc2daa35f92c8cd3216e55a55fa7143cb4c742a76db6918430621ed5bd5b050544b49dad9dc829ea57b4c8708ed2f98d5d0d81771a77efdc252a'/>
+        <property name='download.checksum.sha-1' value='951f72902879b655cdbe96d7a7b3ba7904aa3e3f'/>
+        <property name='download.checksum.sha-256' value='fec5e3c60a02c4eff39e8f93798aeb8e8afdcbb1f7c37da90a358682ad8cfdd5'/>
+      </properties>
+    </artifact>
+  </artifacts>
+</repository>

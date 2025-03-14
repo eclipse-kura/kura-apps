@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<artifacts size='2'>
+  <artifact classifier='osgi.bundle' id='org.eclipse.kura.emulator.net' version='2.0.0.202503140929'>
+    <properties size='9'>
+      <property name='artifact.size' value='14960'/>
+      <property name='download.size' value='14960'/>
+      <property name='download.checksum.sha-512' value='6b7a27ab6dcdcf3de2de27dc1a91e53298ba86d3581bfb40d30c5a689f2af5c3b697ea9d8ab5443d5d958af1d785f7576dc3354ac5b3bd36ab55f14a56e5caf0'/>
+      <property name='download.checksum.sha-1' value='caf22ec77a41925359be0f1160539c37d15d7204'/>
+      <property name='download.checksum.sha-256' value='4057d42fcce311cd5188875e46da8fa57538332ad2d78213a0b86d27c6848dff'/>
+      <property name='maven-groupId' value='org.eclipse.kura'/>
+      <property name='maven-artifactId' value='org.eclipse.kura.emulator.net'/>
+      <property name='maven-version' value='2.0.0-SNAPSHOT'/>
+      <property name='maven-type' value='eclipse-plugin'/>
+    </properties>
+  </artifact>
+  <artifact classifier='osgi.bundle' id='org.eclipse.kura.emulator.net.source' version='2.0.0.202503140929'>
+    <properties size='10'>
+      <property name='artifact.size' value='10854'/>
+      <property name='download.size' value='10854'/>
+      <property name='download.checksum.sha-512' value='27b80fc3452c0ba64f8c1f264f1492313cf3025863b0e67502b96a148d5227499f7d2f20b3d52ee30ca5bb677bf3caf6a5619adb46c91ff16269d3ba0ddf69ce'/>
+      <property name='download.checksum.sha-1' value='6a1f2e2ab8afac5b8c3df5af7fc552f57a19e2a9'/>
+      <property name='download.checksum.sha-256' value='2cc565fb9592824263c8f13498864873c993123d2fff89e63a614e9f5845827a'/>
+      <property name='maven-groupId' value='org.eclipse.kura'/>
+      <property name='maven-artifactId' value='org.eclipse.kura.emulator.net'/>
+      <property name='maven-version' value='2.0.0-SNAPSHOT'/>
+      <property name='maven-classifier' value='sources'/>
+      <property name='maven-type' value='java-source'/>
+    </properties>
+  </artifact>
+</artifacts>

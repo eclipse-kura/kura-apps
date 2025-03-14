@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<artifacts size='2'>
+  <artifact classifier='osgi.bundle' id='org.eclipse.kura.example.wire.math.trig.test' version='6.0.0.202503141148'>
+    <properties size='9'>
+      <property name='artifact.size' value='10987'/>
+      <property name='download.size' value='10987'/>
+      <property name='download.checksum.sha-512' value='8a78c5cf31c7e36979f77885a12d6dddae465773bcee580498111dfb46b5747b0ea82e1f392743a6d81eae853f011dbbef475e35f3c8916091f631671a318af5'/>
+      <property name='download.checksum.sha-1' value='5201f9c79cd8d23837e13375e06ca58f323c7048'/>
+      <property name='download.checksum.sha-256' value='87ab6503bb6e4ac212e37df0f210912aeb24085041ec9a3b56dac12ad8aa3e6b'/>
+      <property name='maven-groupId' value='org.eclipse.kura.example'/>
+      <property name='maven-artifactId' value='org.eclipse.kura.example.wire.math.trig.test'/>
+      <property name='maven-version' value='6.0.0-SNAPSHOT'/>
+      <property name='maven-type' value='eclipse-test-plugin'/>
+    </properties>
+  </artifact>
+  <artifact classifier='osgi.bundle' id='org.eclipse.kura.example.wire.math.trig.test.source' version='6.0.0.202503141148'>
+    <properties size='10'>
+      <property name='artifact.size' value='4963'/>
+      <property name='download.size' value='4963'/>
+      <property name='download.checksum.sha-512' value='112c01961a52985b16ce574528c61246d240ef7f093088e4c777155f6cd8ff600c623fac27b6ab66f1a6e856f00ebd5244b6d27dce9715e56a44458224ba4055'/>
+      <property name='download.checksum.sha-1' value='9616fb3859d73b6220f44112e2dbf6460bfa2270'/>
+      <property name='download.checksum.sha-256' value='c511ea513b2dcd8fd7e059658557be2963831fbbf2cceb68f3e3cb7dd8511939'/>
+      <property name='maven-groupId' value='org.eclipse.kura.example'/>
+      <property name='maven-artifactId' value='org.eclipse.kura.example.wire.math.trig.test'/>
+      <property name='maven-version' value='6.0.0-SNAPSHOT'/>
+      <property name='maven-classifier' value='sources'/>
+      <property name='maven-type' value='java-source'/>
+    </properties>
+  </artifact>
+</artifacts>

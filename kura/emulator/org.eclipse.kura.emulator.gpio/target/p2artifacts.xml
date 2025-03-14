@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<artifacts size='2'>
+  <artifact classifier='osgi.bundle' id='org.eclipse.kura.emulator.gpio' version='2.0.0.202503140929'>
+    <properties size='9'>
+      <property name='artifact.size' value='13643'/>
+      <property name='download.size' value='13643'/>
+      <property name='download.checksum.sha-512' value='c5df40a7eb5c0417dbd6dea2f0af9079f72d88362fdb190b0a1abf1af79112ec4f7dafc534a5b74aa6e4ea7a889a3c61986ee183e4fc7231ea85bc592bcce712'/>
+      <property name='download.checksum.sha-1' value='c65466a50db2e5516f29a91373b254891a5b7feb'/>
+      <property name='download.checksum.sha-256' value='99e71f52ac5465865749174e140da121649708ac8c1547e6a5899683a2ebf85a'/>
+      <property name='maven-groupId' value='org.eclipse.kura'/>
+      <property name='maven-artifactId' value='org.eclipse.kura.emulator.gpio'/>
+      <property name='maven-version' value='2.0.0-SNAPSHOT'/>
+      <property name='maven-type' value='eclipse-plugin'/>
+    </properties>
+  </artifact>
+  <artifact classifier='osgi.bundle' id='org.eclipse.kura.emulator.gpio.source' version='2.0.0.202503140929'>
+    <properties size='10'>
+      <property name='artifact.size' value='10243'/>
+      <property name='download.size' value='10243'/>
+      <property name='download.checksum.sha-512' value='c240605fae7d7571f84b2588d3179dbce15d494f5c1f2a6bc3437f0837423aeba0808be34f3e800f88e0a23c50b793eacc3090404a9c576f85e26f4f68fe2f9f'/>
+      <property name='download.checksum.sha-1' value='97b7077e37989352a3e33b67ee6af5fbffed950c'/>
+      <property name='download.checksum.sha-256' value='7351f3dfdab2dcba2765cf35ed9ef5e4b64b66c4cbb1c60b974d347bf71f76bf'/>
+      <property name='maven-groupId' value='org.eclipse.kura'/>
+      <property name='maven-artifactId' value='org.eclipse.kura.emulator.gpio'/>
+      <property name='maven-version' value='2.0.0-SNAPSHOT'/>
+      <property name='maven-classifier' value='sources'/>
+      <property name='maven-type' value='java-source'/>
+    </properties>
+  </artifact>
+</artifacts>

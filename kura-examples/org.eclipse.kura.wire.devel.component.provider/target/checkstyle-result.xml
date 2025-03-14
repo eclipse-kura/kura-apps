@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.19">
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/Property.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/delay/Delay.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/delay/DelayOptions.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/DataTypeHelper.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/sink/SinkOptions.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/sink/Sink.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/PreparedReadIssue.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/DummyDriverOptions.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/ChannelListenerManager.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/DummyChannelDescriptor.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/ConnectionIssue.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/ChannelDescriptorIssue.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/ConnectionManager.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/DummyDriver.java">
+</file>
+</checkstyle>

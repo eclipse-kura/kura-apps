@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1741949538322
+Build-Jdk-Spec: 17
+Bundle-ManifestVersion: 2
+Bundle-Name: jdk.dio
+Bundle-SymbolicName: jdk.dio
+Bundle-Version: 2.0.0.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin 5.1.8
+Export-Package: jdk.dio;version="1.5.0",jdk.dio.adc;version="1.5.0";uses
+ :="jdk.dio",jdk.dio.atcmd;version="1.5.0";uses:="jdk.dio,jdk.dio.modem"
+ ,jdk.dio.dac;version="1.5.0";uses:="jdk.dio",jdk.dio.generic;version="1
+ .5.0";uses:="jdk.dio",jdk.dio.gpio;version="1.5.0";uses:="jdk.dio",jdk.
+ dio.i2cbus;version="1.5.0";uses:="jdk.dio",jdk.dio.modem;version="1.5.0
+ ";uses:="jdk.dio",jdk.dio.power;version="1.5.0";uses:="jdk.dio",jdk.dio
+ .spi;version="1.5.0";uses:="jdk.dio",jdk.dio.spibus;version="1.5.0";use
+ s:="jdk.dio",jdk.dio.uart;version="1.5.0";uses:="jdk.dio,jdk.dio.modem"
+ ,jdk.dio.watchdog;version="1.5.0";uses:="jdk.dio"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-6.3.1.202206071316

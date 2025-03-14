@@ -1,0 +1,35 @@
+!SESSION 2025-03-14 12:48:48.239 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=17.0.14
+java.vendor=Ubuntu
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=it_IT
+Framework arguments:  -application org.eclipse.tycho.surefire.osgibooter.headlesstest -testproperties /home/simone/git/kura-apps/kura-examples/test/org.eclipse.kura.example.wire.logic.multiport.provider.test/target/surefire.properties
+Command-line arguments:  -data /home/simone/git/kura-apps/kura-examples/test/org.eclipse.kura.example.wire.logic.multiport.provider.test/target/work/data -application org.eclipse.tycho.surefire.osgibooter.headlesstest -testproperties /home/simone/git/kura-apps/kura-examples/test/org.eclipse.kura.example.wire.logic.multiport.provider.test/target/surefire.properties -consoleLog -console 5002
+
+!ENTRY org.eclipse.kura.example.wire.logic.multiport.provider 4 0 2025-03-14 12:48:50.588
+!MESSAGE bundle org.eclipse.kura.example.wire.logic.multiport.provider:2.0.0.202503141148 (19)[org.eclipse.kura.example.wire.logic.multiport.provider.LogicalComponent(36)] : The updated method has thrown an exception
+!STACK 0
+java.lang.IllegalArgumentException: No enum constant org.eclipse.kura.example.wire.logic.multiport.provider.LogicalComponentOptions.OperatorOption.ILLEGAL
+	at java.base/java.lang.Enum.valueOf(Enum.java:273)
+	at org.eclipse.kura.example.wire.logic.multiport.provider.LogicalComponentOptions$OperatorOption.valueOf(LogicalComponentOptions.java:1)
+	at org.eclipse.kura.example.wire.logic.multiport.provider.LogicalComponentOptions.<init>(LogicalComponentOptions.java:56)
+	at org.eclipse.kura.example.wire.logic.multiport.provider.LogicalComponent.updated(LogicalComponent.java:63)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.apache.felix.scr.impl.inject.methods.BaseMethod.invokeMethod(BaseMethod.java:257)
+	at org.apache.felix.scr.impl.inject.methods.BaseMethod.access$500(BaseMethod.java:41)
+	at org.apache.felix.scr.impl.inject.methods.BaseMethod$Resolved.invoke(BaseMethod.java:701)
+	at org.apache.felix.scr.impl.inject.methods.BaseMethod.invoke(BaseMethod.java:544)
+	at org.apache.felix.scr.impl.inject.methods.ActivateMethod.invoke(ActivateMethod.java:317)
+	at org.apache.felix.scr.impl.inject.methods.ActivateMethod.invoke(ActivateMethod.java:307)
+	at org.apache.felix.scr.impl.manager.SingleComponentManager.invokeModifiedMethod(SingleComponentManager.java:856)
+	at org.apache.felix.scr.impl.manager.SingleComponentManager.modify(SingleComponentManager.java:810)
+	at org.apache.felix.scr.impl.manager.SingleComponentManager.reconfigure(SingleComponentManager.java:725)
+	at org.apache.felix.scr.impl.manager.SingleComponentManager.reconfigure(SingleComponentManager.java:686)
+	at org.apache.felix.scr.impl.manager.ConfigurableComponentHolder.configurationUpdated(ConfigurableComponentHolder.java:440)
+	at org.apache.felix.scr.impl.manager.RegionConfigurationSupport.configurationEvent(RegionConfigurationSupport.java:347)
+	at org.apache.felix.scr.impl.manager.RegionConfigurationSupport$2.configurationEvent(RegionConfigurationSupport.java:115)
+	at org.eclipse.equinox.internal.cm.EventDispatcher$1.run(EventDispatcher.java:100)
+	at org.eclipse.equinox.internal.cm.SerializedTaskQueue$1.run(SerializedTaskQueue.java:41)

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.19">
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.gpio/src/org/eclipse/kura/example/gpio/GpioComponentOptions.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.gpio/src/org/eclipse/kura/example/gpio/GpioComponent.java">
+</file>
+</checkstyle>

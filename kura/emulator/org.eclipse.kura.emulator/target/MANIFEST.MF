@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.kura.emulator
+Bundle-SymbolicName: org.eclipse.kura.emulator;singleton:=true
+Bundle-Version: 2.0.0.202503140929
+Bundle-Vendor: Eclipse Kura
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=17))"
+Export-Package: org.eclipse.kura.emulator; version="1.0.0"
+Service-Component: OSGI-INF/*.xml
+Bundle-ActivationPolicy: lazy
+Import-Package: org.apache.commons.io;version="2.4.0",org.apache.commons
+ .lang3;version="3.4.0",org.osgi.framework;version="1.7.0",org.osgi.serv
+ ice.component;version="1.2.0",org.slf4j;version="1.7.25"
+Bundle-ClassPath: .
+Eclipse-SourceReferences: scm:git:ssh://github.com/eclipse/kura/kura;pat
+ h="kura/emulator/org.eclipse.kura.emulator";commitId=730a765b381df4aea5
+ c652c92cc80326b340889c
+

@@ -1,0 +1,9 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.kura.example.wire.math.singleport.median.test.MedianComponentTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.421 s -- in org.eclipse.kura.example.wire.math.singleport.median.test.MedianComponentTest
+org.eclipse.kura.example.wire.math.singleport.median.test.MedianComponentTest.testEvenMedianWithRandomValues -- Time elapsed: 0.090 s
+org.eclipse.kura.example.wire.math.singleport.median.test.MedianComponentTest.medianWireComponentHasDefaultProperties -- Time elapsed: 0.081 s
+org.eclipse.kura.example.wire.math.singleport.median.test.MedianComponentTest.testEvenMedian -- Time elapsed: 0.086 s
+org.eclipse.kura.example.wire.math.singleport.median.test.MedianComponentTest.medianWireComponentExists -- Time elapsed: 0.074 s
+org.eclipse.kura.example.wire.math.singleport.median.test.MedianComponentTest.testOddMedian -- Time elapsed: 0.089 s

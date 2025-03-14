@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.19">
+<file name="/home/simone/git/kura/kura/emulator/org.eclipse.kura.emulator.gpio/src/main/java/org/eclipse/kura/emulator/gpio/GpioServiceImpl.java">
+</file>
+<file name="/home/simone/git/kura/kura/emulator/org.eclipse.kura.emulator.gpio/src/main/java/org/eclipse/kura/emulator/gpio/EmulatedPin.java">
+</file>
+</checkstyle>

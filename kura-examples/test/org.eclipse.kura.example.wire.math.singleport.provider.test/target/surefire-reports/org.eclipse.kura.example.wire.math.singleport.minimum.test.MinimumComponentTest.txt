@@ -1,0 +1,7 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.kura.example.wire.math.singleport.minimum.test.MinimumComponentTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.231 s -- in org.eclipse.kura.example.wire.math.singleport.minimum.test.MinimumComponentTest
+org.eclipse.kura.example.wire.math.singleport.minimum.test.MinimumComponentTest.minimumWireComponentHasDefaultProperties -- Time elapsed: 0.075 s
+org.eclipse.kura.example.wire.math.singleport.minimum.test.MinimumComponentTest.testMinimum -- Time elapsed: 0.084 s
+org.eclipse.kura.example.wire.math.singleport.minimum.test.MinimumComponentTest.minimumWireComponentExists -- Time elapsed: 0.071 s

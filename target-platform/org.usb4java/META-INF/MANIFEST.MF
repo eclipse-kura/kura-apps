@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Created-By: Apache Maven Bundle Plugin
+Tool: Bnd-1.43.0
+Bnd-LastModified: 1741949536837
+Export-Package: org.usb4java.linux-x86_64;version="1.2.0",org.usb4java;u
+ ses:="org.apache.commons.lang3.builder,org.apache.commons.lang3.tuple";
+ version="1.2.0",org.usb4java.linux-arm;version="1.2.0"
+Import-Package: org.apache.commons.lang3.builder,org.apache.commons.lang
+ 3.tuple
+Bundle-ClassPath: .,libusb4java-1.2.0-linux-arm.jar,libusb4java-1.2.0-li
+ nux-x86_64.jar
+Embed-Dependency: org.usb4java;groupId=org.usb4java;artifactId=org.usb4j
+ ava;version=1.2.0;scope=runtime,org.usb4java.linux-arm;groupId=org.usb4
+ java;artifactId=org.usb4java.linux-arm;version=1.2.0;scope=system,org.u
+ sb4java.linux-x86_64;groupId=org.usb4java;artifactId=org.usb4java.linux
+ -x86_64;version=1.2.0;scope=system
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Bundle-Description: usb4java libraries using libusb
+Bundle-SymbolicName: org.usb4java
+Bundle-Version: 2.0.0.SNAPSHOT
+Bundle-Name: usb4java
+Built-By: simone
+Build-Jdk: 17.0.14
+

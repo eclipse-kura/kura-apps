@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1741949544650
+Build-Jdk-Spec: 17
+Bundle-ManifestVersion: 2
+Bundle-Name: log4j2-api-config
+Bundle-SymbolicName: log4j2-api-config
+Bundle-Version: 2.0.0.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin 5.1.8
+DynamicImport-Package: *;resolution:=optional
+Fragment-Host: org.apache.logging.log4j.api
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-6.3.1.202206071316

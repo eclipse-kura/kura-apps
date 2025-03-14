@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="main"  >
+<target name="main">
+  <delete dir="../../kura/target-definition/equinox/"/>
+  <mkdir dir="../../kura/target-definition/equinox/repository"/>
+  <copy todir="../../kura/target-definition/equinox/repository">
+    <fileset dir="/home/simone/git/kura-apps/target-platform/p2-repo-equinox/target/repository"/>
+  </copy>
+  <mkdir dir="../../kura/target-definition/equinox/source"/>
+  <copy todir="../../kura/target-definition/equinox/source">
+    <fileset dir="/home/simone/git/kura-apps/target-platform/p2-repo-equinox/target/source"/>
+  </copy>
+</target>
+</project>

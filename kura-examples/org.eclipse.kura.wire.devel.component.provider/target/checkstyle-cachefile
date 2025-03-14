@@ -1,0 +1,16 @@
+#Fri Mar 14 12:48:26 CET 2025
+configuration*?=A6DC9171B5970D28C5DB7E6072DBAB82DAAFCFD5
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/delay/DelayOptions.java=1740665041889
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/ConnectionManager.java=1740665041890
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/DummyDriver.java=1740665041890
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/DataTypeHelper.java=1740665041889
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/delay/Delay.java=1740665041889
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/ConnectionIssue.java=1740665041890
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/ChannelDescriptorIssue.java=1740665041890
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/sink/SinkOptions.java=1740665041890
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/PreparedReadIssue.java=1740665041890
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/DummyDriverOptions.java=1740665041890
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/ChannelListenerManager.java=1740665041890
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/sink/Sink.java=1740665041890
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/Property.java=1740665041889
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.wire.devel.component.provider/src/org/eclipse/kura/wire/devel/driver/dummy/DummyChannelDescriptor.java=1740665041890

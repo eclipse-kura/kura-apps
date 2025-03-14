@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.kura.example.wire.math.trig.test.TrigonometricComponentTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.858 s -- in org.eclipse.kura.example.wire.math.trig.test.TrigonometricComponentTest
+org.eclipse.kura.example.wire.math.trig.test.TrigonometricComponentTest.testSinOperation -- Time elapsed: 0.183 s
+org.eclipse.kura.example.wire.math.trig.test.TrigonometricComponentTest.testArcTanOperation -- Time elapsed: 0.104 s
+org.eclipse.kura.example.wire.math.trig.test.TrigonometricComponentTest.wireComponentExists -- Time elapsed: 0.078 s
+org.eclipse.kura.example.wire.math.trig.test.TrigonometricComponentTest.wireComponentHasDefaultProperties -- Time elapsed: 0.096 s
+org.eclipse.kura.example.wire.math.trig.test.TrigonometricComponentTest.testTanOperation -- Time elapsed: 0.089 s
+org.eclipse.kura.example.wire.math.trig.test.TrigonometricComponentTest.testArcCosOperation -- Time elapsed: 0.098 s
+org.eclipse.kura.example.wire.math.trig.test.TrigonometricComponentTest.testArcSinOperation -- Time elapsed: 0.083 s
+org.eclipse.kura.example.wire.math.trig.test.TrigonometricComponentTest.testCosOperation -- Time elapsed: 0.088 s

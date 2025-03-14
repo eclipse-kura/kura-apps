@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1741949536564
+Build-Jdk-Spec: 17
+Bundle-License: http://opensource.org/licenses/BSD-3-Clause
+Bundle-ManifestVersion: 2
+Bundle-Name: Native libraries for 'com.codeminders.hidapi' on ARM 64 bit
+ s
+Bundle-NativeCode: lib/libhidapi.so; osname=Linux; processor=AARCH64
+Bundle-SymbolicName: com.codeminders.hidapi.aarch64
+Bundle-Version: 2.0.0.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin 5.1.8
+Fragment-Host: com.codeminders.hidapi;bundle-version="[2.0.0,3.0.0)"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-6.3.1.202206071316

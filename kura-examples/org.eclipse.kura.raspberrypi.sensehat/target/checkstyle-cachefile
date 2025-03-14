@@ -1,0 +1,16 @@
+#Fri Mar 14 12:48:24 CET 2025
+configuration*?=9F13A6503601B35422D4D267F28F09ABC8718294
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspberrypi/sensehat/ledmatrix/FrameBufferRaw.java=1741699407851
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspberrypi/sensehat/ledmatrix/Transform.java=1740665041887
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspberrypi/sensehat/ledmatrix/Alphabet.java=1741699407851
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspberrypi/sensehat/ledmatrix/Colors.java=1741699407851
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspberrypi/sensehat/ledmatrix/AlphabetRaw.java=1741699407851
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspberrypi/sensehat/sensors/HTS221.java=1741699407851
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspsberrypi/sensehat/joystick/JoystickEvent.java=1741699407851
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspberrypi/sensehat/ledmatrix/FrameBuffer.java=1741699407851
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspberrypi/sensehat/sensors/KuraI2CDevice.java=1741699407851
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspberrypi/sensehat/sensors/LPS25H.java=1740665041887
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspberrypi/sensehat/impl/SenseHatImpl.java=1741699407851
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspberrypi/sensehat/sensors/LSM9DS1.java=1741699407851
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspsberrypi/sensehat/joystick/Joystick.java=1741699407851
+/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.raspberrypi.sensehat/src/main/java/org/eclipse/kura/raspberrypi/sensehat/SenseHat.java=1740665041886

@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.kura.emulator.gpio
+Bundle-SymbolicName: org.eclipse.kura.emulator.gpio;singleton:=true
+Bundle-Version: 2.0.0.202503140929
+Bundle-Vendor: Eclipse Kura
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=17))"
+Export-Package: org.eclipse.kura.emulator.gpio; version="1.0.0"
+Service-Component: OSGI-INF/*.xml
+Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.kura.gpio; version="[1.1,1.2)",org.osgi.fram
+ ework;version="1.5.0",org.osgi.service.component;version="1.2.0",org.sl
+ f4j;version="1.6.4"
+Bundle-ClassPath: .
+Eclipse-SourceReferences: scm:git:ssh://github.com/eclipse/kura/kura;pat
+ h="kura/emulator/org.eclipse.kura.emulator.gpio";commitId=730a765b381df
+ 4aea5c652c92cc80326b340889c
+

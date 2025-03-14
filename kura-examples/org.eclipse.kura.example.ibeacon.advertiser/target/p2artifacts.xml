@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<artifacts size='2'>
+  <artifact classifier='osgi.bundle' id='org.eclipse.kura.example.ibeacon.advertiser' version='2.0.0.202503141148'>
+    <properties size='9'>
+      <property name='artifact.size' value='11480'/>
+      <property name='download.size' value='11480'/>
+      <property name='download.checksum.sha-512' value='3e1c7db3b8de3bce7b04f2053346eb3b9d2247908745c3bbeb63ce20af30a083f9f6eae7381258ee7cdc65883e2655355995508d1a30f32380302dd8edb79985'/>
+      <property name='download.checksum.sha-1' value='70e89cd10c559c2317c88dc1e498f0b23902dc8a'/>
+      <property name='download.checksum.sha-256' value='88ee1013df57626f9875829727b7181d068971f120c27970546068ce3217a739'/>
+      <property name='maven-groupId' value='org.eclipse.kura'/>
+      <property name='maven-artifactId' value='org.eclipse.kura.example.ibeacon.advertiser'/>
+      <property name='maven-version' value='2.0.0-SNAPSHOT'/>
+      <property name='maven-type' value='eclipse-plugin'/>
+    </properties>
+  </artifact>
+  <artifact classifier='osgi.bundle' id='org.eclipse.kura.example.ibeacon.advertiser.source' version='2.0.0.202503141148'>
+    <properties size='10'>
+      <property name='artifact.size' value='4756'/>
+      <property name='download.size' value='4756'/>
+      <property name='download.checksum.sha-512' value='050f9d91329c9d18636876f55eefc2768b0ce2ef6904fce6afee9f4c9e14b452b7acfc82533a3118a6ddbb97fdf49cc46898b700e1bfac63f423226b1b8f0c5c'/>
+      <property name='download.checksum.sha-1' value='ce841919344735f0e594646852b1b51ef1f80070'/>
+      <property name='download.checksum.sha-256' value='3e3cf3d4978d35373789c4ba7916c27e600f5402298e46661c1165cf4ff9f86c'/>
+      <property name='maven-groupId' value='org.eclipse.kura'/>
+      <property name='maven-artifactId' value='org.eclipse.kura.example.ibeacon.advertiser'/>
+      <property name='maven-version' value='2.0.0-SNAPSHOT'/>
+      <property name='maven-classifier' value='sources'/>
+      <property name='maven-type' value='java-source'/>
+    </properties>
+  </artifact>
+</artifacts>

@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<artifacts size='2'>
+  <artifact classifier='osgi.bundle' id='org.eclipse.kura.demo.modbus' version='3.0.0.202503141148'>
+    <properties size='9'>
+      <property name='artifact.size' value='18400'/>
+      <property name='download.size' value='18400'/>
+      <property name='download.checksum.sha-512' value='b3c68fac9f1d9f019b9d24c3b124c84a72350166de858b5ee6236cd355253a15714ce7cabde78778560ef7b3c378a59b0bd066abbb44fa8941b527c1647e8ace'/>
+      <property name='download.checksum.sha-1' value='3191d3cfbacacd68100767c3f0877adc4c10f549'/>
+      <property name='download.checksum.sha-256' value='0ba61897de7ccf58c2b2a9ee8fb0bfa1d13cab019231a60dd537438345ba16da'/>
+      <property name='maven-groupId' value='org.eclipse.kura'/>
+      <property name='maven-artifactId' value='org.eclipse.kura.demo.modbus'/>
+      <property name='maven-version' value='3.0.0-SNAPSHOT'/>
+      <property name='maven-type' value='eclipse-plugin'/>
+    </properties>
+  </artifact>
+  <artifact classifier='osgi.bundle' id='org.eclipse.kura.demo.modbus.source' version='3.0.0.202503141148'>
+    <properties size='10'>
+      <property name='artifact.size' value='11475'/>
+      <property name='download.size' value='11475'/>
+      <property name='download.checksum.sha-512' value='5d014b5df7ba741b44cc3515162238d9cf64b76bb54eec560de7aa935e957f5470b3a950986cf19c913fb0809f5f90047e5c70b179c868b46a32fb97158a4e3c'/>
+      <property name='download.checksum.sha-1' value='7e7f9122d949d9552fa48fd26ad2210c6fa8e451'/>
+      <property name='download.checksum.sha-256' value='dfe4795f8a8a9e87fd91b8ce6fc64a0b0ec33fcdd3e0879709c7b1a60ad18459'/>
+      <property name='maven-groupId' value='org.eclipse.kura'/>
+      <property name='maven-artifactId' value='org.eclipse.kura.demo.modbus'/>
+      <property name='maven-version' value='3.0.0-SNAPSHOT'/>
+      <property name='maven-classifier' value='sources'/>
+      <property name='maven-type' value='java-source'/>
+    </properties>
+  </artifact>
+</artifacts>

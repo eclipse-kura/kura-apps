@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<artifacts size='2'>
+  <artifact classifier='osgi.bundle' id='org.eclipse.kura.emulator.usb' version='2.0.0.202503140929'>
+    <properties size='9'>
+      <property name='artifact.size' value='10906'/>
+      <property name='download.size' value='10906'/>
+      <property name='download.checksum.sha-512' value='ebc6304cc6a2bfee358d2750ff5bd73dc800365bb25277eed0a3ebcf539d2cc1027910764e56360821f162587e0ff72669933455f77c8a45830e0034131c502e'/>
+      <property name='download.checksum.sha-1' value='85ac9a29720c3a67003ced7b5926f56a0eada214'/>
+      <property name='download.checksum.sha-256' value='14c22a17859570b02583913069348f65da1c83888d7a79a67c62fa02370b6bce'/>
+      <property name='maven-groupId' value='org.eclipse.kura'/>
+      <property name='maven-artifactId' value='org.eclipse.kura.emulator.usb'/>
+      <property name='maven-version' value='2.0.0-SNAPSHOT'/>
+      <property name='maven-type' value='eclipse-plugin'/>
+    </properties>
+  </artifact>
+  <artifact classifier='osgi.bundle' id='org.eclipse.kura.emulator.usb.source' version='2.0.0.202503140929'>
+    <properties size='10'>
+      <property name='artifact.size' value='8917'/>
+      <property name='download.size' value='8917'/>
+      <property name='download.checksum.sha-512' value='0ca24ee59cab06870712618920e4a6b1b51d3b5b0232cf80674be8a6e267744436419647517486d96a2f4c962be26edff8aac80404f6fd6032c75b67a5f32213'/>
+      <property name='download.checksum.sha-1' value='56cd598ccc490f9f5bdda49201f5ddc05f0ce5e8'/>
+      <property name='download.checksum.sha-256' value='43df7691520c29186990f02a44a9dd19cbb52907136576f2f5178423555e9008'/>
+      <property name='maven-groupId' value='org.eclipse.kura'/>
+      <property name='maven-artifactId' value='org.eclipse.kura.emulator.usb'/>
+      <property name='maven-version' value='2.0.0-SNAPSHOT'/>
+      <property name='maven-classifier' value='sources'/>
+      <property name='maven-type' value='java-source'/>
+    </properties>
+  </artifact>
+</artifacts>

@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.kura.example.ibeacon.scanner
+Bundle-SymbolicName: org.eclipse.kura.example.ibeacon.scanner;singleton:
+ =true
+Bundle-Version: 2.0.0.202503141148
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=17))"
+Service-Component: OSGI-INF/*.xml
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Import-Package: org.eclipse.kura;version="[1.0,2.0)",org.eclipse.kura.bl
+ e.ibeacon;version="[1.0,2.0)",org.eclipse.kura.bluetooth.le;version="[1
+ .0,2.0)",org.eclipse.kura.bluetooth.le.beacon;version="[1.0,2.0)",org.e
+ clipse.kura.bluetooth.le.beacon.listener;version="[1.0,2.0)",org.eclips
+ e.kura.cloud;version="[1.0,2.0)",org.eclipse.kura.cloudconnection.messa
+ ge;version="[1.0,2.0)",org.eclipse.kura.cloudconnection.publisher;versi
+ on="[1.0,2.0)",org.eclipse.kura.configuration;version="[1.0,2.0)",org.e
+ clipse.kura.message;version="[1.0,2.0)",org.osgi.service.component;vers
+ ion="1.2.0",org.slf4j;version="1.6.4"
+Eclipse-SourceReferences: scm:git:ssh://github.com/eclipse/kura/kura;pat
+ h="kura-examples/org.eclipse.kura.example.ibeacon.scanner";commitId=d2f
+ 6cc8bebbd532d628322bf0959cae301f0653a
+

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.19">
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/sqrt/SqrtComponent.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/RunningAverage.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/RunningMedian.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/median/MedianComponent.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/variance/VarianceComponent.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/minimum/MinimumComponent.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/AbstractSingleportMathComponentOptions.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/MapUtil.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/average/AverageComponent.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/RunningExtremum.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/AbstractSingleportMathComponent.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/gainoffset/GainOffsetComponentOptions.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/gainoffset/GainOffsetEntry.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/gainoffset/GainOffsetComponent.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.wire.math.singleport.provider/src/main/java/org/eclipse/kura/example/wire/math/singleport/maximum/MaximumComponent.java">
+</file>
+</checkstyle>

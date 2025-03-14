@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.kura.example.wire.math.singleport.average.test.AverageComponentTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.307 s -- in org.eclipse.kura.example.wire.math.singleport.average.test.AverageComponentTest
+org.eclipse.kura.example.wire.math.singleport.average.test.AverageComponentTest.averageWireComponentHasDefaultProperties -- Time elapsed: 0.069 s
+org.eclipse.kura.example.wire.math.singleport.average.test.AverageComponentTest.testOddaverage -- Time elapsed: 0.083 s
+org.eclipse.kura.example.wire.math.singleport.average.test.AverageComponentTest.testEvenaverage -- Time elapsed: 0.082 s
+org.eclipse.kura.example.wire.math.singleport.average.test.AverageComponentTest.averageWireComponentExists -- Time elapsed: 0.072 s

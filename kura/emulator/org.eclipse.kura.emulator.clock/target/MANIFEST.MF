@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.kura.emulator.clock
+Bundle-SymbolicName: org.eclipse.kura.emulator.clock;singleton:=true
+Bundle-Version: 2.0.0.202503140929
+Bundle-Vendor: Eclipse Kura
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=17))"
+Export-Package: org.eclipse.kura.emulator.clock; version="1.0.0"
+Service-Component: OSGI-INF/*.xml
+Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.kura;version="[1.0,2.0)",org.eclipse.kura.cl
+ ock;version="[1.0,1.1)",org.eclipse.kura.configuration;version="[1.1,2.
+ 0)",org.osgi.framework;version="1.5.0",org.osgi.service.component;versi
+ on="1.2.0",org.osgi.service.event;version="1.3.0",org.slf4j;version="1.
+ 6.4"
+Bundle-ClassPath: .
+Eclipse-SourceReferences: scm:git:ssh://github.com/eclipse/kura/kura;pat
+ h="kura/emulator/org.eclipse.kura.emulator.clock";commitId=730a765b381d
+ f4aea5c652c92cc80326b340889c
+

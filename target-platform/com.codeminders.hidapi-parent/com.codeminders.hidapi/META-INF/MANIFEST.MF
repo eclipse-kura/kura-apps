@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1741949536143
+Build-Jdk-Spec: 17
+Bundle-Description: JNI wrapper around C/C++ HIDAPI library providing si
+ mple java API to work with devices such as USB gamepads, joysticks, key
+ boards etc.
+Bundle-License: http://opensource.org/licenses/BSD-3-Clause
+Bundle-ManifestVersion: 2
+Bundle-Name: Java API for working with Human Interface USB Devices (HID)
+Bundle-SymbolicName: com.codeminders.hidapi
+Bundle-Version: 2.0.0.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin 5.1.8
+Export-Package: com.codeminders.hidapi;version="2.0.0.SNAPSHOT"
+Import-Package: com.codeminders.hidapi,java.awt,java.io,java.lang,java.l
+ ang.invoke,javax.swing
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-6.3.1.202206071316

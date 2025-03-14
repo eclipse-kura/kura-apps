@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.19">
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.camel.publisher/src/org/eclipse/kura/example/camel/publisher/AbstractSimplePublisher.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.camel.publisher/src/org/eclipse/kura/example/camel/publisher/AbstractSimplePeriodicPublisher.java">
+</file>
+<file name="/home/simone/git/kura-apps/kura-examples/org.eclipse.kura.example.camel.publisher/src/org/eclipse/kura/example/camel/publisher/ExamplePublisher.java">
+</file>
+</checkstyle>
