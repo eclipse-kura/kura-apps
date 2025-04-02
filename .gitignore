@@ -12,6 +12,7 @@ target
 .sonarlint
 .metadata
 .recommenders
+target-definition
 kura/data
 kura/snapshots
 kura/target-definition/*/plugins/*
@@ -38,3 +39,4 @@ bin/
 maven.deps
 DEPENDENCIES
 .java-version
+.vscode

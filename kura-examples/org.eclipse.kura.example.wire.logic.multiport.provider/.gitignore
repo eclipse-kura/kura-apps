@@ -1,0 +1,13 @@
+.DS_Store*
+*~
+classes
+target
+RemoteSystemsTempFiles
+.metadata
+.recommenders
+.sonarlint
+.classpath
+.project
+.settings
+.vscode
+OSGI-INF

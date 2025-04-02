@@ -108,14 +108,6 @@ mvn -f kura-examples/pom.xml clean install
 > [!TIP]
 You can skip tests by adding `-Dmaven.test.skip=true` in the commands above.
 
-#### Build scripts
-
-Alternatively, you can use the build scripts available in the root directory.
-
-```bash
-./build-all.sh
-```
-
 Contributing
 ------------
 

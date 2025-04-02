@@ -18,22 +18,16 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.eclipse.kura</groupId>
-        <artifactId>examples</artifactId>
-        <version>6.0.0-SNAPSHOT</version>
-	</parent>
-
-    <groupId>org.eclipse.kura.example.wire.logic.multiport.provider</groupId>
-    <artifactId>org.eclipse.kura.example.wire.logic.multiport.provider</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <groupId>org.eclipse.kura</groupId>
+    <artifactId>kura-apps</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <name>Eclipse Kura-Apps</name>
+    
+    <properties>
+    	<tycho-version>4.0.11</tycho-version>
+    </properties>
 
-	<properties>
-		<target-definition-location>${project.basedir}/../target-definition</target-definition-location>
-		<checkstyle-location>${project.basedir}/../..</checkstyle-location>
-	</properties>
-	
     <build>
         <plugins>
             <plugin>
@@ -48,8 +42,6 @@
     </build>
 
     <modules>
-        <module>bundles</module>
-        <module>distrib</module>
-        <module>tests</module>
+        <module>kura-examples</module>
     </modules>
 </project>

@@ -19,9 +19,14 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.eclipse.kura</groupId>
+     <parent>
+        <groupId>org.eclipse.kura</groupId>
+        <artifactId>kura-apps</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </parent>
+
     <artifactId>examples</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <name>Eclipse Kura Examples</name>
 
     <packaging>pom</packaging>
 
@@ -66,6 +71,8 @@
             --add-opens java.base/java.lang=ALL-UNNAMED
             --add-opens java.base/java.util=ALL-UNNAMED
         </tycho.surefire.testenv.args>
+        <target-definition-location>${project.basedir}/target-definition</target-definition-location>
+        <checkstyle-location>${project.basedir}/..</checkstyle-location>
     </properties>
 
     <distributionManagement>
@@ -82,82 +89,10 @@
     </distributionManagement>
 
     <modules>
-        <module>org.eclipse.kura.demo.heater</module>
-        <module>org.eclipse.kura.demo.modbus</module>
-        <module>org.eclipse.kura.example.publisher</module>
-        <module>org.eclipse.kura.example.serial.publisher</module>
-        <module>org.eclipse.kura.example.gpio</module>
-        <module>org.eclipse.kura.example.ble.tisensortag.dbus</module>
-        <module>org.eclipse.kura.example.ibeacon.advertiser</module>
-        <module>org.eclipse.kura.example.ibeacon.scanner</module>
-        <module>org.eclipse.kura.example.eddystone.advertiser</module>
-        <module>org.eclipse.kura.example.eddystone.scanner</module>
-        <module>org.eclipse.kura.example.camel.quickstart</module>
-        <module>org.eclipse.kura.example.camel.publisher</module>
-        <module>org.eclipse.kura.example.camel.aggregation</module>
-        <module>org.eclipse.kura.example.container.signature.validation</module>
-        <module>org.eclipse.kura.raspberrypi.sensehat</module>
-        <module>org.eclipse.kura.raspberrypi.sensehat.example</module>
         <module>org.eclipse.kura.example.wire.logic.multiport.provider</module>
-        <module>org.eclipse.kura.example.wire.math.multiport.provider</module>
-        <module>org.eclipse.kura.example.wire.math.singleport.provider</module>
-        <module>org.eclipse.kura.example.wire.math.trig</module>
-        <module>org.eclipse.kura.example.driver.sensehat</module>
-        <module>org.eclipse.kura.wire.devel.component.provider</module>
-        <module>org.eclipse.kura.example.gpio.led</module>
-        <module>org.eclipse.kura.example.tamper.detection</module>
-        <module>org.eclipse.kura.example.rest.authentication.provider</module>
-        <module>org.eclipse.kura.example.identity.configuration.extension</module>
-        <module>test</module>
     </modules>
 
     <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <property>
-                    <name>!kura.osgi</name>
-                </property>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>p2-repo-equinox</id>
-                    <layout>p2</layout>
-                    <url>file:///${kura.basedir}/kura/target-definition/equinox/repository/</url>
-                </repository>
-            </repositories>
-        </profile>
-        <profile>
-            <id>equinox</id>
-            <activation>
-                <property>
-                    <name>kura.osgi</name>
-                    <value>equinox</value>
-                </property>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>p2-repo-equinox</id>
-                    <layout>p2</layout>
-                    <url>file:///${kura.basedir}/kura/target-definition/equinox/repository/</url>
-                </repository>
-            </repositories>
-        </profile>
-        <profile>
-            <id>bree</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.eclipse.tycho</groupId>
-                        <artifactId>tycho-compiler-plugin</artifactId>
-                        <version>${tycho-version}</version>
-                        <configuration>
-                            <useJDK>BREE</useJDK>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>can</id>
             <activation>
@@ -178,14 +113,6 @@
         </profile>
     </profiles>
 
-    <repositories>
-        <repository>
-            <id>p2-repo-common</id>
-            <layout>p2</layout>
-            <url>file:///${kura.basedir}/kura/target-definition/common/repository/</url>
-        </repository>
-    </repositories>
-
     <build>
         <extensions>
             <extension>
@@ -196,6 +123,46 @@
         </extensions>
 
         <plugins>
+        	<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>initialize</phase> 
+                        <inherited>false</inherited>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.eclipse.kura</groupId>
+                                    <artifactId>targetdefinition.target</artifactId>
+                                    <version>1.0.0-SNAPSHOT</version>
+                                    <type>eclipse-target-definition</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${target-definition-location}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+			 <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>target-platform-configuration</artifactId>
+                <version>${tycho-version}</version>
+                <configuration>
+                    <target>
+                        <artifact>
+                            <groupId>org.eclipse.kura</groupId>
+                            <artifactId>targetdefinition.target</artifactId>
+                            <version>1.0.0-SNAPSHOT</version>
+                        </artifact>
+                    </target>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -221,7 +188,7 @@
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
                             <linkXRef>false</linkXRef>
-                            <configLocation>${kura.basedir}/checkstyle_checks.xml</configLocation>
+                            <configLocation>${checkstyle-location}/checkstyle_checks.xml</configLocation>
                         </configuration>
                         <goals>
                             <goal>check</goal>
@@ -235,7 +202,7 @@
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <targettarget>${maven.compiler.target}</targettarget>
                 </configuration>
             </plugin>
             <plugin>
@@ -254,25 +221,6 @@
                 <version>${maven-deploy-plugin.version}</version>
                 <configuration>
                     <skip>false</skip>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.eclipse.tycho</groupId>
-                <artifactId>target-platform-configuration</artifactId>
-                <version>${tycho-version}</version>
-                <configuration>
-                    <environments>
-                        <environment>
-                            <os>win32</os>
-                            <ws>win32</ws>
-                            <arch>x86</arch>
-                        </environment>
-                        <environment>
-                            <os>linux</os>
-                            <ws>gtk</ws>
-                            <arch>x86</arch>
-                        </environment>
-                    </environments>
                 </configuration>
             </plugin>
             <plugin>
