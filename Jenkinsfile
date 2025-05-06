@@ -37,7 +37,7 @@ spec:
             timeout(time: 1, unit: 'HOURS') {
                 dir('kura') {
                     withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6') {
-                        sh 'mvn -f target-platform/pom.xml clean install -Pno-mirror -Pcheck-exists-plugin'
+                        sh 'mvn -f target-platform/pom.xml clean install -Pno-mirror -Pcheck-exists-plugin -Dmaven.test.skip=true'
                     }
                 }
             }
@@ -47,7 +47,7 @@ spec:
             timeout(time: 2, unit: 'HOURS') {
                 dir('kura') {
                     withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6') {
-                        sh 'mvn -f kura/pom.xml -Dsurefire.rerunFailingTestsCount=3 clean install -Pcheck-exists-plugin'
+                        sh 'mvn -f kura/pom.xml -Dsurefire.rerunFailingTestsCount=3 clean install -Pcheck-exists-plugin -Dmaven.test.skip=true'
                     }
                 }
             }
@@ -67,7 +67,7 @@ spec:
             timeout(time: 2, unit: 'HOURS') {
                 dir('kura-apps') {
                     withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6') {
-                        sh 'mvn clean install -Dmaven.test.skip=true'
+                        sh 'mvn clean install'
                     }
                 }
             }
