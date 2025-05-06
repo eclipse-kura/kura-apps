@@ -23,17 +23,15 @@ spec:
 
         stage('prepare') {
             dir('kura-apps') {
-                kura_apps_branch = 'master'
-                git branch: "${kura_apps_branch}", changelog: false, poll: false, url: 'https://github.com/eclipse-kura/kura-apps.git'
+                checkout scm
             }
 
             dir('kura') {
-                kura_branch = 'refactor-target-definition'
-                git branch: "${kura_branch}", changelog: false, poll: false, url: 'https://github.com/sfiorani/kura.git'
+                git branch: 'refactor-target-definition', changelog: false, poll: false, url: 'https://github.com/sfiorani/kura.git'
             }
         }
 
-        stage('Build target-platform') {
+        stage('Build Kura target-platform') {
             timeout(time: 1, unit: 'HOURS') {
                 dir('kura') {
                     withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6') {
@@ -43,7 +41,7 @@ spec:
             }
         }
 
-        stage('Build core') {
+        stage('Build Kura core') {
             timeout(time: 2, unit: 'HOURS') {
                 dir('kura') {
                     withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6') {
@@ -53,7 +51,7 @@ spec:
             }
         }
 
-        stage('build-kura-target-definition') {
+        stage('Build Kura target-definition') {
             timeout(time: 2, unit: 'HOURS') {
                 dir('kura') {
                     withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6') {
@@ -63,7 +61,7 @@ spec:
             }
         }
 
-        stage('build-kura-apps') {
+        stage('Build Kura-apps') {
             timeout(time: 2, unit: 'HOURS') {
                 dir('kura-apps') {
                     withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6') {
