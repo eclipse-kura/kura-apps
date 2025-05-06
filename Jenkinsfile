@@ -23,8 +23,7 @@ spec:
 
         stage('prepare') {
             dir('kura') {
-                kura_branch = sh returnStdout: true, script: 'source ${WORKSPACE}/esf/build-kura.env && echo ${KURA_BRANCH}'
-                kura_branch = kura_branch.trim()
+                kura_branch = 'develop'
                 git branch: "${kura_branch}", changelog: false, poll: false, url: 'https://github.com/eclipse-kura/kura.git'
             }
 
