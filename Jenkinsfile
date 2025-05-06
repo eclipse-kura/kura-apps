@@ -28,8 +28,8 @@ spec:
             }
 
             dir('kura') {
-                kura_branch = 'develop'
-                git branch: "${kura_branch}", changelog: false, poll: false, url: 'https://github.com/eclipse-kura/kura.git'
+                kura_branch = 'refactor-target-definition'
+                git branch: "${kura_branch}", changelog: false, poll: false, url: 'https://github.com/sfiorani/kura.git'
             }
         }
 
