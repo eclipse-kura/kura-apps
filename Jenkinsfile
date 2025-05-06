@@ -22,16 +22,16 @@ spec:
         deleteDir()
 
         stage('prepare') {
-            dir('kura') {
-                kura_branch = sh returnStdout: true, script: 'source build-kura.env && echo ${KURA_BRANCH}'
-                kura_branch = kura_branch.trim()
-                git branch: "${kura_branch}", changelog: false, poll: false, url: 'https://github.com/eclipse-kura/kura.git'
-            }
-
             dir('kura-apps') {
-                kura_apps_branch = sh returnStdout: true, script: 'source ${WORKSPACE}/esf/build-kura.env && echo ${KURA_APPS_BRANCH}'
+                kura_apps_branch = sh returnStdout: true, script: 'source ${WORKSPACE}/kura-apps/build-kura.env && echo ${KURA_APPS_BRANCH}'
                 kura_apps_branch = kura_apps_branch.trim()
                 git branch: "${kura_apps_branch}", changelog: false, poll: false, url: 'https://github.com/eclipse-kura/kura-apps.git'
+            }
+
+            dir('kura') {
+                kura_branch = sh returnStdout: true, script: 'source ${WORKSPACE}/kura-apps/build-kura.env && echo ${KURA_BRANCH}'
+                kura_branch = kura_branch.trim()
+                git branch: "${kura_branch}", changelog: false, poll: false, url: 'https://github.com/eclipse-kura/kura.git'
             }
         }
 
