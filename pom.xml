@@ -41,7 +41,15 @@
         </plugins>
     </build>
 
-    <modules>
-        <module>kura-examples</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>kura-examples</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>kura-examples</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>
