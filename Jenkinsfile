@@ -2,8 +2,9 @@ podTemplate(inheritFrom: 'basic', yaml: '''
 spec:
   containers:
   - name: "jnlp"
-''') {
-    node(POD_LABEL) {
+''')
+{
+    node {
         properties([
             disableConcurrentBuilds(abortPrevious: true),
             buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '2', daysToKeepStr: '', numToKeepStr: '5')),
