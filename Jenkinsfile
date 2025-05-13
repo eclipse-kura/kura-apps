@@ -27,7 +27,7 @@ spec:
             }
 
             dir('kura') {
-                git branch: 'refactor-target-definition', changelog: false, poll: false, url: 'https://github.com/sfiorani/kura.git'
+                git branch: 'develop', changelog: false, poll: false, url: 'https://github.com/eclipse-kura/kura.git'
             }
         }
 
