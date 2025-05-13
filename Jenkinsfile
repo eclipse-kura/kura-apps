@@ -1,15 +1,4 @@
-podTemplate(inheritFrom: 'basic', yaml: '''
-spec:
-  containers:
-  - name: "jnlp"
-    resources:
-      limits:
-        cpu: "2000m"
-        memory: "5Gi"
-      requests:
-        cpu: "1000m"
-        memory: "3Gi"
-''') {
+{
     node(POD_LABEL) {
         properties([
             disableConcurrentBuilds(abortPrevious: true),
