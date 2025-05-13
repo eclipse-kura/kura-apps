@@ -25,3 +25,4 @@ bin/
 maven.deps
 DEPENDENCIES
 .java-version
+.vscode

@@ -1,0 +1,15 @@
+name: "Lint PR"
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+permissions:
+  pull-requests: read
+
+jobs:
+  call-workflow-in-public-repo:
+    uses: eclipse-kura/.github/.github/workflows/_shared-pr-lint.yml@main
