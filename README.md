@@ -95,7 +95,7 @@ You can follow the tutorial from the official [Maven](http://maven.apache.org/in
 To install the Kura Target Definition, you need to clone the Kura repository and build the specific target definition profile.
 
 ```bash
-git clone -b develop https://github.com/eclipse/kura.git
+git clone -b develop https://github.com/eclipse-kura/kura
 ```
 
 Move inside the newly created directory and build the target definition profile:
