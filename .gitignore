@@ -26,4 +26,4 @@ maven.deps
 DEPENDENCIES
 .java-version
 .vscode
-kura-apps-target-definition/resources/kura-apps-target-definition.target
+kura-apps-target-definition/resources/kura-target-definition.target
