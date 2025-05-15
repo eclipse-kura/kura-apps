@@ -243,8 +243,8 @@
 					<target>
 						<artifact>
 							<groupId>org.eclipse.kura</groupId>
+							<artifactId>kura-apps-target-definition.target</artifactId>
 							<version>${kura.target.definition.version}</version>
-							<artifactId>kura-target-definition.target</artifactId>
 						</artifact>
 					</target>
 				</configuration>
