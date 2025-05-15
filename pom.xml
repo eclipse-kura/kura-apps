@@ -46,6 +46,15 @@
 
     <profiles>
         <profile>
+            <id>kura-apps-target-definition</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>kura-apps-target-definition</module>
+            </modules>
+        </profile>
+        <profile>
             <id>kura-examples</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
