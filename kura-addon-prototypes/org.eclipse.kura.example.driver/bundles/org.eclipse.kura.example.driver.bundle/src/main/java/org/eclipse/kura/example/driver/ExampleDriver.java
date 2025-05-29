@@ -44,6 +44,9 @@ import org.slf4j.LoggerFactory;
 @Designate(ocd = ExampleDriverOCD.class, factory = true)
 public class ExampleDriver implements ConfigurableComponent, Driver {
 
+    private static final String CHANNEL_CONFIG_VALUE_TYPE = "+value.type";
+    private static final String CHANNEL_CONFIG_NAME = "+name";
+
     private static final Logger logger = LoggerFactory.getLogger(ExampleDriver.class);
 
     private ExampleDriverOptions options;
@@ -131,8 +134,8 @@ public class ExampleDriver implements ConfigurableComponent, Driver {
     public void registerChannelListener(Map<String, Object> channelConfig, ChannelListener listener)
             throws ConnectionException {
 
-        this.channelListeners.add(new ExampleDriverListener(channelConfig.get("+name").toString(),
-                DataType.valueOf((String) channelConfig.get("+value.type")),
+        this.channelListeners.add(new ExampleDriverListener(channelConfig.get(CHANNEL_CONFIG_NAME).toString(),
+                DataType.valueOf((String) channelConfig.get(CHANNEL_CONFIG_VALUE_TYPE)),
                 ExampleDriverChannelDescriptor.getInputData(channelConfig), this.options.getInputUnitMeasure(),
                 ExampleDriverChannelDescriptor.getOutputUnitMeasure(channelConfig), listener));
 
