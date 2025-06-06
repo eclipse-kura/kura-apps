@@ -36,9 +36,7 @@
     </organization>
 
     <properties>
-
-        <skip.copy.target.definition>true</skip.copy.target.definition>
-
+    	
         <!--
             With n being the start level, config.ini will be populated depending on which plugins directory the
         bundle is put:
@@ -48,7 +46,7 @@
         <addon.installation.dir>/opt/eclipse/kura/plugins/6s</addon.installation.dir>
 
         <!-- name of the JAR produced in bundles/target -->
-        <jar.name>org.eclipse.kura.example.driver.bundle</jar.name>
+        <jar.name>esf-hardening.bundle</jar.name>
 
         <!--
             Available DEB architectures:
@@ -57,16 +55,121 @@
         <deb.architecture>all</deb.architecture>
 
         <!-- final name of the generated debian package -->
-        <package.name>org.eclipse.kura.example.driver</package.name>
+        <package.name>org.eclipse.kura.example.driver.bundle</package.name>
+
+        <!-- properties used for artifact upload on artifactory repository -->
+        <kura.repo.distribution>CHANGEME</kura.repo.distribution>
+        <kura.repo.module>CHANGEME</kura.repo.module>
 
         <!-- edit following fields and file deb/control/control -->
         <summary>Summary line (do not end this line with a dot, max 60 chars)</summary>
-        <long.description>Here goes the long description of the packages, in this case this is an
-            example addon for the Eclipse Kura Framework.</long.description>
+        <long.description>Here goes the long description of the packages, in this case this is an example addon for the Eclipse Kura Framework.</long.description>
     </properties>
+	
+	<profiles>
+        <!-- Internal profile: FOR INTERNAL USE ONLY - active if -DreleaseBuild is *not* specified. -->
+        <profile>
+            <id>debugBuild</id>
+            <activation>
+                <property>
+                    <name>!releaseBuild</name>
+                </property>
+            </activation>
+            <properties>
+                <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+                <package.snapshot>git${maven.build.timestamp}.${git.commit.id.abbrev}</package.snapshot>
 
+                <package.version>${release.version}~${package.snapshot}</package.version>
+                <package.revision>1</package.revision>
+            </properties>
+        </profile>
+        <!-- Internal profile: FOR INTERNAL USE ONLY - active if -DreleaseBuild *is* specified. -->
+        <profile>
+            <id>releaseBuild</id>
+            <activation>
+                <property>
+                    <name>releaseBuild</name>
+                </property>
+            </activation>
+            <properties>
+                <package.version>${release.version}</package.version>
+                <package.revision>1</package.revision>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <executions>
+                            <execution>
+                                <id>enforce-no-snapshots</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireReleaseVersion>
+                                            <message>No snapshots allowed for release builds!</message>
+                                        </requireReleaseVersion>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    
     <build>
         <plugins>
+        	<!-- Responsible for removing the "-SNAPSHOT" from the project.version -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>regex-property</id>
+                        <goals>
+                            <goal>regex-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>release.version</name>
+                            <value>${project.version}</value>
+                            <regex>-SNAPSHOT</regex>
+                            <replacement></replacement>
+                            <failIfNoMatch>false</failIfNoMatch>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Responsible for retrieving the short git commit (defaults to length 7)-->
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>9.0.1</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <injectAllReactorProjects>true</injectAllReactorProjects>
+                    <generateGitPropertiesFile>false</generateGitPropertiesFile>
+                    <skipPoms>false</skipPoms>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>^git.commit.id.abbrev$</includeOnlyProperty>
+                    </includeOnlyProperties>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>com.coderplus.maven.plugins</groupId>
                 <artifactId>copy-rename-maven-plugin</artifactId>
@@ -79,8 +182,7 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <sourceFile>
-                                ${project.basedir}/../bundles/${jar.name}/target/${jar.name}-${project.version}.jar</sourceFile>
+                            <sourceFile>${project.basedir}/../bundles/${jar.name}/target/${jar.name}-${project.version}.jar</sourceFile>
                             <destinationFile>target/input_files/${jar.name}_${project.version}.jar</destinationFile>
                         </configuration>
                     </execution>
@@ -100,8 +202,7 @@
                         </goals>
                         <configuration>
                             <verbose>true</verbose>
-                            <deb>
-                                ${basedir}/target/deb/${package.name}_${project.version}_${deb.architecture}.deb</deb>
+                            <deb>${basedir}/target/deb/${package.name}_${project.version}_${deb.architecture}.deb</deb>
                             <controlDir>${project.basedir}/deb/control</controlDir>
                             <skipPOMs>false</skipPOMs>
                             <dataSet>
@@ -110,8 +211,7 @@
                                 it is usefull if different files require different prefix (aka:
                                 different destination location) or specific user, group and filemode -->
                                 <data>
-                                    <src>
-                                        ${basedir}/target/input_files/${jar.name}_${project.version}.jar</src>
+                                    <src>${basedir}/target/input_files/${jar.name}_${project.version}.jar</src>
                                     <dst>${jar.name}_${project.version}.jar</dst>
                                     <type>file</type>
                                     <mapper>
@@ -148,7 +248,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 </project>
