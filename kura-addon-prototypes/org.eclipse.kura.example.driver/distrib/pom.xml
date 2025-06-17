@@ -46,7 +46,7 @@
         <addon.installation.dir>/opt/eclipse/kura/plugins/6s</addon.installation.dir>
 
         <!-- name of the JAR produced in bundles/target -->
-        <jar.name>org.eclipse.kura.example</jar.name>
+        <jar.name>org.eclipse.kura.example.driver</jar.name>
 
         <!--
             Available DEB architectures:
