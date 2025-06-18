@@ -199,7 +199,7 @@
                             <artifact>
                                 <groupId>org.eclipse.kura</groupId>
                                 <version>${kura.target.definition.version}</version>
-                                <artifactId>kura-target-definition.target</artifactId>
+                                <artifactId>kura-apps-target-definition.target</artifactId>
                             </artifact>
                         </target>
                         <!--

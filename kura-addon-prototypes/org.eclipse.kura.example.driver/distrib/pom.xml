@@ -46,7 +46,7 @@
         <addon.installation.dir>/opt/eclipse/kura/plugins/6s</addon.installation.dir>
 
         <!-- name of the JAR produced in bundles/target -->
-        <jar.name>org.eclipse.kura.example.driver</jar.name>
+        <jar.name>org.eclipse.kura.example.driver.bundle</jar.name>
 
         <!--
             Available DEB architectures:
@@ -55,7 +55,7 @@
         <deb.architecture>all</deb.architecture>
 
         <!-- final name of the generated debian package -->
-        <package.name>org.eclipse.kura.example.driver.bundle</package.name>
+        <package.name>org.eclipse.kura.example.driver</package.name>
 
         <!-- properties used for artifact upload on artifactory repository -->
         <kura.repo.distribution>CHANGEME</kura.repo.distribution>
