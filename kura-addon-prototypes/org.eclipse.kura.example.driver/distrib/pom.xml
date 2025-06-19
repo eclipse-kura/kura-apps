@@ -125,7 +125,7 @@
     
     <build>
         <plugins>
-        	<!-- Responsible for removing the "-SNAPSHOT" from the project.version -->
+            <!-- Responsible for removing the "-SNAPSHOT" from the project.version -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -202,7 +202,9 @@
                         </goals>
                         <configuration>
                             <verbose>true</verbose>
-                            <deb>${basedir}/target/deb/${package.name}_${project.version}_${deb.architecture}.deb</deb>
+                            <deb>${basedir}/target/deb/${package.name}_${package.version}-${package.revision}_${deb.architecture}.deb</deb>
+                            <snapshotExpand>true</snapshotExpand>
+                            <snapshotTemplate>${package.snapshot}</snapshotTemplate>
                             <controlDir>${project.basedir}/deb/control</controlDir>
                             <skipPOMs>false</skipPOMs>
                             <dataSet>
@@ -223,12 +225,12 @@
                                     </mapper>
                                 </data>
 
-                                <!-- 
-                                
+                                <!--
+
                                 If all the source file are managed in the same way, it is also
                                 possible to specify a 'directory' data type to include all the files
                                 present in the specify path
-                                
+
                                 <data>
                                     <src>${basedir}/target/input_files</src>
                                     <dst>${jar.name}_${project.version}.jar</dst>
@@ -241,13 +243,14 @@
                                         <filemode>600</filemode>
                                     </mapper>
                                 </data>
-                                
+
                                 -->
                             </dataSet>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 </project>
