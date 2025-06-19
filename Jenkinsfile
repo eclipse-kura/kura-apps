@@ -11,7 +11,7 @@ spec:
         memory: "3Gi"
 ''')
 {
-    node {
+    node(POD_LABEL) {
         properties([
             disableConcurrentBuilds(abortPrevious: true),
             buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '2', daysToKeepStr: '', numToKeepStr: '5')),
