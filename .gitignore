@@ -27,3 +27,4 @@ DEPENDENCIES
 .java-version
 .vscode
 
+kura-examples/org.eclipse.kura.example.rest.authentication.provider/lib/
