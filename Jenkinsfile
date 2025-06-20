@@ -46,7 +46,7 @@ spec:
             timeout(time: 2, unit: 'HOURS') {
                 dir('kura') {
                     withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6') {
-                        sh "mvn -f kura/pom.xml -Dsurefire.rerunFailingTestsCount=3 clean install -Pcheck-exists-plugin -Dmaven.test.skip=true -pl '!org.eclipse.kura.web2'"
+                        sh 'mvn -f kura/pom.xml -Dsurefire.rerunFailingTestsCount=3 clean install -Pcheck-exists-plugin -Dmaven.test.skip=true'
                     }
                 }
             }
