@@ -27,3 +27,5 @@ DEPENDENCIES
 .java-version
 .vscode
 
+kura-examples/org.eclipse.kura.example.rest.authentication.provider/lib/
+kura-addon-prototypes/org.eclipse.kura.example.driver/target-definition/
