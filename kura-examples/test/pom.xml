@@ -111,10 +111,6 @@
                     <dependencies>
                         <dependency>
                             <type>p2-installable-unit</type>
-                            <artifactId>moquette-broker</artifactId>
-                        </dependency>
-                        <dependency>
-                            <type>p2-installable-unit</type>
                             <artifactId>org.apache.felix.scr</artifactId>
                         </dependency>
                         <dependency>
@@ -212,11 +208,6 @@
                         </dependency>
                     </dependencies>
                     <bundleStartLevel>
-                        <bundle>
-                            <id>moquette-broker</id>
-                            <level>3</level>
-                            <autoStart>true</autoStart>
-                        </bundle>
                         <bundle>
                             <id>org.apache.felix.scr</id>
                             <level>4</level>
