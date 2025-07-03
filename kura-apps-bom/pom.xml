@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2025 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+     Eurotech
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.eclipse.kura</groupId>
+    <artifactId>kura-apps-bom</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Kura BOM</name>
+
+    <distributionManagement>
+        <repository>
+            <id>repo.eclipse.org</id>
+            <name>Kura Repository - Releases</name>
+            <url>https://repo.eclipse.org/content/repositories/kura-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>repo.eclipse.org</id>
+            <name>Kura Repository - Snapshots</name>
+            <url>https://repo.eclipse.org/content/repositories/kura-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <properties>
+        <!-- Bundle versions (without org.eclipse.kura prefix) -->
+        <demo.heater.version>2.0.0-SNAPSHOT</demo.heater.version>
+        <demo.modbus.version>3.0.0-SNAPSHOT</demo.modbus.version>
+        <example.ble.tisensortag.dbus.version>2.0.0-SNAPSHOT</example.ble.tisensortag.dbus.version>
+        <example.camel.aggregation.version>2.0.0-SNAPSHOT</example.camel.aggregation.version>
+        <example.camel.publisher.version>2.0.0-SNAPSHOT</example.camel.publisher.version>
+        <example.camel.quickstart.version>2.0.0-SNAPSHOT</example.camel.quickstart.version>
+        <example.container.signature.validation.version>2.0.0-SNAPSHOT</example.container.signature.validation.version>
+        <example.driver.sensehat.version>2.0.0-SNAPSHOT</example.driver.sensehat.version>
+        <example.eddystone.advertiser.version>2.0.0-SNAPSHOT</example.eddystone.advertiser.version>
+        <example.eddystone.scanner.version>2.0.0-SNAPSHOT</example.eddystone.scanner.version>
+        <example.gpio.version>2.0.0-SNAPSHOT</example.gpio.version>
+        <example.gpio.led.version>2.0.0-SNAPSHOT</example.gpio.led.version>
+        <example.ibeacon.advertiser.version>2.0.0-SNAPSHOT</example.ibeacon.advertiser.version>
+        <example.ibeacon.scanner.version>2.0.0-SNAPSHOT</example.ibeacon.scanner.version>
+        <example.identity.configuration.extension.version>2.0.0-SNAPSHOT</example.identity.configuration.extension.version>
+        <example.publisher.version>2.0.0-SNAPSHOT</example.publisher.version>
+        <example.rest.authentication.provider.version>2.0.0-SNAPSHOT</example.rest.authentication.provider.version>
+        <example.serial.publisher.version>2.0.0-SNAPSHOT</example.serial.publisher.version>
+        <example.tamper.detection.version>2.0.0-SNAPSHOT</example.tamper.detection.version>
+        <example.wire.logic.multiport.provider.version>2.0.0-SNAPSHOT</example.wire.logic.multiport.provider.version>
+        <example.wire.math.multiport.provider.version>2.0.0-SNAPSHOT</example.wire.math.multiport.provider.version>
+        <example.wire.math.singleport.provider.version>2.0.0-SNAPSHOT</example.wire.math.singleport.provider.version>
+        <example.wire.math.trig.version>2.0.0-SNAPSHOT</example.wire.math.trig.version>
+        <raspberrypi.sensehat.version>2.0.0-SNAPSHOT</raspberrypi.sensehat.version>
+        <raspberrypi.sensehat.example.version>2.0.0-SNAPSHOT</raspberrypi.sensehat.example.version>
+        <wire.devel.component.provider.version>2.0.0-SNAPSHOT</wire.devel.component.provider.version>
+
+        <!-- Addon Prototypes bundles -->
+        <example.driver.bundle.version>1.0.0-SNAPSHOT</example.driver.bundle.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>        <!-- Demo bundles -->
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.demo.heater</artifactId>
+                <version>${demo.heater.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.demo.modbus</artifactId>
+                <version>${demo.modbus.version}</version>
+            </dependency>        <!-- Example bundles -->
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.ble.tisensortag.dbus</artifactId>
+                <version>${example.ble.tisensortag.dbus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.camel.aggregation</artifactId>
+                <version>${example.camel.aggregation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.camel.publisher</artifactId>
+                <version>${example.camel.publisher.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.camel.quickstart</artifactId>
+                <version>${example.camel.quickstart.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.container.signature.validation</artifactId>
+                <version>${example.container.signature.validation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.driver.sensehat</artifactId>
+                <version>${example.driver.sensehat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.eddystone.advertiser</artifactId>
+                <version>${example.eddystone.advertiser.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.eddystone.scanner</artifactId>
+                <version>${example.eddystone.scanner.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.gpio</artifactId>
+                <version>${example.gpio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.gpio.led</artifactId>
+                <version>${example.gpio.led.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.ibeacon.advertiser</artifactId>
+                <version>${example.ibeacon.advertiser.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.ibeacon.scanner</artifactId>
+                <version>${example.ibeacon.scanner.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.identity.configuration.extension</artifactId>
+                <version>${example.identity.configuration.extension.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.publisher</artifactId>
+                <version>${example.publisher.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.rest.authentication.provider</artifactId>
+                <version>${example.rest.authentication.provider.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.serial.publisher</artifactId>
+                <version>${example.serial.publisher.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.tamper.detection</artifactId>
+                <version>${example.tamper.detection.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.wire.logic.multiport.provider</artifactId>
+                <version>${example.wire.logic.multiport.provider.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.wire.math.multiport.provider</artifactId>
+                <version>${example.wire.math.multiport.provider.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.wire.math.singleport.provider</artifactId>
+                <version>${example.wire.math.singleport.provider.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.wire.math.trig</artifactId>
+                <version>${example.wire.math.trig.version}</version>
+            </dependency>
+
+            <!-- Raspberry Pi SenseHat bundles -->
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.raspberrypi.sensehat</artifactId>
+                <version>${raspberrypi.sensehat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.raspberrypi.sensehat.example</artifactId>
+                <version>${raspberrypi.sensehat.example.version}</version>
+            </dependency>
+
+            <!-- Wire development component -->
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.wire.devel.component.provider</artifactId>
+                <version>${wire.devel.component.provider.version}</version>
+            </dependency>
+
+            <!-- Addon Prototypes bundles -->
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.example.driver.bundle</artifactId>
+                <version>${example.driver.bundle.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Demo bundles -->
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.demo.heater</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.demo.modbus</artifactId>
+        </dependency>
+
+        <!-- Example bundles -->
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.ble.tisensortag.dbus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.camel.aggregation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.camel.publisher</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.camel.quickstart</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.container.signature.validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.driver.sensehat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.eddystone.advertiser</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.eddystone.scanner</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.gpio</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.gpio.led</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.ibeacon.advertiser</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.ibeacon.scanner</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.identity.configuration.extension</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.publisher</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.rest.authentication.provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.serial.publisher</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.tamper.detection</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.wire.logic.multiport.provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.wire.math.multiport.provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.wire.math.singleport.provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.wire.math.trig</artifactId>
+        </dependency>
+
+        <!-- Raspberry Pi SenseHat bundles -->
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.raspberrypi.sensehat</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.raspberrypi.sensehat.example</artifactId>
+        </dependency>
+
+        <!-- Wire development component -->
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.wire.devel.component.provider</artifactId>
+        </dependency>
+
+        <!-- Addon Prototypes bundles -->
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.example.driver.bundle</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

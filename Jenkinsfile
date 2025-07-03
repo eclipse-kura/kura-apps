@@ -26,30 +26,6 @@ spec:
             dir('kura-apps') {
                 checkout scm
             }
-
-            dir('kura') {
-                git branch: 'develop', changelog: false, poll: false, url: 'https://github.com/eclipse-kura/kura.git'
-            }
-        }
-
-        stage('Build Kura target-platform') {
-            timeout(time: 1, unit: 'HOURS') {
-                dir('kura') {
-                    withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6') {
-                        sh 'mvn -f target-platform/pom.xml clean install -Pno-mirror -Pcheck-exists-plugin'
-                    }
-                }
-            }
-        }
-
-        stage('Build Kura core') {
-            timeout(time: 2, unit: 'HOURS') {
-                dir('kura') {
-                    withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6') {
-                        sh 'mvn -f kura/pom.xml clean install -Pcheck-exists-plugin -Dmaven.test.skip=true'
-                    }
-                }
-            }
         }
 
         stage('Build Kura-apps') {
