@@ -196,7 +196,7 @@
 
         <!-- TO BE EDITED -->
         <!-- properties used for artifact upload on artifactory repository -->
-        <kura.repo.distribution>6</kura.repo.distribution>
+        <kura.repo.distribution>kura-6</kura.repo.distribution>
         <kura.repo.module>base</kura.repo.module>
 
         <!-- edit following fields and file deb/control/control -->

@@ -15,7 +15,7 @@ The BOM includes **26 bundles** organized in the following categories:
 - `org.eclipse.kura.demo.modbus` - Modbus communication example
 
 ### Example Bundles (21)
-- `org.eclipse.kura.example.ble.tisensortag.dbus` - Bluetooth Low Energy integration
+- `org.eclipse.kura.example.ble.tisensortag.dbus` - Bluetooth Low Energy TI SensorTag example
 - `org.eclipse.kura.example.camel.*` - Apache Camel integration examples
 - `org.eclipse.kura.example.gpio.*` - GPIO control
 - `org.eclipse.kura.example.wire.*` - Wire Framework components
