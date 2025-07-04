@@ -37,13 +37,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
-public class ExampleComponentItTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(ExampleDriverTest.class);
+public class ExampleDriverItTest {
 
     private static final String FACTORY_PID = "org.eclipse.kura.example.driver.ExampleDriver";
 

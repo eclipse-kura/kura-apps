@@ -33,17 +33,17 @@
                     <type>pom</type>
                 </dependency>
                 <dependency>
-					<groupId>org.eclipse.kura</groupId>
-					<artifactId>libsocket-can-osgi</artifactId>
-					<version>1.4.0</version>
-					<type>jar</type>
-				</dependency>
-				<dependency>
-					<groupId>org.eclipse.kura</groupId>
-					<artifactId>org.eclipse.kura.protocol.can</artifactId>
-					<version>3.6.0</version>
-					<type>jar</type>
-				</dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>libsocket-can-osgi</artifactId>
+                    <version>1.4.0</version>
+                    <type>jar</type>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.protocol.can</artifactId>
+                    <version>3.6.0</version>
+                    <type>jar</type>
+                </dependency>
             </dependencies>
 
             <repositories>

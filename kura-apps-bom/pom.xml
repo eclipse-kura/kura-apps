@@ -65,9 +65,6 @@
         <raspberrypi.sensehat.version>2.0.0-SNAPSHOT</raspberrypi.sensehat.version>
         <raspberrypi.sensehat.example.version>2.0.0-SNAPSHOT</raspberrypi.sensehat.example.version>
         <wire.devel.component.provider.version>2.0.0-SNAPSHOT</wire.devel.component.provider.version>
-
-        <!-- Addon Prototypes bundles -->
-        <example.driver.bundle.version>1.0.0-SNAPSHOT</example.driver.bundle.version>
     </properties>
 
     <dependencyManagement>
@@ -206,13 +203,6 @@
                 <artifactId>org.eclipse.kura.wire.devel.component.provider</artifactId>
                 <version>${wire.devel.component.provider.version}</version>
             </dependency>
-
-            <!-- Addon Prototypes bundles -->
-            <dependency>
-                <groupId>org.eclipse.kura</groupId>
-                <artifactId>org.eclipse.kura.example.driver.bundle</artifactId>
-                <version>${example.driver.bundle.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -327,12 +317,6 @@
         <dependency>
             <groupId>org.eclipse.kura</groupId>
             <artifactId>org.eclipse.kura.wire.devel.component.provider</artifactId>
-        </dependency>
-
-        <!-- Addon Prototypes bundles -->
-        <dependency>
-            <groupId>org.eclipse.kura</groupId>
-            <artifactId>org.eclipse.kura.example.driver.bundle</artifactId>
         </dependency>
     </dependencies>
 

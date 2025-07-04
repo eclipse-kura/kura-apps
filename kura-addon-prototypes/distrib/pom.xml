@@ -67,13 +67,12 @@
         <package.name>kura-addon-prototypes</package.name>
 
         <!-- properties used for artifact upload on artifactory repository -->
-        <kura.repo.distribution>CHANGEME</kura.repo.distribution>
-        <kura.repo.module>CHANGEME</kura.repo.module>
+        <kura.repo.distribution>6</kura.repo.distribution>
+        <kura.repo.module>base</kura.repo.module>
 
         <!-- edit following fields and file deb/control/control -->
-        <summary>Summary line (do not end this line with a dot, max 60 chars)</summary>
-        <long.description>Here goes the long description of the packages, in this case this is an
-            example addon for the Eclipse Kura Framework.</long.description>
+        <summary>Eclipse Kura Addon Prototypes</summary>
+        <long.description>Set of prototype addons for the Eclipse Kura Framework.</long.description>
     </properties>
 
     <profiles>
