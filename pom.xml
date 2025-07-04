@@ -13,23 +13,15 @@
      Eurotech
 
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.eclipse.kura</groupId>
     <artifactId>kura-apps</artifactId>
     <version>6.0.0-SNAPSHOT</version>
-    
     <packaging>pom</packaging>
-    <name>Eclipse Kura-Apps</name>
-    
-    <properties>
-    	<tycho-version>4.0.11</tycho-version>
-    </properties>
 
     <build>
         <plugins>
@@ -44,18 +36,10 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>kura-releases</id>
-            <name>Eclipse Kura Repository - Releases</name>
-            <url>https://repo.eclipse.org/content/repositories/kura-releases/</url>
-        </repository>
-        <repository>
-            <id>kura-snapshots</id>
-            <name>Eclipse Kura Repository - Snapshots</name>
-            <url>https://repo.eclipse.org/content/repositories/kura-snapshots/</url>
-        </repository>
-    </repositories>
+    <modules>
+        <module>kura-apps-bom</module>
+        <module>kura-apps-target-definition</module>
+    </modules>
 
     <profiles>
         <profile>
