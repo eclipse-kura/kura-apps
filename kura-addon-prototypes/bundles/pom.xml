@@ -345,5 +345,6 @@
         <module>example-driver.bundle</module>
         <module>example-simple-component.bundle</module>
         <module>example-wire-component.bundle</module>
+        <module>example-factory-component.bundle</module>
     </modules>
 </project>

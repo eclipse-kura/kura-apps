@@ -390,6 +390,7 @@
         <module>example-driver.bundle.test</module>
         <module>example-simple-component.bundle.test</module>
         <module>example-wire-component.bundle.test</module>
+        <module>example-factory-component.bundle.test</module>
     </modules>
 
 </project>
