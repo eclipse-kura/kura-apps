@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" name="org.eclipse.kura.example.simple.component.test.ExampleComponentItTest" immediate="true">
+  <reference name="ExampleComponent" cardinality="1..1" policy="static" interface="org.eclipse.kura.configuration.ConfigurableComponent" target="(kura.service.pid=org.eclipse.kura.example.simple.component.ExampleComponent)" bind="setExampleComponent"/>
+  <implementation class="org.eclipse.kura.example.simple.component.test.ExampleComponentItTest"/>
+</scr:component>
