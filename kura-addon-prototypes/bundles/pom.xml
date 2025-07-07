@@ -342,6 +342,7 @@
     </distributionManagement>
 
     <modules>
-        <module>org.eclipse.kura.example.driver.bundle</module>
+        <module>example-driver.bundle</module>
+        <module>example-simple-component.bundle</module>
     </modules>
 </project>
