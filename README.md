@@ -25,11 +25,14 @@ In this repository you can find some application that can be installed on an Ecl
 Build
 -----
 
+For the complete guide to setup the development environment, please refer to the [Eclipse Kura™ documentation](https://eclipse-kura.github.io/kura/latest/java-application-development/development-environment-setup/).
+
 ### Prerequisites
 
 In order to be able to build the applications for Eclipse Kura™ on your development machine, you need to have the following programs installed in your system:
-    * JDK 17
-    * Maven 3.9.x
+
+* JDK 17
+* Maven 3.9.x
 
 <details>
 <summary>
@@ -91,7 +94,7 @@ You can follow the tutorial from the official [Maven](http://maven.apache.org/in
 Change to the new directory and clone the Applications Eclipse Kura™ repo:
 
 ```bash
-git clone -b develop https://github.com/eclipse-kura/kura-apps.git
+git clone https://github.com/eclipse-kura/kura-apps.git
 ```
 
 Build the entire project:
