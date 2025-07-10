@@ -34,13 +34,17 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, CloudConnectionListener.class, CloudDeliveryListener.class } //
+        service = { ConfigurableComponent.class, CloudConnectionListener.class, CloudDeliveryListener.class }, //
+        property = { "service.pid=org.eclipse.kura.demo.modbus.ModbusExample" }, //
+        enabled = true //
 )
 @Designate(ocd = ModbusExampleOCD.class, factory = false)
 public class ModbusExample implements ConfigurableComponent, CloudConnectionListener, CloudDeliveryListener {
@@ -81,30 +85,30 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
     private int inputaddr = 0;
     private int registeraddr = 0;
 
-    @Reference
     private CloudPublisher cloudPublisher;
-
-    @Reference
     private ModbusProtocolDeviceService protocolDevice;
 
-    @Reference
+    @Reference(name = "ModbusProtocolDeviceService", //
+            policy = org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC, //
+            cardinality = org.osgi.service.component.annotations.ReferenceCardinality.MANDATORY)
     public void setModbusProtocolDeviceService(ModbusProtocolDeviceService modbusService) {
         this.protocolDevice = modbusService;
     }
 
-    @Reference
     public void unsetModbusProtocolDeviceService(ModbusProtocolDeviceService modbusService) {
         this.protocolDevice = null;
     }
 
-    @Reference
+    @Reference(name = "CloudPublisher", //
+            policy = ReferencePolicy.DYNAMIC, //
+            cardinality = ReferenceCardinality.OPTIONAL //
+    )
     public void setCloudPublisher(CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
         this.cloudPublisher.registerCloudConnectionListener(ModbusExample.this);
         this.cloudPublisher.registerCloudDeliveryListener(ModbusExample.this);
     }
 
-    @Reference
     public void unsetCloudPublisher(CloudPublisher cloudPublisher) {
         this.cloudPublisher.unregisterCloudConnectionListener(ModbusExample.this);
         this.cloudPublisher.unregisterCloudDeliveryListener(ModbusExample.this);

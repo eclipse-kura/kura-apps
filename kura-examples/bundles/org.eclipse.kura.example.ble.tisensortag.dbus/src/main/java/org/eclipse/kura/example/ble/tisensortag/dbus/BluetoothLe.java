@@ -39,17 +39,23 @@ import org.eclipse.kura.cloudconnection.message.KuraMessage;
 import org.eclipse.kura.cloudconnection.publisher.CloudPublisher;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.message.KuraPayload;
-import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true, //
         service = { ConfigurableComponent.class }, //
-        configurationPolicy = ConfigurationPolicy.REQUIRE)
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        property = { "service.pid=org.eclipse.kura.example.ble.tisensortag.dbus.BluetoothLe" }, //
+        enabled = true)
 @Designate(ocd = BluetoothLeOCD.class, factory = false)
 public class BluetoothLe implements ConfigurableComponent {
 
@@ -66,30 +72,31 @@ public class BluetoothLe implements ConfigurableComponent {
     private ScheduledExecutorService worker;
     private ScheduledFuture<?> handle;
 
-    @Reference
     private BluetoothLeService bluetoothLeService;
-
-    @Reference
     private CloudPublisher cloudPublisher;
 
-    @Reference
+    @Reference(name = "CloudPublisher", //
+            policy = ReferencePolicy.DYNAMIC, //
+            cardinality = ReferenceCardinality.OPTIONAL //
+    )
     public void setCloudPublisher(CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
     }
 
-    @Reference
     public void unsetCloudPublisher(CloudPublisher cloudPublisher) {
         if (this.cloudPublisher.equals(cloudPublisher)) {
             this.cloudPublisher = null;
         }
     }
 
-    @Reference
+    @Reference(name = "BluetoothLeService", //
+            policy = ReferencePolicy.DYNAMIC, //
+            cardinality = ReferenceCardinality.MANDATORY //
+    )
     public void setBluetoothLeService(BluetoothLeService bluetoothLeService) {
         this.bluetoothLeService = bluetoothLeService;
     }
 
-    @Reference
     public void unsetBluetoothLeService(BluetoothLeService bluetoothLeService) {
         if (this.bluetoothLeService.equals(bluetoothLeService)) {
             this.bluetoothLeService = null;
@@ -101,6 +108,7 @@ public class BluetoothLe implements ConfigurableComponent {
     // Activation APIs
     //
     // --------------------------------------------------------------------
+    @Activate
     protected void activate(BluetoothLeOCD properties) {
         logger.info("Activating BluetoothLe example...");
 
@@ -109,12 +117,14 @@ public class BluetoothLe implements ConfigurableComponent {
         logger.debug("Updating Bluetooth Service... Done.");
     }
 
+    @Deactivate
     protected void deactivate(BluetoothLeOCD properties) {
         doDeactivate();
 
         logger.debug("Deactivating BluetoothLe... Done.");
     }
 
+    @Modified
     protected void updated(BluetoothLeOCD properties) {
         doDeactivate();
         doUpdate(properties);

@@ -89,6 +89,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
 
     @Reference(name = "CloudPublisher", //
             policy = ReferencePolicy.DYNAMIC, //
+            unbind = "unsetCloudPublisher", //
             cardinality = ReferenceCardinality.OPTIONAL //
     )
     public void setCloudPublisher(CloudPublisher cloudPublisher) {
