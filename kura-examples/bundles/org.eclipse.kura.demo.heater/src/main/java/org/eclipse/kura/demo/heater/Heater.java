@@ -35,13 +35,17 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, CloudConnectionListener.class, CloudDeliveryListener.class } //
+        service = { ConfigurableComponent.class, CloudConnectionListener.class, CloudDeliveryListener.class }, //
+        property = { "service.pid=org.eclipse.kura.demo.heater.Heater" }, //
+        enabled = true //
 )
 @Designate(ocd = HeaterOCD.class, factory = false)
 public class Heater implements ConfigurableComponent, CloudConnectionListener, CloudDeliveryListener {
@@ -69,7 +73,6 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     private Map<String, Object> properties;
     private final Random random;
 
-    @Reference
     private CloudPublisher cloudPublisher;
 
     // ----------------------------------------------------------------
@@ -84,14 +87,16 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
         this.worker = Executors.newSingleThreadScheduledExecutor();
     }
 
-    @Reference
+    @Reference(name = "CloudPublisher", //
+            policy = ReferencePolicy.DYNAMIC, //
+            cardinality = ReferenceCardinality.OPTIONAL //
+    )
     public void setCloudPublisher(CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
         this.cloudPublisher.registerCloudConnectionListener(Heater.this);
         this.cloudPublisher.registerCloudDeliveryListener(Heater.this);
     }
 
-    @Reference
     public void unsetCloudPublisher(CloudPublisher cloudPublisher) {
         this.cloudPublisher.unregisterCloudConnectionListener(Heater.this);
         this.cloudPublisher.unregisterCloudDeliveryListener(Heater.this);
