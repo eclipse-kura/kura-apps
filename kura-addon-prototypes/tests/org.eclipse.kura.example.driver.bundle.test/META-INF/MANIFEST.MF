@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Example component tests
 Bundle-SymbolicName: org.eclipse.kura.example.driver.bundle.test;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: EUROTECH
+Bundle-Vendor: Eclipse Kura
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=17))"
 Fragment-Host: org.eclipse.kura.example.driver.bundle
 Require-Bundle: org.junit,

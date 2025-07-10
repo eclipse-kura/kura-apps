@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -29,9 +29,21 @@ import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.message.KuraPayload;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.ComponentException;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class, CloudConnectionListener.class, CloudDeliveryListener.class } //
+)
+@Designate(ocd = HeaterOCD.class, factory = false)
 public class Heater implements ConfigurableComponent, CloudConnectionListener, CloudDeliveryListener {
 
     private static final Logger logger = LoggerFactory.getLogger(Heater.class);
@@ -57,6 +69,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     private Map<String, Object> properties;
     private final Random random;
 
+    @Reference
     private CloudPublisher cloudPublisher;
 
     // ----------------------------------------------------------------
@@ -71,12 +84,14 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
         this.worker = Executors.newSingleThreadScheduledExecutor();
     }
 
+    @Reference
     public void setCloudPublisher(CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
         this.cloudPublisher.registerCloudConnectionListener(Heater.this);
         this.cloudPublisher.registerCloudDeliveryListener(Heater.this);
     }
 
+    @Reference
     public void unsetCloudPublisher(CloudPublisher cloudPublisher) {
         this.cloudPublisher.unregisterCloudConnectionListener(Heater.this);
         this.cloudPublisher.unregisterCloudDeliveryListener(Heater.this);
@@ -89,6 +104,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     //
     // ----------------------------------------------------------------
 
+    @Activate
     protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
         logger.info("Activating Heater...");
 
@@ -109,6 +125,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
         logger.info("Activating Heater... Done.");
     }
 
+    @Deactivate
     protected void deactivate(ComponentContext componentContext) {
         logger.debug("Deactivating Heater...");
 
@@ -118,6 +135,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
         logger.debug("Deactivating Heater... Done.");
     }
 
+    @Modified
     public void updated(Map<String, Object> properties) {
         logger.info("Updated Heater...");
 
