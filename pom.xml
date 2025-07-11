@@ -36,26 +36,7 @@
     <modules>
         <module>kura-apps-bom</module>
         <module>kura-apps-target-definition</module>
+	<module>kura-examples</module>
+	<module>kura-addon-prototypes</module>
     </modules>
-
-    <profiles>
-        <profile>
-            <id>kura-examples</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>kura-examples</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>kura-addon-prototypes</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>kura-addon-prototypes</module>
-            </modules>
-        </profile>
-    </profiles>
 </project>

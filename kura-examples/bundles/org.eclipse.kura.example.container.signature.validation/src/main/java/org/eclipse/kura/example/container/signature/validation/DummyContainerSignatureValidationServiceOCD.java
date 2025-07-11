@@ -28,8 +28,6 @@ public @interface DummyContainerSignatureValidationServiceOCD {
         @AttributeDefinition( //
                         name = "Set signature validation outcome", //
                         description = "Set the outcome for container signature validations performed by this service. Supported format: imageName:imageTag@digest. Example: hello-world:latest@sha256:e2fc4e...|TextArea", //
-                        defaultValue = "", //
-                        required = true //
-        )
+                        defaultValue = "")
         String set_signature_validation_outcome();
 }
