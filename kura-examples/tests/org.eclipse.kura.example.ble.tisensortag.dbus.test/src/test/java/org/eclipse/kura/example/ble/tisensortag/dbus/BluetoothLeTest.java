@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -52,12 +52,12 @@ public class BluetoothLeTest {
         CloudPublisher cpMock = mock(CloudPublisher.class);
         svc.setCloudPublisher(cpMock);
 
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("iname", "hci0");
-        properties.put("scan_enable", false); // stop fast in doUpdate
-        properties.put("enableButtons", true); // will cause disable key notifications to be called
+        BluetoothLeOCD ocd = mock(BluetoothLeOCD.class);
+        when(ocd.iname()).thenReturn("hci0");
+        when(ocd.scan_enable()).thenReturn(false);
+        when(ocd.enable_buttons()).thenReturn(true);
 
-        svc.activate(null, properties);
+        svc.activate(ocd);
 
         assertNull(TestUtil.getFieldValue(svc, "worker"));
         assertNotNull(TestUtil.getFieldValue(svc, "tiSensorTagList"));

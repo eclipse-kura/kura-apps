@@ -13,7 +13,8 @@
      Eurotech
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -21,7 +22,6 @@
 		<groupId>org.eclipse.kura</groupId>
 		<artifactId>kura-examples.parent</artifactId>
 		<version>6.0.0-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>org.eclipse.kura.example.identity.configuration.extension</artifactId>
@@ -29,7 +29,9 @@
 	<packaging>eclipse-plugin</packaging>
 
 	<properties>
-		<kura.basedir>${project.basedir}/../..</kura.basedir>
+		<sonar.coverage.jacoco.xmlReportPaths>
+			${project.basedir}/../../tests/*/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<skip.copy.target.definition>true</skip.copy.target.definition>
 	</properties>
 
 </project>

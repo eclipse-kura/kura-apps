@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: org.eclipse.kura.example.identity.configuration.extension
 Bundle-SymbolicName: org.eclipse.kura.example.identity.configuration.extension;singleton:=true
 Bundle-Version: 3.0.0.qualifier
+Bundle-Vendor: Eclipse Kura
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=17))"
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
 Import-Package: org.eclipse.kura;version="[1.7,2.0)",
  org.eclipse.kura.configuration;version="[1.2,2.0)",
  org.eclipse.kura.configuration.metatype;version="[1.1,2.0)",

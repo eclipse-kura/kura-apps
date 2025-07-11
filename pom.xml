@@ -12,10 +12,7 @@
     Contributors:
      Eurotech
 
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.eclipse.kura</groupId>
@@ -39,26 +36,7 @@
     <modules>
         <module>kura-apps-bom</module>
         <module>kura-apps-target-definition</module>
+	<module>kura-examples</module>
+	<module>kura-addon-prototypes</module>
     </modules>
-
-    <profiles>
-        <profile>
-            <id>kura-examples</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>kura-examples</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>kura-addon-prototypes</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>kura-addon-prototypes</module>
-            </modules>
-        </profile>
-    </profiles>
 </project>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 Eurotech and/or its affiliates and others
+ * Copyright (c) 2024, 2025 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -32,7 +32,9 @@ import org.eclipse.kura.identity.configuration.extension.IdentityConfigurationEx
 import org.eclipse.kura.util.wire.test.WireTestUtil;
 import org.junit.After;
 import org.junit.Test;
+import org.osgi.service.component.annotations.Component;
 
+@Component(immediate = true)
 public class ExampleIdentityConfigurationExtensionTest {
 
     private static final String FACTORY_PID = "org.eclipse.kura.example.identity.configuration.extension.ExampleIdentityConfigurationExtension";
