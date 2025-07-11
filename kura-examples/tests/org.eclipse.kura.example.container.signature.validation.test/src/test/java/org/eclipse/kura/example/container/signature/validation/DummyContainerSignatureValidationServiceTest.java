@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,18 +31,13 @@ import org.eclipse.kura.container.orchestration.PasswordRegistryCredentials;
 import org.eclipse.kura.container.orchestration.RegistryCredentials;
 import org.eclipse.kura.container.signature.ValidationResult;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.osgi.service.component.annotations.Component;
 
-import main.java.org.eclipse.kura.example.container.signature.validation.DummyContainerSignatureValidationService;
-import main.java.org.eclipse.kura.example.container.signature.validation.DummyContainerSignatureValidationServiceOCD;
-
-@Component(immediate = true)
 public class DummyContainerSignatureValidationServiceTest {
 
     private DummyContainerSignatureValidationService containerSignatureValidationService = new DummyContainerSignatureValidationService();
-    private DummyContainerSignatureValidationServiceOCD ocd;
+    private Map<String, Object> properties = new HashMap<>();
 
+    private static final String PROPERTY_NAME = "manual.setValidationOutcome";
     private static final String IMAGE_ID = "imageId";
     private static final String TRUST_ANCHOR = "trustAnchor";
     private static final String USERNAME = "username";
@@ -54,10 +50,18 @@ public class DummyContainerSignatureValidationServiceTest {
     private ImageInstanceDescriptor imageDescriptor;
 
     @Test
-    public void updatedWorksWithEmptyStringConfiguration() {
-        givenOcdWithProperty("");
+    public void updatedWorksWithEmptyConfiguration() {
+        whenUpdatedIsCalledWith(this.properties);
 
-        whenUpdatedIsCalledWith(this.ocd);
+        thenNoExceptionOccurred();
+        thenConfiguredValidationResultsSizeIs(0);
+    }
+
+    @Test
+    public void updatedWorksWithEmptyStringConfiguration() {
+        givenPropertyWith(PROPERTY_NAME, "");
+
+        whenUpdatedIsCalledWith(this.properties);
 
         thenNoExceptionOccurred();
         thenConfiguredValidationResultsSizeIs(0);
@@ -65,9 +69,9 @@ public class DummyContainerSignatureValidationServiceTest {
 
     @Test
     public void updatedWorksWithSingleStringConfiguration() {
-        givenOcdWithProperty("alpine:latest@sha256:1234567890");
+        givenPropertyWith(PROPERTY_NAME, "alpine:latest@sha256:1234567890");
 
-        whenUpdatedIsCalledWith(this.ocd);
+        whenUpdatedIsCalledWith(this.properties);
 
         thenNoExceptionOccurred();
         thenConfiguredValidationResultsSizeIs(1);
@@ -76,13 +80,10 @@ public class DummyContainerSignatureValidationServiceTest {
 
     @Test
     public void updatedWorksWithMultipleStringConfiguration() {
-        givenOcdWithProperty("""
-                alpine:latest@sha256:1234567890
-                alpine:develop@sha256:1234567891
-                ubuntu:latest@sha512:12345678911234567891
-                """);
+        givenPropertyWith(PROPERTY_NAME, "alpine:latest@sha256:1234567890\n" + "alpine:develop@sha256:1234567891\n"
+                + "ubuntu:latest@sha512:12345678911234567891");
 
-        whenUpdatedIsCalledWith(this.ocd);
+        whenUpdatedIsCalledWith(this.properties);
 
         thenNoExceptionOccurred();
         thenConfiguredValidationResultsSizeIs(3);
@@ -93,15 +94,15 @@ public class DummyContainerSignatureValidationServiceTest {
 
     @Test
     public void updatedThrowsWithWrongFormatString() {
-        givenOcdWithProperty("alpine:latest:sha256:1234567890");
+        givenPropertyWith(PROPERTY_NAME, "alpine:latest:sha256:1234567890");
 
-        whenUpdatedIsCalledWith(this.ocd);
+        whenUpdatedIsCalledWith(this.properties);
         thenExceptionOccurred(IllegalArgumentException.class);
     }
 
     @Test
     public void verifyReturnsFailureWithEmptyConfiguration() {
-        givenContainerSignatureValidationServiceWith(this.ocd);
+        givenContainerSignatureValidationServiceWith(this.properties);
 
         whenVerifyIsCalledWith("alpine", "latest", TRUST_ANCHOR, false);
 
@@ -111,8 +112,8 @@ public class DummyContainerSignatureValidationServiceTest {
 
     @Test
     public void verifyReturnsFailureWithSingleEntryInConfiguration() {
-        givenOcdWithProperty("alpine:latest@sha256:1234567890");
-        givenContainerSignatureValidationServiceWith(this.ocd);
+        givenPropertyWith(PROPERTY_NAME, "alpine:latest@sha256:1234567890");
+        givenContainerSignatureValidationServiceWith(this.properties);
 
         whenVerifyIsCalledWith("alpine", "develop", TRUST_ANCHOR, false);
 
@@ -122,8 +123,8 @@ public class DummyContainerSignatureValidationServiceTest {
 
     @Test
     public void verifyReturnsSuccessWithSingleEntryInConfiguration() {
-        givenOcdWithProperty("alpine:latest@sha256:1234567890");
-        givenContainerSignatureValidationServiceWith(this.ocd);
+        givenPropertyWith(PROPERTY_NAME, "alpine:latest@sha256:1234567890");
+        givenContainerSignatureValidationServiceWith(this.properties);
 
         whenVerifyIsCalledWith("alpine", "latest", TRUST_ANCHOR, false);
 
@@ -133,11 +134,11 @@ public class DummyContainerSignatureValidationServiceTest {
 
     @Test
     public void verifyWithAuthReturnsFailureWithSingleEntryInConfiguration() {
-        givenOcdWithProperty("alpine:latest@sha256:1234567890");
-        givenContainerSignatureValidationServiceWith(this.ocd);
+        givenPropertyWith(PROPERTY_NAME, "alpine:latest@sha256:1234567890");
+        givenContainerSignatureValidationServiceWith(this.properties);
 
         whenVerifyWithAuthIsCalledWith("alpine", "develop", TRUST_ANCHOR, false,
-                new PasswordRegistryCredentials(Optional.empty(), USERNAME, new Password(PASSWORD)));
+            new PasswordRegistryCredentials(Optional.empty(), USERNAME, new Password(PASSWORD)));
 
         thenNoExceptionOccurred();
         thenVerificationResultIs(FAILED_VALIDATION);
@@ -145,11 +146,11 @@ public class DummyContainerSignatureValidationServiceTest {
 
     @Test
     public void verifyWithAuthReturnsSuccessWithSingleEntryInConfiguration() {
-        givenOcdWithProperty("alpine:latest@sha256:1234567890");
-        givenContainerSignatureValidationServiceWith(this.ocd);
+        givenPropertyWith(PROPERTY_NAME, "alpine:latest@sha256:1234567890");
+        givenContainerSignatureValidationServiceWith(this.properties);
 
         whenVerifyWithAuthIsCalledWith("alpine", "latest", TRUST_ANCHOR, false,
-                new PasswordRegistryCredentials(Optional.empty(), USERNAME, new Password(PASSWORD)));
+            new PasswordRegistryCredentials(Optional.empty(), USERNAME, new Password(PASSWORD)));
 
         thenNoExceptionOccurred();
         thenVerificationResultIs(new ValidationResult(true, "sha256:1234567890"));
@@ -157,9 +158,9 @@ public class DummyContainerSignatureValidationServiceTest {
 
     @Test
     public void verifyWithImageReturnsFailureWithSingleEntryInConfiguration() {
-        givenOcdWithProperty("alpine:latest@sha256:1234567890");
+        givenPropertyWith(PROPERTY_NAME, "alpine:latest@sha256:1234567890");
         givenImageInstanceDescriptorWith("alpine", "develop", IMAGE_ID);
-        givenContainerSignatureValidationServiceWith(this.ocd);
+        givenContainerSignatureValidationServiceWith(this.properties);
 
         whenVerifyImageInstanceDescriptorIsCalledWith(this.imageDescriptor, TRUST_ANCHOR, false);
 
@@ -169,9 +170,9 @@ public class DummyContainerSignatureValidationServiceTest {
 
     @Test
     public void verifyWithImageReturnsSuccessWithSingleEntryInConfiguration() {
-        givenOcdWithProperty("alpine:latest@sha256:1234567890");
+        givenPropertyWith(PROPERTY_NAME, "alpine:latest@sha256:1234567890");
         givenImageInstanceDescriptorWith("alpine", "latest", IMAGE_ID);
-        givenContainerSignatureValidationServiceWith(this.ocd);
+        givenContainerSignatureValidationServiceWith(this.properties);
 
         whenVerifyImageInstanceDescriptorIsCalledWith(this.imageDescriptor, TRUST_ANCHOR, false);
 
@@ -181,12 +182,12 @@ public class DummyContainerSignatureValidationServiceTest {
 
     @Test
     public void verifyWithImageWithAuthReturnsFailureWithSingleEntryInConfiguration() {
-        givenOcdWithProperty("alpine:latest@sha256:1234567890");
+        givenPropertyWith(PROPERTY_NAME, "alpine:latest@sha256:1234567890");
         givenImageInstanceDescriptorWith("alpine", "develop", IMAGE_ID);
-        givenContainerSignatureValidationServiceWith(this.ocd);
+        givenContainerSignatureValidationServiceWith(this.properties);
 
         whenVerifyImageInstanceDescriptorWithAuthIsCalledWith(this.imageDescriptor, TRUST_ANCHOR, false,
-                new PasswordRegistryCredentials(Optional.empty(), USERNAME, new Password(PASSWORD)));
+            new PasswordRegistryCredentials(Optional.empty(), USERNAME, new Password(PASSWORD)));
 
         thenNoExceptionOccurred();
         thenVerificationResultIs(FAILED_VALIDATION);
@@ -194,12 +195,12 @@ public class DummyContainerSignatureValidationServiceTest {
 
     @Test
     public void verifyWithImageWithAuthReturnsSuccessWithSingleEntryInConfiguration() {
-        givenOcdWithProperty("alpine:latest@sha256:1234567890");
+        givenPropertyWith(PROPERTY_NAME, "alpine:latest@sha256:1234567890");
         givenImageInstanceDescriptorWith("alpine", "latest", IMAGE_ID);
-        givenContainerSignatureValidationServiceWith(this.ocd);
+        givenContainerSignatureValidationServiceWith(this.properties);
 
         whenVerifyImageInstanceDescriptorWithAuthIsCalledWith(this.imageDescriptor, TRUST_ANCHOR, false,
-                new PasswordRegistryCredentials(Optional.empty(), USERNAME, new Password(PASSWORD)));
+            new PasswordRegistryCredentials(Optional.empty(), USERNAME, new Password(PASSWORD)));
 
         thenNoExceptionOccurred();
         thenVerificationResultIs(new ValidationResult(true, "sha256:1234567890"));
@@ -208,14 +209,12 @@ public class DummyContainerSignatureValidationServiceTest {
     /*
      * GIVEN
      */
-    private void givenContainerSignatureValidationServiceWith(
-            DummyContainerSignatureValidationServiceOCD configuration) {
+    private void givenContainerSignatureValidationServiceWith(Map<String, Object> configuration) {
         this.containerSignatureValidationService.activate(configuration);
     }
 
-    private void givenOcdWithProperty(String signatureValidationOutcome) {
-        this.ocd = Mockito.mock(DummyContainerSignatureValidationServiceOCD.class);
-        Mockito.when(this.ocd.set_signature_validation_outcome()).thenReturn(signatureValidationOutcome);
+    private void givenPropertyWith(String propertyName, Object value) {
+        this.properties.put(propertyName, value);
     }
 
     private void givenImageInstanceDescriptorWith(String imageName, String imageTag, String imageId) {
@@ -226,7 +225,7 @@ public class DummyContainerSignatureValidationServiceTest {
     /*
      * WHEN
      */
-    private void whenUpdatedIsCalledWith(DummyContainerSignatureValidationServiceOCD props) {
+    private void whenUpdatedIsCalledWith(Map<String, Object> props) {
         try {
             this.containerSignatureValidationService.updated(props);
         } catch (Exception e) {
@@ -265,8 +264,7 @@ public class DummyContainerSignatureValidationServiceTest {
     private void whenVerifyImageInstanceDescriptorWithAuthIsCalledWith(ImageInstanceDescriptor descriptor,
             String trustAnchor, boolean isVerify, RegistryCredentials credentials) {
         try {
-            this.validationResult = this.containerSignatureValidationService.verify(descriptor, trustAnchor, isVerify,
-                    credentials);
+            this.validationResult = this.containerSignatureValidationService.verify(descriptor, trustAnchor, isVerify, credentials);
         } catch (KuraException e) {
             this.occurredException = e;
         }
