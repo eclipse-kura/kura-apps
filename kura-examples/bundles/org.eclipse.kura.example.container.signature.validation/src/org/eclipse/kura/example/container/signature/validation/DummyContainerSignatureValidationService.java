@@ -10,7 +10,7 @@
  * Contributors:
  *  Eurotech
  ******************************************************************************/
-package main.java.org.eclipse.kura.example.container.signature.validation;
+package org.eclipse.kura.example.container.signature.validation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,50 +22,33 @@ import org.eclipse.kura.container.orchestration.ImageInstanceDescriptor;
 import org.eclipse.kura.container.orchestration.RegistryCredentials;
 import org.eclipse.kura.container.signature.ContainerSignatureValidationService;
 import org.eclipse.kura.container.signature.ValidationResult;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component( //
-        immediate = true, //
-        enabled = true, //
-        service = { ConfigurableComponent.class, ContainerSignatureValidationService.class }, //
-        property = {
-                "service.pid=org.eclipse.kura.example.container.signature.validation.DummyContainerSignatureValidationService" }, //
-
-        configurationPolicy = ConfigurationPolicy.REQUIRE)
-@Designate(ocd = DummyContainerSignatureValidationServiceOCD.class, factory = false)
 public class DummyContainerSignatureValidationService
         implements ContainerSignatureValidationService, ConfigurableComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(DummyContainerSignatureValidationService.class);
 
     private static final String SERVICE_NAME = "DummyContainerSignatureValidationService";
+    private static final String PROPERTY_NAME = "manual.setValidationOutcome";
     private static final ValidationResult FAILED_VALIDATION = new ValidationResult();
 
     private Map<String, String> configuredValidationResults = new HashMap<>();
 
-    @Activate
-    public void activate(DummyContainerSignatureValidationServiceOCD properties) {
+    protected void activate(Map<String, Object> properties) {
         logger.info("Activate {}...", SERVICE_NAME);
         updated(properties);
     }
 
-    @Modified
-    public void updated(DummyContainerSignatureValidationServiceOCD properties) {
+    public void updated(Map<String, Object> properties) {
         logger.info("Update {}...", SERVICE_NAME);
 
-        if (Objects.nonNull(properties)) {
-            populateValidationResults(properties.set_signature_validation_outcome());
+        if (Objects.nonNull(properties) && !properties.isEmpty() && properties.containsKey(PROPERTY_NAME)) {
+            populateValidationResults((String) properties.get(PROPERTY_NAME));
         }
     }
 
-    @Deactivate
     protected void deactivate() {
         logger.info("Deactivate {}...", SERVICE_NAME);
     }
