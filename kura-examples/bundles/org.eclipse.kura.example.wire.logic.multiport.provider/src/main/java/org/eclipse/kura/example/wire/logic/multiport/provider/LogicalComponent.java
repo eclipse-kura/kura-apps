@@ -31,7 +31,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -48,7 +47,6 @@ import org.slf4j.LoggerFactory;
         immediate = true, //
         enabled = true, //
         name = "org.eclipse.kura.wire.LogicalOperators", //
-        configurationPolicy = ConfigurationPolicy.REQUIRE, //
         service = { WireEmitter.class, ConfigurableComponent.class, MultiportWireReceiver.class, Producer.class,
                 Consumer.class }, //
         property = { //
@@ -74,7 +72,7 @@ public class LogicalComponent implements WireEmitter, ConfigurableComponent, Mul
 
     @Reference(name = "WireHelperService", //
             policy = ReferencePolicy.STATIC, //
-            cardinality = ReferenceCardinality.OPTIONAL //
+            cardinality = ReferenceCardinality.MANDATORY //
     )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.wireHelperService = wireHelperService;

@@ -13,7 +13,6 @@
 
 package org.eclipse.kura.example.wire.math.trig;
 
-import java.util.Map;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -30,11 +29,6 @@ public class TrigonometricComponentOptions {
         ATAN
     }
 
-    private static final String PARAMETER_NAME_PROP_NAME = "parameter.name";
-    private static final String RESULT_NAME_PROP_NAME = "result.name";
-    private static final String TRIGONOMETRIC_FUNCTION = "trigonometric.function";
-    private static final String EMIT_RECEIVED_PROPERTIES_PROP_NAME = "emit.received.properties";
-
     private static final String PARAMETER_NAME_DEFAULT = "parameter";
     private static final String RESULT_NAME_DEFAULT = "result";
     private static final OperatorOption TRIGONOMETRIC_FUNCTION_DEFAULT = OperatorOption.SIN;
@@ -48,13 +42,13 @@ public class TrigonometricComponentOptions {
     private final boolean emitReceivedProperties;
     private final Function<Double, Double> trigonometricFunction;
 
-    public TrigonometricComponentOptions(final Map<String, Object> properties) {
-        this.operandName = getSafe(properties.get(PARAMETER_NAME_PROP_NAME), PARAMETER_NAME_DEFAULT);
-        this.resultName = getSafe(properties.get(RESULT_NAME_PROP_NAME), RESULT_NAME_DEFAULT);
+    public TrigonometricComponentOptions(final TrigonometricComponentOCD ocd) {
+        this.operandName = getSafe(ocd.parameter_name(), PARAMETER_NAME_DEFAULT);
+        this.resultName = getSafe(ocd.result_name(), RESULT_NAME_DEFAULT);
         this.operatorOption = getLogicalOperator(
-                getSafe(properties.get(TRIGONOMETRIC_FUNCTION), TRIGONOMETRIC_FUNCTION_DEFAULT.name()));
+                getSafe(ocd.trigonometric_function(), TRIGONOMETRIC_FUNCTION_DEFAULT.name()));
         this.trigonometricFunction = getTrigonometricFunction(this.operatorOption);
-        this.emitReceivedProperties = getSafe(properties.get(EMIT_RECEIVED_PROPERTIES_PROP_NAME),
+        this.emitReceivedProperties = getSafe(ocd.emit_received_properties(),
                 EMIT_RECEIVED_PROPERTIES_DEFAULT);
     }
 
@@ -89,19 +83,19 @@ public class TrigonometricComponentOptions {
 
     private Function<Double, Double> getTrigonometricFunction(OperatorOption o) {
         switch (o) {
-        case COS:
-            return parameter -> Math.cos(parameter.doubleValue());
-        case TAN:
-            return parameter -> Math.tan(parameter.doubleValue());
-        case ASIN:
-            return parameter -> Math.asin(parameter.doubleValue());
-        case ACOS:
-            return parameter -> Math.acos(parameter.doubleValue());
-        case ATAN:
-            return parameter -> Math.atan(parameter.doubleValue());
-        case SIN:
-        default:
-            return parameter -> Math.sin(parameter.doubleValue());
+            case COS:
+                return parameter -> Math.cos(parameter.doubleValue());
+            case TAN:
+                return parameter -> Math.tan(parameter.doubleValue());
+            case ASIN:
+                return parameter -> Math.asin(parameter.doubleValue());
+            case ACOS:
+                return parameter -> Math.acos(parameter.doubleValue());
+            case ATAN:
+                return parameter -> Math.atan(parameter.doubleValue());
+            case SIN:
+            default:
+                return parameter -> Math.sin(parameter.doubleValue());
         }
     }
 

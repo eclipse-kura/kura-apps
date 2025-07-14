@@ -30,10 +30,36 @@ import org.eclipse.kura.wire.WireRecord;
 import org.eclipse.kura.wire.WireSupport;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.wireadmin.Consumer;
+import org.osgi.service.wireadmin.Producer;
 import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component( //
+        immediate = true, //
+        enabled = true, //
+        name = "org.eclipse.kura.wire.TrigonometricFunctions", //
+        service = { ConfigurableComponent.class, WireComponent.class, Consumer.class, WireEmitter.class,
+                WireReceiver.class, Producer.class }, //
+        property = {
+                "kura.ui.service.hide:Boolean=true", //
+                "input.cardinality.minimum:Integer=1", //
+                "input.cardinality.maximum:Integer=1", //
+                "input.cardinality.default:Integer=1", //
+                "output.cardinality.minimum:Integer=1", //
+                "output.cardinality.maximum:Integer=1", //
+                "output.cardinality.default:Integer=1" } //
+)
+@Designate(ocd = TrigonometricComponentOCD.class, factory = true)
 public class TrigonometricComponent implements WireEmitter, ConfigurableComponent, WireReceiver {
 
     private static final Logger logger = LoggerFactory.getLogger(TrigonometricComponent.class);
@@ -43,26 +69,33 @@ public class TrigonometricComponent implements WireEmitter, ConfigurableComponen
     protected TrigonometricComponentOptions options;
     private WireSupport wireSupport;
 
+    @Reference(name = "WireHelperService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY //
+    )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.wireHelperService = wireHelperService;
     }
 
     @SuppressWarnings("unchecked")
-    public void activate(final Map<String, Object> properties, ComponentContext componentContext) {
+    @Activate
+    public void activate(final TrigonometricComponentOCD ocd, ComponentContext componentContext) {
         logger.info("activating...");
         this.wireSupport = this.wireHelperService.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
-        updated(properties, componentContext);
+        updated(ocd, componentContext);
         logger.info("activating...done");
     }
 
-    public void updated(final Map<String, Object> properties, ComponentContext componentContext) {
+    @Modified
+    public void updated(final TrigonometricComponentOCD ocd, ComponentContext componentContext) {
         logger.info("updating...");
-        this.options = new TrigonometricComponentOptions(properties);
-        logger.info("updated, properties: {}", properties);
+        this.options = new TrigonometricComponentOptions(ocd);
+        logger.info("updated, properties: {}", ocd);
         logger.info("updating...done");
     }
 
+    @Deactivate
     public synchronized void deactivate() {
         logger.info("deactivating...");
         logger.info("deactivating...done");

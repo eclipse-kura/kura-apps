@@ -245,18 +245,15 @@ public class LogicalComponentItTest {
     public void setUp() throws Exception {
 
         this.activeWirePid = "underTestPid";
-        this.configurableComponent = null;
-        operationResultsMap.clear();
+        ;
 
         builder.addWireComponent(this.activeWirePid, FACTORY_PID, 2, 1) // 2 input ports, 1 output port
                 .addTestEmitterReceiver(TEST_FIRST_EMITTER_PID)
                 .addTestEmitterReceiver(TEST_SECOND_EMITTER_PID)
                 .addTestEmitterReceiver(TEST_RECEIVER_PID)
                 .addWire(TEST_FIRST_EMITTER_PID, 0, this.activeWirePid, IN0_PORT)
-                .addWire(TEST_SECOND_EMITTER_PID, 0, this.activeWirePid, IN1_PORT)
+                .addWire(TEST_SECOND_EMITTER_PID, 1, this.activeWirePid, IN1_PORT)
                 .addWire(this.activeWirePid, OUT_PORT, TEST_RECEIVER_PID, 0);
-
-        logger.info(builder.toString());
 
         try {
             builder.replaceExistingGraph(bundleContext, wireGraphService).get(30, TimeUnit.SECONDS);
