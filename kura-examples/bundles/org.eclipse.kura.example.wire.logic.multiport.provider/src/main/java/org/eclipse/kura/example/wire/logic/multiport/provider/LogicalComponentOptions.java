@@ -13,7 +13,6 @@
 
 package org.eclipse.kura.example.wire.logic.multiport.provider;
 
-import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.eclipse.kura.wire.graph.BarrierAggregatorFactory;
@@ -32,12 +31,6 @@ public class LogicalComponentOptions {
         NOT
     }
 
-    private static final String FIRST_OPERAND_NAME_PROP_NAME = "operand.name.1";
-    private static final String SECOND_OPERAND_NAME_PROP_NAME = "operand.name.2";
-    private static final String RESULT_NAME_PROP_NAME = "result.name";
-    private static final String BARRIER_MODALITY_PROPERTY_KEY = "barrier";
-    private static final String BOOLEAN_OPERATION = "logical.operator";
-
     private static final String OPERAND_NAME_DEFAULT = "operand";
     private static final String RESULT_NAME_DEFAULT = "result";
     private static final boolean BARRIER_MODALITY_PROPERTY_DEFAULT = false;
@@ -51,16 +44,14 @@ public class LogicalComponentOptions {
 
     private final PortAggregatorFactory portAggregatorFactory;
 
-    public LogicalComponentOptions(final Map<String, Object> properties, BundleContext context) {
-        this.operator = OperatorOption
-                .valueOf(getSafe(properties.get(BOOLEAN_OPERATION), BOOLEAN_OPERATION_DEFAULT.name()));
-        this.firstOperandName = getSafe(properties.get(FIRST_OPERAND_NAME_PROP_NAME), OPERAND_NAME_DEFAULT);
-        this.secondOperandName = getSafe(properties.get(SECOND_OPERAND_NAME_PROP_NAME), OPERAND_NAME_DEFAULT);
-        this.resultName = getSafe(properties.get(RESULT_NAME_PROP_NAME), RESULT_NAME_DEFAULT);
+    public LogicalComponentOptions(LogicalComponentOCD ocd, BundleContext context) {
+        this.operator = OperatorOption.valueOf(getSafe(ocd.logical_operator(), BOOLEAN_OPERATION_DEFAULT.name()));
+        this.firstOperandName = getSafe(ocd.operand_name_1(), OPERAND_NAME_DEFAULT);
+        this.secondOperandName = getSafe(ocd.operand_name_2(), OPERAND_NAME_DEFAULT);
+        this.resultName = getSafe(ocd.result_name(), RESULT_NAME_DEFAULT);
         this.booleanFunction = getLogicalFunction(this.operator);
 
-        final boolean useBarrier = getSafe(properties.get(BARRIER_MODALITY_PROPERTY_KEY),
-                BARRIER_MODALITY_PROPERTY_DEFAULT);
+        final boolean useBarrier = getSafe(ocd.barrier(), BARRIER_MODALITY_PROPERTY_DEFAULT);
 
         if (useBarrier && !OperatorOption.NOT.equals(this.operator)) {
             this.portAggregatorFactory = context
@@ -73,19 +64,19 @@ public class LogicalComponentOptions {
 
     private BiFunction<Boolean, Boolean, Boolean> getLogicalFunction(OperatorOption op) {
         switch (op) {
-        case OR:
-            return (t, u) -> t || u;
-        case NOR:
-            return (t, u) -> !(t || u);
-        case NAND:
-            return (t, u) -> !(t && u);
-        case XOR:
-            return (t, u) -> t ^ u;
-        case NOT:
-            return (t, u) -> !t;
-        case AND:
-        default:
-            return (t, u) -> t && u;
+            case OR:
+                return (t, u) -> t || u;
+            case NOR:
+                return (t, u) -> !(t || u);
+            case NAND:
+                return (t, u) -> !(t && u);
+            case XOR:
+                return (t, u) -> t ^ u;
+            case NOT:
+                return (t, u) -> !t;
+            case AND:
+            default:
+                return (t, u) -> t && u;
         }
     }
 

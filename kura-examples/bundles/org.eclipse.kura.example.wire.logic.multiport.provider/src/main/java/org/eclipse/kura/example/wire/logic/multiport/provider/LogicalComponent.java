@@ -29,10 +29,39 @@ import org.eclipse.kura.wire.multiport.MultiportWireReceiver;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.wireadmin.Consumer;
+import org.osgi.service.wireadmin.Producer;
 import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component( //
+        immediate = true, //
+        enabled = true, //
+        name = "org.eclipse.kura.wire.LogicalOperators", //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { WireEmitter.class, ConfigurableComponent.class, MultiportWireReceiver.class, Producer.class,
+                Consumer.class }, //
+        property = { //
+                "input.cardinality.minimum:Integer=2", //
+                "input.cardinality.maximum:Integer=2", //
+                "input.cardinality.default:Integer=2", //
+                "output.cardinality.minimum:Integer=1", //
+                "output.cardinality.maximum:Integer=1", //
+                "output.cardinality.default:Integer=1", //
+                "kura.ui.service.hide:Boolean=true" //
+        } //
+)
+@Designate(ocd = LogicalComponentOCD.class, factory = true)
 public class LogicalComponent implements WireEmitter, ConfigurableComponent, MultiportWireReceiver {
 
     private static final Logger logger = LoggerFactory.getLogger(LogicalComponent.class);
@@ -43,30 +72,37 @@ public class LogicalComponent implements WireEmitter, ConfigurableComponent, Mul
     protected LogicalComponentOptions options;
     protected BundleContext context;
 
+    @Reference(name = "WireHelperService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.OPTIONAL //
+    )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.wireHelperService = wireHelperService;
     }
 
     @SuppressWarnings("unchecked")
-    public void activate(final Map<String, Object> properties, ComponentContext componentContext) {
+    @Activate
+    public void activate(final LogicalComponentOCD ocd, ComponentContext componentContext) {
         logger.info("activating...");
         this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
-        logger.info("activated, properties: {}", properties);
+        logger.info("activated, properties: {}", ocd);
         this.context = componentContext.getBundleContext();
-        updated(properties, componentContext);
+        updated(ocd, componentContext);
         logger.info("activating...done");
     }
 
-    public void updated(final Map<String, Object> properties, ComponentContext componentContext) {
+    @Modified
+    public void updated(LogicalComponentOCD ocd, ComponentContext componentContext) {
         logger.info("updating...");
-        this.options = new LogicalComponentOptions(properties, this.context);
-        logger.info("updated, properties: {}", properties);
+        this.options = new LogicalComponentOptions(ocd, this.context);
+        logger.info("updated, properties: {}", ocd);
         this.options.getPortAggregatorFactory().build(this.wireSupport.getReceiverPorts())
                 .onWireReceive(this::onWireReceive);
         logger.info("updating...done");
     }
 
+    @Deactivate
     public synchronized void deactivate() {
         logger.info("deactivating...");
         logger.info("deactivating...done");

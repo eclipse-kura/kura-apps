@@ -15,7 +15,5 @@ Import-Package: org.eclipse.kura;version="[1.5,2.0)",
  org.osgi.service.component;version="1.2.0",
  org.slf4j;version="1.7.36"
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=17))"
-Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/*.xml
-Bundle-ClassPath: .
 Fragment-Host: org.eclipse.kura.example.wire.logic.multiport.provider;bundle-version="0.0.0"
