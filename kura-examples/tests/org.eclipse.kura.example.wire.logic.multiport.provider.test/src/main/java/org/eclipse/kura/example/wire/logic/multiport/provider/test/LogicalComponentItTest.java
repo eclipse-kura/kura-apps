@@ -31,6 +31,7 @@ import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.configuration.ConfigurationService;
+import org.eclipse.kura.example.testutil.OperandTriple;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
 import org.eclipse.kura.util.wire.test.GraphBuilder;
@@ -245,7 +246,6 @@ public class LogicalComponentItTest {
     public void setUp() throws Exception {
 
         this.activeWirePid = "underTestPid";
-        ;
 
         builder.addWireComponent(this.activeWirePid, FACTORY_PID, 2, 1) // 2 input ports, 1 output port
                 .addTestEmitterReceiver(TEST_FIRST_EMITTER_PID)
@@ -342,13 +342,13 @@ public class LogicalComponentItTest {
             throws InterruptedException, ExecutionException, TimeoutException {
 
         Optional<OperandTriple<String, Boolean, Boolean>> optTriple = operandsCombination.stream()
-                .filter(operand -> operand.getOperationName().equals(operationName))
+                .filter(operand -> operand.getFirstArgument().equals(operationName))
                 .findFirst();
 
         if (optTriple.isPresent()) {
             OperandTriple<String, Boolean, Boolean> triple = optTriple.get();
             this.operationResultsMap.put(operationName,
-                    performBooleanOperation(triple.getFirstOperand(), triple.getSecondOperand()));
+                    performBooleanOperation(triple.getSecondArgument(), triple.getThirdArgument()));
         } else {
             throw new IllegalArgumentException("Operation name not found: " + operationName);
         }
