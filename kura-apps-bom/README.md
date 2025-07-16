@@ -114,8 +114,7 @@ After importing the BOM, you can use bundles without specifying versions:
 
 The BOM manages the following versions:
 
-- **Example Bundles**: `2.0.0-SNAPSHOT` (except `demo.modbus` which is `3.0.0-SNAPSHOT`)
-- **Raspberry Pi and Wire Development Bundles**: `2.0.0-SNAPSHOT`
+- **Example Bundles**: `3.0.0-SNAPSHOT`
 - **BOM Version**: `6.0.0-SNAPSHOT`
 
 ## Benefits

@@ -20,19 +20,19 @@ In this repository you can find some application that can be installed on an Ecl
 
 ### What Applications for Eclipse Kura™ can I build?
 * **Kura™ Examples:** provides examples of component that can be developed for the Eclipse Kura™ framework.
+* **Kura™ Prototypes:** provides prototypes of components that can be developed for the Eclipse Kura™ framework.
 
 Build
 -----
 
+For the complete guide to setup the development environment, please refer to the [Eclipse Kura™ documentation](https://eclipse-kura.github.io/kura/latest/java-application-development/development-environment-setup/).
+
 ### Prerequisites
 
-In order to be able to build the applications for Eclipse Kura™ on your development machine, you need to:
+In order to be able to build the applications for Eclipse Kura™ on your development machine, you need to have the following programs installed in your system:
 
-1.  Having the following programs installed in your system:
-    * JDK 17
-    * Maven 3.9.x
-
-2. Having the Kura Target Definition installed on your m2 local repository.
+* JDK 17
+* Maven 3.9.x
 
 <details>
 <summary>
@@ -89,30 +89,12 @@ You can follow the tutorial from the official [Maven](http://maven.apache.org/in
 
 </details>
 
-
-#### Installing the Kura Target Definition
-
-To install the Kura Target Definition, you need to clone the Kura repository and build the specific target definition profile.
-
-```bash
-git clone -b develop https://github.com/eclipse-kura/kura
-```
-
-Move inside the newly created directory and build the target definition profile:
-
-```bash
-mvn -f kura/distrib/pom.xml clean install -Ptarget-definition
-```
-
-This process should install the Kura target definition in your local m2 repository.
-
-
 ### Build the Applications for Eclipse Kura™
 
 Change to the new directory and clone the Applications Eclipse Kura™ repo:
 
 ```bash
-git clone -b master https://github.com/eclipse-kura/kura-apps.git
+git clone https://github.com/eclipse-kura/kura-apps.git
 ```
 
 Build the entire project:
@@ -124,7 +106,13 @@ mvn clean install
 Build the examples only:
 
 ```bash
-mvn -f kura-examples/pom.xml clean install
+mvn clean install -Pkura-examples
+```
+
+Build the prototypes only:
+
+```bash
+mvn clean install -Pkura-addon-prototypes
 ```
 
 > [!TIP]
