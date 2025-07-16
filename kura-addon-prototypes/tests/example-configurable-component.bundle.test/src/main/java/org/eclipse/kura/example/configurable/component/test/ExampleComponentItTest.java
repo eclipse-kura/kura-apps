@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 @Component(immediate = true)
 public class ExampleComponentItTest {
 
-	private static final Logger logger = LoggerFactory.getLogger(ExampleComponentItTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExampleComponentItTest.class);
 
     private static final CountDownLatch dependencies = new CountDownLatch(1);
 
@@ -38,8 +38,8 @@ public class ExampleComponentItTest {
     private static ConfigurableComponent exampleComponent;
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY, //
-        policy = ReferencePolicy.STATIC, //
-        target = "(kura.service.pid=org.eclipse.kura.example.simple.component.ExampleComponent)" //
+            policy = ReferencePolicy.STATIC, //
+            target = "(kura.service.pid=org.eclipse.kura.example.configurable.component.ExampleComponent)" //
     )
     public void setExampleComponent(final ConfigurableComponent componentUnderTest) {
         exampleComponent = componentUnderTest;
@@ -56,7 +56,7 @@ public class ExampleComponentItTest {
 
     @Test
     public void shouldHaveTrackedExampleComponent() {
-    	assertNotNull(exampleComponent);
+        assertNotNull(exampleComponent);
     }
 
 }

@@ -19,13 +19,15 @@ import static org.mockito.Mockito.mock;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.kura.example.configurable.component.ExampleComponent;
+import org.eclipse.kura.example.configurable.component.ExampleDependencyService;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ExampleComponentTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExampleComponent.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExampleComponentTest.class);
 
     private ExampleComponent exampleComponent = new ExampleComponent();
     private Map<String, Object> properties = new HashMap<>();
