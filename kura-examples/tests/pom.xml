@@ -51,6 +51,11 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.util.wire.test</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -187,6 +192,18 @@
                             <level>4</level>
                             <autoStart>true</autoStart>
                         </defaultStartLevel>
+                        <bundleStartLevel>
+                            <bundle>
+                                <id>org.apache.logging.log4j.slf4j2.impl</id>
+                                <level>2</level>
+                                <autoStart>true</autoStart>
+                            </bundle>
+                            <bundle>
+                                <id>org.apache.aries.spifly.dynamic.bundle</id>
+                                <level>2</level>
+                                <autoStart>true</autoStart>
+                            </bundle>
+                        </bundleStartLevel>
                     </configuration>
                 </plugin>
 
@@ -291,32 +308,12 @@
                                 </requirement>
                                 <requirement>
                                     <type>p2-installable-unit</type>
-                                    <id>org.eclipse.kura.wire.provider</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
-                                    <type>p2-installable-unit</type>
-                                    <id>org.eclipse.kura.wire.provider</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
-                                    <type>eclipse-plugin</type>
-                                    <id>org.eclipse.kura.wire.helper.provider</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
-                                    <type>eclipse-plugin</type>
-                                    <id>org.eclipse.kura.wire.provider</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
-                                    <type>p2-installable-unit</type>
                                     <id>org.eclipse.kura.emulator.usb</id>
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
                                 <requirement>
                                     <type>p2-installable-unit</type>
-                                    <id>org.eclipse.kura.core.system</id>
+                                    <id>org.eclipse.kura.core</id>
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
                                 <requirement>
@@ -345,11 +342,6 @@
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
                                 <requirement>
-                                    <type>p2-installable-unit</type>
-                                    <id>org.eclipse.equinox.wireadmin</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
                                     <type>eclipse-plugin</type>
                                     <id>org.eclipse.kura.useradmin.store</id>
                                     <versionRange>0.0.0</versionRange>
@@ -367,6 +359,31 @@
                                 <requirement>
                                     <type>p2-installable-unit</type>
                                     <id>org.eclipse.equinox.metatype</id>
+                                    <versionRange>0.0.0</versionRange>
+                                </requirement>
+                                <requirement>
+                                    <type>p2-installable-unit</type>
+                                    <id>org.eclipse.kura.core.configuration</id>
+                                    <versionRange>0.0.0</versionRange>
+                                </requirement>
+                                <requirement>
+                                    <type>p2-installable-unit</type>
+                                    <id>org.eclipse.kura.core.system</id>
+                                    <versionRange>0.0.0</versionRange>
+                                </requirement>
+                                <requirement>
+                                    <type>p2-installable-unit</type>
+                                    <id>org.eclipse.kura.core.configuration</id>
+                                    <versionRange>0.0.0</versionRange>
+                                </requirement>
+                                <requirement>
+                                    <type>p2-installable-unit</type>
+                                    <id>org.eclipse.kura.wire.provider</id>
+                                    <versionRange>0.0.0</versionRange>
+                                </requirement>
+                                <requirement>
+                                    <type>p2-installable-unit</type>
+                                    <id>org.eclipse.kura.util.wire.test</id>
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
                             </extraRequirements>
@@ -406,13 +423,13 @@
     </profiles>
 
     <modules>
-        <module>org.eclipse.kura.example.wire.math.singleport.provider.test</module>
         <module>org.eclipse.kura.example.ble.tisensortag.dbus.test</module>
-        <module>org.eclipse.kura.example.testutil</module>
-        <module>org.eclipse.kura.example.wire.logic.multiport.provider.test</module>
-        <module>org.eclipse.kura.example.wire.math.trig.test</module>
         <module>org.eclipse.kura.example.container.signature.validation.test</module>
         <module>org.eclipse.kura.example.identity.configuration.extension.test</module>
+        <module>org.eclipse.kura.example.testutil</module>
+        <module>org.eclipse.kura.example.wire.logic.multiport.provider.test</module>
+        <module>org.eclipse.kura.example.wire.math.singleport.provider.test</module>
+        <module>org.eclipse.kura.example.wire.math.trig.test</module>
     </modules>
 
 </project>
