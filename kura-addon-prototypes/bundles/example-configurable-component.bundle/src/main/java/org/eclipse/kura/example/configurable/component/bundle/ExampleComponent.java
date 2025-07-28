@@ -10,7 +10,7 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-package org.eclipse.kura.example.configurable.component;
+package org.eclipse.kura.example.configurable.component.bundle;
 
 import java.util.Map;
 
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 @Component(immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        property = { "kura.service.pid=org.eclipse.kura.example.configurable.component.ExampleComponent" } //
+        property = { "kura.service.pid=org.eclipse.kura.example.configurable.component.bundle.ExampleComponent" } //
 )
 @Designate(ocd = ExampleComponentOCD.class, factory = false)
 public class ExampleComponent implements ConfigurableComponent {
@@ -54,8 +54,7 @@ public class ExampleComponent implements ConfigurableComponent {
      * 
      * public void activate()
      * public void activate(ExampleComponentOCD configuration)
-     * public void activate(ComponentContext componentContext, final Map<String,
-     * Object> properties, final
+     * public void activate(ComponentContext componentContext, final Map<String, Object> properties, final
      * ExampleComponentOCD configuration)
      */
     @Activate

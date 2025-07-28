@@ -51,6 +51,71 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.equinox.wireadmin</artifactId>
+            <version>1.0.800</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.asset.cloudlet.provider</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.asset.helper.provider</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.asset.provider</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.rest.asset.provider</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.rest.wire.provider</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.wire.ai.component.provider</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.wire.component.join.provider</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.wire.component.provider</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.wire.db.component.provider</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.wire.helper.provider</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.wire.provider</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.wire.script.tools</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -291,26 +356,6 @@
                                 </requirement>
                                 <requirement>
                                     <type>p2-installable-unit</type>
-                                    <id>org.eclipse.kura.wire.provider</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
-                                    <type>p2-installable-unit</type>
-                                    <id>org.eclipse.kura.wire.provider</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
-                                    <type>eclipse-plugin</type>
-                                    <id>org.eclipse.kura.wire.helper.provider</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
-                                    <type>eclipse-plugin</type>
-                                    <id>org.eclipse.kura.wire.provider</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
-                                    <type>p2-installable-unit</type>
                                     <id>org.eclipse.kura.emulator.usb</id>
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
@@ -369,6 +414,66 @@
                                     <id>org.eclipse.equinox.metatype</id>
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
+                                <requirement>
+								    <type>p2-installable-unit</type>
+								    <id>org.eclipse.kura.asset.cloudlet.provider</id>
+								    <versionRange>0.0.0</versionRange>
+								</requirement>
+								<requirement>
+								    <type>p2-installable-unit</type>
+								    <id>org.eclipse.kura.asset.helper.provider</id>
+								    <versionRange>0.0.0</versionRange>
+								</requirement>
+								<requirement>
+								    <type>p2-installable-unit</type>
+								    <id>org.eclipse.kura.asset.provider</id>
+								    <versionRange>0.0.0</versionRange>
+								</requirement>
+								<requirement>
+								    <type>p2-installable-unit</type>
+								    <id>org.eclipse.kura.rest.asset.provider</id>
+								    <versionRange>0.0.0</versionRange>
+								</requirement>
+								<requirement>
+								    <type>p2-installable-unit</type>
+								    <id>org.eclipse.kura.rest.wire.provider</id>
+								    <versionRange>0.0.0</versionRange>
+								</requirement>
+								<requirement>
+								    <type>p2-installable-unit</type>
+								    <id>org.eclipse.kura.wire.ai.component.provider</id>
+								    <versionRange>0.0.0</versionRange>
+								</requirement>
+								<requirement>
+								    <type>p2-installable-unit</type>
+								    <id>org.eclipse.kura.wire.component.join.provider</id>
+								    <versionRange>0.0.0</versionRange>
+								</requirement>
+								<requirement>
+								    <type>p2-installable-unit</type>
+								    <id>org.eclipse.kura.wire.component.provider</id>
+								    <versionRange>0.0.0</versionRange>
+								</requirement>
+								<requirement>
+								    <type>p2-installable-unit</type>
+								    <id>org.eclipse.kura.wire.db.component.provider</id>
+								    <versionRange>0.0.0</versionRange>
+								</requirement>
+								<requirement>
+								    <type>p2-installable-unit</type>
+								    <id>org.eclipse.kura.wire.helper.provider</id>
+								    <versionRange>0.0.0</versionRange>
+								</requirement>
+								<requirement>
+								    <type>p2-installable-unit</type>
+								    <id>org.eclipse.kura.wire.provider</id>
+								    <versionRange>0.0.0</versionRange>
+								</requirement>
+								<requirement>
+								    <type>p2-installable-unit</type>
+								    <id>org.eclipse.kura.wire.script.tools</id>
+								    <versionRange>0.0.0</versionRange>
+								</requirement>
                             </extraRequirements>
                         </dependency-resolution>
                     </configuration>

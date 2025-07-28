@@ -10,14 +10,14 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-package org.eclipse.kura.example.simple.component;
+package org.eclipse.kura.example.configurable.component.bundle;
 
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 // allow using _ in method names, it is needed for having ids containing '.'
 @SuppressWarnings("checkstyle:MethodName")
-@ObjectClassDefinition(id = "org.eclipse.kura.example.simple.component.ExampleComponent", //
+@ObjectClassDefinition(id = "org.eclipse.kura.example.configurable.component.bundle.ExampleComponent", //
     name = "ExampleComponent", //
     description = "An example configurable component implementation." //
 )

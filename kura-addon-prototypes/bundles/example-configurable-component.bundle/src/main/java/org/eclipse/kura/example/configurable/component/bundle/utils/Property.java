@@ -10,7 +10,7 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-package org.eclipse.kura.example.driver.utils;
+package org.eclipse.kura.example.configurable.component.bundle.utils;
 
 import java.util.Map;
 

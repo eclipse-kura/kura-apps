@@ -10,7 +10,7 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-package org.eclipse.kura.example.configurable.component;
+package org.eclipse.kura.example.configurable.component.bundle;
 
 public interface ExampleDependencyService {
 

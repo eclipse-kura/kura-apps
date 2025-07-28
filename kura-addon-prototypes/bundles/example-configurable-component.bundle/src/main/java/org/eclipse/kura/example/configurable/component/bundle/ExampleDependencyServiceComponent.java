@@ -10,7 +10,7 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-package org.eclipse.kura.example.simple.component;
+package org.eclipse.kura.example.configurable.component.bundle;
 
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;

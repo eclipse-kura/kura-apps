@@ -10,9 +10,11 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-package org.eclipse.kura.example.configurable.component;
+package org.eclipse.kura.example.configurable.component.bundle;
 
 import java.util.Map;
+
+import org.eclipse.kura.example.configurable.component.bundle.utils.Property;
 
 public class ExampleComponentOptions {
 

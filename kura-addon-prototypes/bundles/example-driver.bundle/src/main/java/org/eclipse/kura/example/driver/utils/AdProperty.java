@@ -16,6 +16,7 @@ package org.eclipse.kura.example.driver.utils;
 import org.eclipse.kura.configuration.Password;
 import org.eclipse.kura.core.configuration.metatype.Tad;
 import org.eclipse.kura.core.configuration.metatype.Tscalar;
+import org.eclipse.kura.example.configurable.component.bundle.utils.Property;
 
 public class AdProperty<T> extends Property<T> {
 

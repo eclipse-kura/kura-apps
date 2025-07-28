@@ -10,7 +10,7 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-package org.eclipse.kura.example.simple.component.test;
+package org.eclipse.kura.example.configurable.component.bundle.test;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -39,7 +39,7 @@ public class ExampleComponentItTest {
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY, //
         policy = ReferencePolicy.STATIC, //
-        target = "(kura.service.pid=org.eclipse.kura.example.simple.component.ExampleComponent)" //
+        target = "(kura.service.pid=org.eclipse.kura.example.configurable.component.bundle.ExampleComponent)" //
     )
     public void setExampleComponent(final ConfigurableComponent componentUnderTest) {
         exampleComponent = componentUnderTest;
