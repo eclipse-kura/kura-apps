@@ -15,7 +15,6 @@
 
 -->
 <target name="kura-apps Target Definition" sequenceNumber="75">
-
     <locations>
         <location includeDependencyDepth="direct" includeDependencyScopes="compile,test"
             missingManifest="ignore" type="Maven">

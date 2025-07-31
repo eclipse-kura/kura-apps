@@ -160,12 +160,12 @@
         <package.name>kura-examples</package.name>
         <kura.repo.distribution>CHANGEME</kura.repo.distribution>
         <kura.repo.module>CHANGEME</kura.repo.module>
-        <summary>Summary line (do not end this line with a dot, max 60 chars)</summary>
-        <long.description>Here goes the long description of the packages, in this case this is an
-            example addon for the Eclipse Kura Framework.</long.description>
+        <summary>Eclipse Kura Addon Examples</summary>
+        <long.description>Examples of addons for the Eclipse Kura Framework.</long.description>
     </properties>
 
     <profiles>
+        <!-- Internal profile: FOR INTERNAL USE ONLY - active if -DreleaseBuild is *not* specified. -->
         <profile>
             <id>debugBuild</id>
             <activation>
@@ -176,10 +176,12 @@
             <properties>
                 <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
                 <package.snapshot>git${maven.build.timestamp}.${git.commit.id.abbrev}</package.snapshot>
+
                 <package.version>${release.version}~${package.snapshot}</package.version>
                 <package.revision>1</package.revision>
             </properties>
         </profile>
+        <!-- Internal profile: FOR INTERNAL USE ONLY - active if -DreleaseBuild *is* specified. -->
         <profile>
             <id>releaseBuild</id>
             <activation>
@@ -196,6 +198,7 @@
 
     <build>
         <plugins>
+            <!-- Responsible for removing the "-SNAPSHOT" from the project.version -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -217,6 +220,7 @@
                 </executions>
             </plugin>
 
+            <!-- Responsible for retrieving the short git commit (defaults to length 7) -->
             <plugin>
                 <groupId>io.github.git-commit-id</groupId>
                 <artifactId>git-commit-id-maven-plugin</artifactId>
@@ -240,6 +244,7 @@
                 </configuration>
             </plugin>
 
+            <!-- Responsible for copying the dependencies into a known location -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
@@ -295,6 +300,7 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 
