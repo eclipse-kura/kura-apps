@@ -68,7 +68,7 @@ public class WireComponentExample implements ConfigurableComponent, WireEmitter,
 
     private WireComponentExampleOptions options;
 
-    private WireSupport wireSupport;
+    private WireSupport wireSupportService;
 
     @Reference
     private WireHelperService wireHelperService;
@@ -96,7 +96,7 @@ public class WireComponentExample implements ConfigurableComponent, WireEmitter,
     public void activate(ComponentContext componentContext, WireComponentExampleOCD properties) {
         logger.info("Activating WireComponentExample...");
 
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
+        this.wireSupportService = this.wireHelperService.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
 
         updated(properties);
@@ -125,23 +125,18 @@ public class WireComponentExample implements ConfigurableComponent, WireEmitter,
     }
 
     @Override
-    public Object polled(Wire wire) {
-        return this.wireSupport.polled(wire);
-    }
-
-    @Override
-    public void consumersConnected(Wire[] wires) {
-        this.wireSupport.consumersConnected(wires);
-    }
-
-    @Override
     public void updated(Wire wire, Object value) {
-        this.wireSupport.updated(wire, value);
+        this.wireSupportService.updated(wire, value);
+    }
+
+    @Override
+    public Object polled(Wire wire) {
+        return this.wireSupportService.polled(wire);
     }
 
     @Override
     public void producersConnected(Wire[] wires) {
-        this.wireSupport.producersConnected(wires);
+        this.wireSupportService.producersConnected(wires);
     }
 
     @Override
@@ -175,8 +170,13 @@ public class WireComponentExample implements ConfigurableComponent, WireEmitter,
                 TypedValues.newStringValue(String.format("You choose the channel %s, whose value is %s",
                         this.options.getChannelFilterName(), channelValueReference.get())));
         emittingRecords.add(new WireRecord(props));
-        this.wireSupport.emit(emittingRecords);
+        this.wireSupportService.emit(emittingRecords);
 
+    }
+
+    @Override
+    public void consumersConnected(Wire[] wires) {
+        this.wireSupportService.consumersConnected(wires);
     }
 
 }
