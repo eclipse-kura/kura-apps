@@ -158,8 +158,8 @@
         <jar.name>kura-examples.bundle-6.0.0-SNAPSHOT.jar</jar.name>
         <deb.architecture>all</deb.architecture>
         <package.name>kura-examples</package.name>
-        <kura.repo.distribution>CHANGEME</kura.repo.distribution>
-        <kura.repo.module>CHANGEME</kura.repo.module>
+        <kura.repo.distribution>kura-6</kura.repo.distribution>
+        <kura.repo.module>base</kura.repo.module>
         <summary>Eclipse Kura Addon Examples</summary>
         <long.description>Examples of addons for the Eclipse Kura Framework.</long.description>
     </properties>
