@@ -25,26 +25,24 @@ import java.util.Map;
 
 import org.eclipse.kura.example.wire.component.WireComponentExample;
 import org.eclipse.kura.example.wire.component.WireComponentExampleOCD;
+import org.eclipse.kura.example.wire.component.WireComponentExampleOptions;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
 import org.eclipse.kura.wire.WireEnvelope;
 import org.eclipse.kura.wire.WireHelperService;
 import org.eclipse.kura.wire.WireRecord;
 import org.eclipse.kura.wire.WireSupport;
+import org.junit.After;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.wireadmin.Wire;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class WireComponentExampleTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(WireComponentExampleTest.class);
-
     private WireComponentExample exampleComponent = new WireComponentExample();
     private Map<String, Object> properties = new HashMap<>();
-    WireRecord record;
+    WireRecord wireRecord;
     Map<String, TypedValue<?>> wireRecordProps = new HashMap<>();
 
     Exception exception = null;
@@ -52,6 +50,29 @@ public class WireComponentExampleTest {
     String onWireResult = "";
 
     String onWireResultTemplate = "You choose the channel %s, whose value is %s";
+
+    @After
+    public void deactivateComponent() {
+        this.exampleComponent.deactivate();
+    }
+
+    @Test
+    public void shouldSetOptionsCorrectly() {
+        givenExampleComponent();
+        givenProperties("channel.filter.name", "Channel-1");
+
+        whenActivate();
+
+        thenOptionsEquals("Channel-1");
+    }
+
+    private void thenOptionsEquals(String expectedChannelOption) {
+        WireComponentExampleOCD ocd = Mockito.mock(WireComponentExampleOCD.class);
+        when(ocd.channel_filter_name()).thenReturn(expectedChannelOption);
+        WireComponentExampleOptions options = new WireComponentExampleOptions(ocd);
+
+        assertEquals(options.getChannelFilterName(), this.exampleComponent.getOptions().getChannelFilterName());
+    }
 
     @Test
     public void shouldActivate() {
@@ -69,7 +90,7 @@ public class WireComponentExampleTest {
     }
 
     @Test
-    public void should() {
+    public void shouldNotFailEvenWithoutChannels() {
         givenExampleComponent();
         givenProperties("channel.filter.name", "Channel-1");
         givenWireEnvelope(this.wireRecordProps);
@@ -83,7 +104,7 @@ public class WireComponentExampleTest {
     private void givenExampleComponent() {
         this.exception = null;
         this.properties.clear();
-        this.record = null;
+        this.wireRecord = null;
         this.wireRecordProps.clear();
         this.exampleComponent = new WireComponentExample();
     }
@@ -97,7 +118,7 @@ public class WireComponentExampleTest {
     }
 
     private void givenWireEnvelope(Map<String, TypedValue<?>> props) {
-        this.record = new WireRecord(props);
+        this.wireRecord = new WireRecord(props);
     }
 
     private void whenActivate() {
@@ -114,7 +135,7 @@ public class WireComponentExampleTest {
 
     private void whenOnWireReceived() {
         try {
-            this.exampleComponent.onWireReceive(new WireEnvelope("test", Arrays.asList(this.record)));
+            this.exampleComponent.onWireReceive(new WireEnvelope("test", Arrays.asList(this.wireRecord)));
         } catch (Exception ex) {
             this.exception = ex;
         }
