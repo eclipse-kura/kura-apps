@@ -164,6 +164,7 @@
                         <parallel>classes</parallel>
                         <useUnlimitedThreads>true</useUnlimitedThreads>
                         <argLine>
+                            ${tycho.testArgLine}
                             -Dosgi.console=5002
                             -Declipse.security=osgi
                             -Dorg.osgi.framework.security=osgi
@@ -186,6 +187,18 @@
                             <level>4</level>
                             <autoStart>true</autoStart>
                         </defaultStartLevel>
+                        <bundleStartLevel>
+                            <bundle>
+                                <id>org.apache.logging.log4j.slf4j2.impl</id>
+                                <level>2</level>
+                                <autoStart>true</autoStart>
+                            </bundle>
+                            <bundle>
+                                <id>org.apache.aries.spifly.dynamic.bundle</id>
+                                <level>2</level>
+                                <autoStart>true</autoStart>
+                            </bundle>
+                        </bundleStartLevel>
                     </configuration>
                 </plugin>
 
@@ -199,6 +212,9 @@
                             <goals>
                                 <goal>test</goal>
                             </goals>
+                            <configuration>
+                                <argLine>${tycho.testArgLine}</argLine>
+                            </configuration>
                         </execution>
                     </executions>
                     <configuration />
@@ -302,11 +318,6 @@
                                 </requirement>
                                 <requirement>
                                     <type>p2-installable-unit</type>
-                                    <id>org.eclipse.kura.core.configuration</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
-                                    <type>p2-installable-unit</type>
                                     <id>org.eclipse.kura.core.keystore</id>
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
@@ -323,11 +334,6 @@
                                 <requirement>
                                     <type>p2-installable-unit</type>
                                     <id>org.eclipse.equinox.event</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
-                                    <type>p2-installable-unit</type>
-                                    <id>org.eclipse.equinox.wireadmin</id>
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
                                 <requirement>
@@ -387,8 +393,8 @@
     </profiles>
 
     <modules>
-        <module>example-driver.bundle.test</module>
         <module>example-configurable-component.bundle.test</module>
+        <module>example-driver.bundle.test</module>
     </modules>
 
 </project>

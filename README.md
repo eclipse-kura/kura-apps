@@ -97,26 +97,16 @@ Change to the new directory and clone the Applications Eclipse Kura™ repo:
 git clone https://github.com/eclipse-kura/kura-apps.git
 ```
 
-Build the entire project:
+Build the project:
 
 ```bash
 mvn clean install
 ```
 
-Build the examples only:
-
-```bash
-mvn clean install -Pkura-examples
-```
-
-Build the prototypes only:
-
-```bash
-mvn clean install -Pkura-addon-prototypes
-```
-
 > [!TIP]
 You can skip tests by adding `-Dmaven.test.skip=true` in the commands above.
+
+The Debian installers for the examples and prototypes will be generated in the `kura-apps-distrib` directory, under `kura-examples/target/deb` and `kura-addon-prototypes/target/deb` respectively.
 
 Contributing
 ------------
