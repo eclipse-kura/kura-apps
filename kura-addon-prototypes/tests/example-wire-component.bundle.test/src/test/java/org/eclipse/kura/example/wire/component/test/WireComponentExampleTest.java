@@ -68,6 +68,18 @@ public class WireComponentExampleTest {
         thenResultCorrect("Channel-1", "10");
     }
 
+    @Test
+    public void should() {
+        givenExampleComponent();
+        givenProperties("channel.filter.name", "Channel-1");
+        givenWireEnvelope(this.wireRecordProps);
+
+        whenActivate();
+        whenOnWireReceived();
+
+        thenNoExceptionCaught();
+    }
+
     private void givenExampleComponent() {
         this.exception = null;
         this.properties.clear();
