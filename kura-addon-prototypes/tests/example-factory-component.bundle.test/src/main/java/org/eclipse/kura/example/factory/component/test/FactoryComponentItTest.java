@@ -56,7 +56,7 @@ public class FactoryComponentItTest {
         givenProperty("available.messages", "Hello:Hi, How are you?\nBye:See you later");
         givenProperty("case.sensitive", false);
         givenComponentUpdate();
-        givenClientSimulator("localshot", 1234);
+        givenClientSimulator("localshot", 7654);
 
         whenClientSendsMessage("Bye");
 
@@ -68,7 +68,7 @@ public class FactoryComponentItTest {
     public void shouldSuggestsAvailableMessages()
             throws InterruptedException, ExecutionException, TimeoutException, KuraException {
         givenComponent();
-        givenProperty("tcp.port", 1234);
+        givenProperty("tcp.port", 4567);
         givenProperty("available.messages", "Hello:Hi, How are you?\nBye:See you later");
         givenProperty("case.sensitive", false);
         givenComponentUpdate();
