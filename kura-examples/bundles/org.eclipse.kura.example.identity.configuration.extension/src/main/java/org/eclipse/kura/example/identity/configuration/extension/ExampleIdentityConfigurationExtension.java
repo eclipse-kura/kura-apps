@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 Eurotech and/or its affiliates and others
+ * Copyright (c) 2024, 2025 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -26,9 +26,22 @@ import org.eclipse.kura.core.configuration.metatype.Tad;
 import org.eclipse.kura.core.configuration.metatype.Tocd;
 import org.eclipse.kura.core.configuration.metatype.Tscalar;
 import org.eclipse.kura.identity.configuration.extension.IdentityConfigurationExtension;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class, IdentityConfigurationExtension.class } //
+)
+
+@Designate(ocd = ExampleIdentityConfigurationExtensionOCD.class, factory = true)
 public class ExampleIdentityConfigurationExtension implements IdentityConfigurationExtension, ConfigurableComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(ExampleIdentityConfigurationExtension.class);
@@ -37,24 +50,32 @@ public class ExampleIdentityConfigurationExtension implements IdentityConfigurat
 
     private String kuraServicePid;
 
-    public void activate(final Map<String, Object> properties) {
+    @Activate
+    public void activate(ComponentContext componentContext, ExampleIdentityConfigurationExtensionOCD properties) {
         logger.info("activating...");
 
-        updated(properties);
+        updated(componentContext, properties);
 
         logger.info("activating...done");
     }
 
-    public void updated(final Map<String, Object> properties) {
+    @Modified
+    public void updated(ComponentContext componentContext, ExampleIdentityConfigurationExtensionOCD properties) {
         logger.info("updating...");
 
         try {
-            this.kuraServicePid = (String) properties.get(ConfigurationService.KURA_SERVICE_PID);
+            this.kuraServicePid = (String) componentContext.getProperties().get(ConfigurationService.KURA_SERVICE_PID);
         } catch (final Exception e) {
             logger.warn("failed to get own " + ConfigurationService.KURA_SERVICE_PID, e);
         }
 
         logger.info("updating...done");
+    }
+
+    @Deactivate
+    public void deactivate() {
+        logger.info("deactivating...");
+        logger.info("deactivating...done");
     }
 
     @Override
