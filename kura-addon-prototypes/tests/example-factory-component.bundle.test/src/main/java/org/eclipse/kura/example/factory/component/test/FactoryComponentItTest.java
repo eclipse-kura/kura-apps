@@ -110,9 +110,9 @@ public class FactoryComponentItTest {
     }
 
     private void givenComponentUpdate() throws KuraException, InterruptedException {
-        Thread.sleep(5000); // Giving some time to stop socket
+        Thread.sleep(10000); // Giving some time to stop socket
         configurationService.updateConfiguration(this.activePid, this.properties);
-        Thread.sleep(5000); // Giving some time to start socket
+        Thread.sleep(10000); // Giving some time to start socket
     }
 
     private void givenClientSimulator(String host, int port) {
