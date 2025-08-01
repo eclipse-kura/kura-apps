@@ -120,9 +120,9 @@ public class FactoryComponentItTest {
     }
 
     private void whenClientSendsMessage(String message) throws InterruptedException {
-        Thread.sleep(10000);
+        Thread.sleep(5000);
         this.clientSimulator.sendMessage(message);
-        Thread.sleep(10000);
+        Thread.sleep(5000);
     }
 
     private void thenResponseEquals(String responseExpected) {
