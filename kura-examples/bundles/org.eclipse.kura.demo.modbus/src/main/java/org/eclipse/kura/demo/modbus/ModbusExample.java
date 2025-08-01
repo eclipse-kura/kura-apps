@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -31,9 +31,22 @@ import org.eclipse.kura.message.KuraPayload;
 import org.eclipse.kura.protocol.modbus.ModbusProtocolDeviceService;
 import org.eclipse.kura.protocol.modbus.ModbusProtocolException;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class, CloudConnectionListener.class, CloudDeliveryListener.class }, //
+        property = { "service.pid=org.eclipse.kura.demo.modbus.ModbusExample" }, //
+        enabled = true //
+)
+@Designate(ocd = ModbusExampleOCD.class, factory = false)
 public class ModbusExample implements ConfigurableComponent, CloudConnectionListener, CloudDeliveryListener {
 
     private static final Logger logger = LoggerFactory.getLogger(ModbusExample.class);
@@ -62,7 +75,6 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
     private ScheduledExecutorService worker;
     private Future<?> handle;
 
-    private ModbusProtocolDeviceService protocolDevice;
     private Map<String, Object> properties;
     private Properties modbusProperties;
     private boolean configured;
@@ -74,7 +86,11 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
     private int registeraddr = 0;
 
     private CloudPublisher cloudPublisher;
+    private ModbusProtocolDeviceService protocolDevice;
 
+    @Reference(name = "ModbusProtocolDeviceService", //
+            policy = org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC, //
+            cardinality = org.osgi.service.component.annotations.ReferenceCardinality.MANDATORY)
     public void setModbusProtocolDeviceService(ModbusProtocolDeviceService modbusService) {
         this.protocolDevice = modbusService;
     }
@@ -83,6 +99,10 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
         this.protocolDevice = null;
     }
 
+    @Reference(name = "CloudPublisher", //
+            policy = ReferencePolicy.DYNAMIC, //
+            cardinality = ReferenceCardinality.OPTIONAL //
+    )
     public void setCloudPublisher(CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
         this.cloudPublisher.registerCloudConnectionListener(ModbusExample.this);
@@ -101,7 +121,7 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
     //
     // ----------------------------------------------------------------
 
-    protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
+    protected void activate(Map<String, Object> properties) {
         logger.info("Activating ModbusExample...");
 
         this.worker = Executors.newSingleThreadScheduledExecutor();

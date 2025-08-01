@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -42,6 +42,7 @@ import org.eclipse.kura.example.testutil.TestUtil;
 import org.eclipse.kura.message.KuraPayload;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 public class BluetoothLeTest {
 
@@ -52,12 +53,12 @@ public class BluetoothLeTest {
         CloudPublisher cpMock = mock(CloudPublisher.class);
         svc.setCloudPublisher(cpMock);
 
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("iname", "hci0");
-        properties.put("scan_enable", false); // stop fast in doUpdate
-        properties.put("enableButtons", true); // will cause disable key notifications to be called
+        BluetoothLeOCD ocd = mock(BluetoothLeOCD.class);
+        when(ocd.iname()).thenReturn("hci0");
+        when(ocd.scan_enable()).thenReturn(false);
+        when(ocd.enable_buttons()).thenReturn(true);
 
-        svc.activate(null, properties);
+        svc.activate(ocd);
 
         assertNull(TestUtil.getFieldValue(svc, "worker"));
         assertNotNull(TestUtil.getFieldValue(svc, "tiSensorTagList"));
@@ -125,14 +126,14 @@ public class BluetoothLeTest {
         when(adapterMock.findDevices(2)).thenReturn(devFuture);
         // end for performScan
 
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("iname", interfaceName);
-        properties.put("scan_enable", true);
-        properties.put("enableButtons", true);
-        properties.put("period", 20);
-        properties.put("scan_time", 2);
+        BluetoothLeOCD ocd = mock(BluetoothLeOCD.class);
+        when(ocd.iname()).thenReturn(interfaceName);
+        when(ocd.scan_enable()).thenReturn(true);
+        when(ocd.enable_buttons()).thenReturn(true);
+        when(ocd.period()).thenReturn(20);
+        when(ocd.scan_time()).thenReturn(2);
 
-        svc.activate(null, properties);
+        svc.activate(ocd);
 
         synchronized (devMock) {
             devMock.wait(2000); // wait < period
@@ -151,23 +152,20 @@ public class BluetoothLeTest {
     public void testReadSensorTags() throws Throwable {
         BluetoothLe svc = new BluetoothLe();
 
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("publishTopic", "testTopic");
-        properties.put("discoverServicesAndCharacteristics", true);
-        properties.put("enableThermometer", true);
-        properties.put("enableAccelerometer", true);
-        properties.put("enableHygrometer", true);
-        properties.put("enableMagnetometer", true);
-        properties.put("enableBarometer", true);
-        properties.put("enableGyroscope", true);
-        properties.put("enableLuxometer", true);
-        properties.put("enableButtons", true);
-        properties.put("switchOnRedLed", true);
-        properties.put("switchOnGreenLed", true);
-        properties.put("switchOnBuzzer", true);
-
-        BluetoothLeOptions options = new BluetoothLeOptions(properties);
-        TestUtil.setFieldValue(svc, "options", options);
+        BluetoothLeOCD ocd = Mockito.mock(BluetoothLeOCD.class);
+        when(ocd.cloud_publisher_target_filter()).thenReturn("testTopic");
+        when(ocd.discover_services_and_characteristics()).thenReturn(true);
+        when(ocd.enable_thermometer()).thenReturn(true);
+        when(ocd.enable_accelerometer()).thenReturn(true);
+        when(ocd.enable_hygrometer()).thenReturn(true);
+        when(ocd.enable_magnetometer()).thenReturn(true);
+        when(ocd.enable_barometer()).thenReturn(true);
+        when(ocd.enable_gyroscope()).thenReturn(true);
+        when(ocd.enable_luxometer()).thenReturn(true);
+        when(ocd.enable_buttons()).thenReturn(true);
+        when(ocd.switch_on_red_led()).thenReturn(true);
+        when(ocd.switch_on_green_led()).thenReturn(true);
+        when(ocd.switch_on_buzzer()).thenReturn(true);
 
         CloudPublisher cpMock = mock(CloudPublisher.class);
         svc.setCloudPublisher(cpMock);
@@ -214,7 +212,7 @@ public class BluetoothLeTest {
         when(tistMock.readTemperature()).thenReturn(temp);
         // end for sensor reading
 
-        TestUtil.invokePrivate(svc, "readSensorTags");
+        TestUtil.invokePrivate(svc, "readSensorTags", ocd);
 
         verify(tistMock, times(1)).enableThermometer();
         verify(tistMock, times(1)).enableAccelerometer(new byte[] { 1 });
