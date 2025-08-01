@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Example component tests
-Bundle-SymbolicName: org.eclipse.kura.example.driver.bundle.test;singleton:=true
+Bundle-Name: Factory component examples tests
+Bundle-SymbolicName: org.eclipse.kura.example.factory.component.bundle.test;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: EUROTECH
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=17))"
-Fragment-Host: org.eclipse.kura.example.driver.bundle
+Fragment-Host: org.eclipse.kura.example.factory.component.bundle
 Require-Bundle: org.junit,
  org.mockito.mockito-core,
  net.bytebuddy.byte-buddy,
