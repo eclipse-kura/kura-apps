@@ -56,7 +56,7 @@ public class FactoryComponentItTest {
         givenProperty("available.messages", "Hello:Hi, How are you?\nBye:See you later");
         givenProperty("case.sensitive", false);
         givenComponentUpdate();
-        givenClientSimulator("localshot", 7654);
+        givenClientSimulator("localhost", 7654);
 
         whenClientSendsMessage("Bye");
 
@@ -72,7 +72,7 @@ public class FactoryComponentItTest {
         givenProperty("available.messages", "Hello:Hi, How are you?\nBye:See you later");
         givenProperty("case.sensitive", false);
         givenComponentUpdate();
-        givenClientSimulator("localshot", 4567);
+        givenClientSimulator("localhost", 4567);
 
         whenClientSendsMessage("WrongMessage");
 
