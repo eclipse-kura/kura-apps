@@ -52,7 +52,7 @@ public class FactoryComponentItTest {
     public void shouldRespondCorrectly()
             throws InterruptedException, ExecutionException, TimeoutException, KuraException {
         givenComponent();
-        givenProperty("tcp.port", 1234);
+        givenProperty("tcp.port", 7654);
         givenProperty("available.messages", "Hello:Hi, How are you?\nBye:See you later");
         givenProperty("case.sensitive", false);
         givenComponentUpdate();
@@ -72,7 +72,7 @@ public class FactoryComponentItTest {
         givenProperty("available.messages", "Hello:Hi, How are you?\nBye:See you later");
         givenProperty("case.sensitive", false);
         givenComponentUpdate();
-        givenClientSimulator("localshot", 1234);
+        givenClientSimulator("localshot", 4567);
 
         whenClientSendsMessage("WrongMessage");
 
