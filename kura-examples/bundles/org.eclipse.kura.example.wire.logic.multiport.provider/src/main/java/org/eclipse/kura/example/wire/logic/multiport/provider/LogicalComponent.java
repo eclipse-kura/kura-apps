@@ -29,10 +29,37 @@ import org.eclipse.kura.wire.multiport.MultiportWireReceiver;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.wireadmin.Consumer;
+import org.osgi.service.wireadmin.Producer;
 import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
+                MultiportWireReceiver.class }, //
+        enabled = true, //
+        property = { //
+                "input.cardinality.minimum:Integer=2", //
+                "input.cardinality.maximum:Integer=2", //
+                "input.cardinality.default:Integer=2", //
+                "output.cardinality.minimum:Integer=1", //
+                "output.cardinality.maximum:Integer=1", //
+                "output.cardinality.default:Integer=1", //
+                "kura.ui.service.hide:Boolean=true" //
+        } //
+)
+@Designate(ocd = LogicalComponentOCD.class, factory = false)
 public class LogicalComponent implements WireEmitter, ConfigurableComponent, MultiportWireReceiver {
 
     private static final Logger logger = LoggerFactory.getLogger(LogicalComponent.class);
@@ -43,30 +70,39 @@ public class LogicalComponent implements WireEmitter, ConfigurableComponent, Mul
     protected LogicalComponentOptions options;
     protected BundleContext context;
 
+    @Reference(name = "WireHelperService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY //
+    )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
+        logger.info("\n\nPRE BIND\n\n");
         this.wireHelperService = wireHelperService;
+        logger.info("\n\nPOST BIND\n\n");
     }
 
     @SuppressWarnings("unchecked")
-    public void activate(final Map<String, Object> properties, ComponentContext componentContext) {
+    @Activate
+    public void activate(LogicalComponentOCD ocd, ComponentContext componentContext) {
         logger.info("activating...");
         this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
-        logger.info("activated, properties: {}", properties);
+        logger.info("activated, properties: {}", ocd);
         this.context = componentContext.getBundleContext();
-        updated(properties, componentContext);
+        updated(ocd, componentContext);
         logger.info("activating...done");
     }
 
-    public void updated(final Map<String, Object> properties, ComponentContext componentContext) {
+    @Modified
+    public void updated(LogicalComponentOCD ocd, ComponentContext componentContext) {
         logger.info("updating...");
-        this.options = new LogicalComponentOptions(properties, this.context);
-        logger.info("updated, properties: {}", properties);
+        this.options = new LogicalComponentOptions(ocd, this.context);
+        logger.info("updated, properties: {}", ocd);
         this.options.getPortAggregatorFactory().build(this.wireSupport.getReceiverPorts())
                 .onWireReceive(this::onWireReceive);
         logger.info("updating...done");
     }
 
+    @Deactivate
     public synchronized void deactivate() {
         logger.info("deactivating...");
         logger.info("deactivating...done");
@@ -98,16 +134,24 @@ public class LogicalComponent implements WireEmitter, ConfigurableComponent, Mul
     }
 
     public void onWireReceive(List<WireEnvelope> wireEnvelopes) {
+        logger.info("\n\nI'm in\n\n");
         final Boolean firstOperand = extractOperand(wireEnvelopes.get(0), this.options.getFirstOperandName());
+        logger.info("\n\nFIRST: {}\n\n", firstOperand);
         final Boolean result;
+        logger.info("\n\nIs Unary? {}\n\n", this.options.isUnaryOperator());
         if (this.options.isUnaryOperator()) {
             result = this.options.getBooleanFunction().apply(firstOperand, null);
+            logger.info("\n\nRESULT: {}\n\n", result);
         } else {
             result = this.options.getBooleanFunction().apply(firstOperand,
                     extractOperand(wireEnvelopes.get(1), this.options.getSecondOperandName()));
+            logger.info("\n\nOperand: {} - RESULT: {}\n\n",
+                    extractOperand(wireEnvelopes.get(1), this.options.getSecondOperandName()), result);
         }
         WireRecord toBeEmitted = new WireRecord(
                 Collections.singletonMap(this.options.getResultName(), TypedValues.newBooleanValue(result)));
+        logger.info("\n\nPRE EMIT\n\n");
         this.wireSupport.emit(Collections.singletonList(toBeEmitted));
+        logger.info("\n\nPOST EMIT\n\n");
     }
 }
