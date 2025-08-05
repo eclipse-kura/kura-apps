@@ -13,21 +13,157 @@
 
 package org.eclipse.kura.example.wire.math.singleport.maximum;
 
-import org.eclipse.kura.example.wire.math.singleport.AbstractSingleportMathComponent;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.example.wire.math.singleport.RunningExtremum;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
+import org.eclipse.kura.wire.WireComponent;
+import org.eclipse.kura.wire.WireEmitter;
+import org.eclipse.kura.wire.WireEnvelope;
+import org.eclipse.kura.wire.WireHelperService;
+import org.eclipse.kura.wire.WireReceiver;
+import org.eclipse.kura.wire.WireRecord;
+import org.eclipse.kura.wire.WireSupport;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.wireadmin.Consumer;
+import org.osgi.service.wireadmin.Producer;
+import org.osgi.service.wireadmin.Wire;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MaximumComponent extends AbstractSingleportMathComponent {
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
+                WireReceiver.class, WireEmitter.class }, //
+        enabled = true, //
+        name = "org.eclipse.kura.wire.Maximum", //
+        property = { //
+                "input.cardinality.minimum:Integer=1", //
+                "input.cardinality.maximum:Integer=1", //
+                "input.cardinality.default:Integer=1", //
+                "output.cardinality.minimum:Integer=1", //
+                "output.cardinality.maximum:Integer=1", //
+                "output.cardinality.default:Integer=1", //
+                "kura.ui.service.hide:Boolean=true", //
+                "service.pid:String=org.eclipse.kura.wire.Maximum" //
+        } //
+)
+@Designate(ocd = MaximumComponentOCD.class, factory = true)
+public class MaximumComponent
+        implements WireEmitter, WireReceiver, ConfigurableComponent, Function<TypedValue<?>, TypedValue<?>> {
+
+    private static final Logger logger = LoggerFactory.getLogger(MaximumComponent.class);
+
+    private WireHelperService wireHelperService;
+    private WireSupport wireSupport;
+    protected MaximumComponentOptions options;
 
     private RunningExtremum<Double> runningExtremum;
 
+    @Reference(name = "WireHelperService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unbindWireHelperService" //
+    )
+    public void bindWireHelperService(final WireHelperService wireHelperService) {
+        this.wireHelperService = wireHelperService;
+    }
+
+    public void unbindWireHelperService(final WireHelperService wireHelperService) {
+        this.wireHelperService = null;
+    }
+
+    @Activate
+    public void activate(ComponentContext componentContext, MaximumComponentOCD ocd) {
+        this.wireSupport = this.wireHelperService.newWireSupport(this,
+                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        updated(ocd);
+    }
+
+    @Modified
+    public void updated(MaximumComponentOCD ocd) {
+        this.options = getOptions(ocd);
+        init();
+    }
+
+    @Deactivate
+    public void deactivate() {
+        logger.info("Deactivating...");
+        logger.info("Deactivating...Done");
+    }
+
+    protected MaximumComponentOptions getOptions(MaximumComponentOCD ocd) {
+        return new MaximumComponentOptions(ocd);
+    }
+
     @Override
+    public Object polled(Wire wire) {
+        return wireSupport.polled(wire);
+    }
+
+    @Override
+    public void consumersConnected(Wire[] wires) {
+        wireSupport.consumersConnected(wires);
+    }
+
+    @Override
+    public void updated(Wire wire, Object value) {
+        wireSupport.updated(wire, value);
+    }
+
+    @Override
+    public void producersConnected(Wire[] wires) {
+        wireSupport.producersConnected(wires);
+    }
+
+    @Override
+    public void onWireReceive(WireEnvelope wireEnvelope) {
+        final List<WireRecord> records = wireEnvelope.getRecords();
+        if (records.isEmpty()) {
+            logger.warn("Received empty envelope");
+            return;
+        }
+        final Map<String, TypedValue<?>> properties = records.get(0).getProperties();
+        final TypedValue<?> operand = properties.get(this.options.getOperandName());
+        if (operand == null) {
+            logger.warn("Missing operand");
+            return;
+        }
+        if (!(operand.getValue() instanceof Number)) {
+            logger.warn("Not a number: {}", operand);
+            return;
+        }
+        final TypedValue<?> result = this.apply(operand);
+        if (this.options.shouldEmitReceivedProperties()) {
+            final Map<String, TypedValue<?>> resultProperties = new HashMap<>(properties);
+            resultProperties.put(this.options.getResultName(), result);
+            this.wireSupport.emit(Collections.singletonList(new WireRecord(resultProperties)));
+        } else {
+            this.wireSupport.emit(Collections
+                    .singletonList(new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
+        }
+    }
+
     protected void init() {
         this.runningExtremum = null;
     }
 
-    @Override
     public TypedValue<?> apply(TypedValue<?> t) {
         if (runningExtremum == null) {
             this.runningExtremum = new RunningExtremum<>(this.options.getWindowSize());
