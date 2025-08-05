@@ -18,7 +18,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.osgi.service.metatype.annotations.Option;
 
 @SuppressWarnings("checkstyle:MethodName")
-@ObjectClassDefinition(id = "org.eclipse.kura.wire.LogicalOperators", //
+@ObjectClassDefinition(id = "org.eclipse.kura.example.wire.logic.multiport.provider.LogicalComponent", //
         name = "Logical Operators for Wires", //
         description = "A component that applies a logical operator to one or two boolean properties received from the first and, optionally, the second input port, emitting the result. For binary operators, the operation is performed when a new envelope is received on a port, using the envelope cached by the other port; alternatively, new envelopes must be received on both ports. For the NOT operator, the operand must be received from the first port." //
 )

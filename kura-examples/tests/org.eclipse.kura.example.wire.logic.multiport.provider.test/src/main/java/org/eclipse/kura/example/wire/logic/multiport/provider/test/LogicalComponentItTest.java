@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2025 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *  Eurotech
- *******************************************************************************/
+ ******************************************************************************/
 
 package org.eclipse.kura.example.wire.logic.multiport.provider.test;
 
@@ -55,7 +55,7 @@ public class LogicalComponentItTest {
 
     private static final Logger logger = LoggerFactory.getLogger(LogicalComponentItTest.class);
 
-    private static final String FACTORY_PID = "org.eclipse.kura.wire.LogicalOperators";
+    private static final String FACTORY_PID = "org.eclipse.kura.example.wire.logic.multiport.provider.LogicalComponent";
     private static final String TEST_FIRST_EMITTER_PID = "test.first.emitter.pid";
     private static final String TEST_SECOND_EMITTER_PID = "test.second.emitter.pid";
     private static final String TEST_RECEIVER_PID = "test.receiver.pid";
@@ -245,12 +245,13 @@ public class LogicalComponentItTest {
 
         this.activeWirePid = "underTestPid";
 
-        builder.addWireComponent(this.activeWirePid, FACTORY_PID, 2, 1) // 2 input ports, 1 output port
-                .addTestEmitterReceiver(TEST_FIRST_EMITTER_PID).addTestEmitterReceiver(TEST_SECOND_EMITTER_PID)
-                .addTestEmitterReceiver(TEST_RECEIVER_PID)
-                .addWire(TEST_FIRST_EMITTER_PID, 0, this.activeWirePid, IN0_PORT)
-                .addWire(TEST_SECOND_EMITTER_PID, 1, this.activeWirePid, IN1_PORT)
-                .addWire(this.activeWirePid, OUT_PORT, TEST_RECEIVER_PID, 0);
+        builder.addWireComponent(this.activeWirePid, FACTORY_PID, 2, 1); // 2 input ports, 1 output port
+        builder.addTestEmitterReceiver(TEST_FIRST_EMITTER_PID);
+        builder.addTestEmitterReceiver(TEST_SECOND_EMITTER_PID);
+        builder.addTestEmitterReceiver(TEST_RECEIVER_PID);
+        builder.addWire(TEST_FIRST_EMITTER_PID, 0, this.activeWirePid, IN0_PORT);
+        builder.addWire(TEST_SECOND_EMITTER_PID, 0, this.activeWirePid, IN1_PORT);
+        builder.addWire(this.activeWirePid, OUT_PORT, TEST_RECEIVER_PID, 0);
 
         try {
             builder.replaceExistingGraph(bundleContext, wireGraphService).get(30, TimeUnit.SECONDS);

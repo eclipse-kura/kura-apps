@@ -30,19 +30,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Component(immediate = true)
 public class FactoryComponentItTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(FactoryComponentItTest.class);
 
     private static final String FACTORY_PID = "org.eclipse.kura.example.factory.FactoryComponentExample";
 
     private static ConfigurationService configurationService;
     private String activePid = null;
-    private ConfigurableComponent component;
 
     private Map<String, Object> properties = new HashMap<>();
 
@@ -101,8 +96,8 @@ public class FactoryComponentItTest {
         this.activePid = "ExampleFactoryComponent";
         this.properties.clear();
 
-        this.component = WireTestUtil.createFactoryConfiguration(configurationService, ConfigurableComponent.class,
-                activePid, FACTORY_PID, new HashMap<String, Object>()).get(30, TimeUnit.SECONDS);
+        WireTestUtil.createFactoryConfiguration(configurationService, ConfigurableComponent.class, activePid,
+                FACTORY_PID, new HashMap<String, Object>()).get(30, TimeUnit.SECONDS);
     }
 
     private void givenProperty(String key, Object value) {

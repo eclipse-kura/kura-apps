@@ -47,8 +47,9 @@ import org.slf4j.LoggerFactory;
 @Component(immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
         service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
-                MultiportWireReceiver.class }, //
+                MultiportWireReceiver.class, WireEmitter.class }, //
         enabled = true, //
+        name = "org.eclipse.kura.example.wire.logic.multiport.provider.LogicalComponent", //
         property = { //
                 "input.cardinality.minimum:Integer=2", //
                 "input.cardinality.maximum:Integer=2", //
@@ -59,7 +60,7 @@ import org.slf4j.LoggerFactory;
                 "kura.ui.service.hide:Boolean=true" //
         } //
 )
-@Designate(ocd = LogicalComponentOCD.class, factory = false)
+@Designate(ocd = LogicalComponentOCD.class, factory = true)
 public class LogicalComponent implements WireEmitter, ConfigurableComponent, MultiportWireReceiver {
 
     private static final Logger logger = LoggerFactory.getLogger(LogicalComponent.class);
@@ -75,25 +76,23 @@ public class LogicalComponent implements WireEmitter, ConfigurableComponent, Mul
             cardinality = ReferenceCardinality.MANDATORY //
     )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
-        logger.info("\n\nPRE BIND\n\n");
         this.wireHelperService = wireHelperService;
-        logger.info("\n\nPOST BIND\n\n");
     }
 
     @SuppressWarnings("unchecked")
     @Activate
-    public void activate(LogicalComponentOCD ocd, ComponentContext componentContext) {
+    public void activate(ComponentContext componentContext, LogicalComponentOCD ocd) {
         logger.info("activating...");
         this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
         logger.info("activated, properties: {}", ocd);
         this.context = componentContext.getBundleContext();
-        updated(ocd, componentContext);
+        updated(componentContext, ocd);
         logger.info("activating...done");
     }
 
     @Modified
-    public void updated(LogicalComponentOCD ocd, ComponentContext componentContext) {
+    public void updated(ComponentContext componentContext, LogicalComponentOCD ocd) {
         logger.info("updating...");
         this.options = new LogicalComponentOptions(ocd, this.context);
         logger.info("updated, properties: {}", ocd);
@@ -134,24 +133,16 @@ public class LogicalComponent implements WireEmitter, ConfigurableComponent, Mul
     }
 
     public void onWireReceive(List<WireEnvelope> wireEnvelopes) {
-        logger.info("\n\nI'm in\n\n");
         final Boolean firstOperand = extractOperand(wireEnvelopes.get(0), this.options.getFirstOperandName());
-        logger.info("\n\nFIRST: {}\n\n", firstOperand);
         final Boolean result;
-        logger.info("\n\nIs Unary? {}\n\n", this.options.isUnaryOperator());
         if (this.options.isUnaryOperator()) {
             result = this.options.getBooleanFunction().apply(firstOperand, null);
-            logger.info("\n\nRESULT: {}\n\n", result);
         } else {
             result = this.options.getBooleanFunction().apply(firstOperand,
                     extractOperand(wireEnvelopes.get(1), this.options.getSecondOperandName()));
-            logger.info("\n\nOperand: {} - RESULT: {}\n\n",
-                    extractOperand(wireEnvelopes.get(1), this.options.getSecondOperandName()), result);
         }
         WireRecord toBeEmitted = new WireRecord(
                 Collections.singletonMap(this.options.getResultName(), TypedValues.newBooleanValue(result)));
-        logger.info("\n\nPRE EMIT\n\n");
         this.wireSupport.emit(Collections.singletonList(toBeEmitted));
-        logger.info("\n\nPOST EMIT\n\n");
     }
 }
