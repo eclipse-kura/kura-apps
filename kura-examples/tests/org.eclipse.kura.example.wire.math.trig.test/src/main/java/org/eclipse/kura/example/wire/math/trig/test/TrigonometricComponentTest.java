@@ -147,7 +147,7 @@ public class TrigonometricComponentTest {
         final BundleContext bundleContext = FrameworkUtil.getBundle(TrigonometricComponentTest.class)
                 .getBundleContext();
 
-        builder.addWireComponent(UNDER_TEST_PID, "org.eclipse.kura.wire.TrigonometricFunctions", 1, 1) //
+        builder.addWireComponent(UNDER_TEST_PID, "org.eclipse.kura.example.wire.math.trig.TrigonometricComponent", 1, 1) //
                 .addTestEmitterReceiver(TEST_EMITTER_PID) //
                 .addTestEmitterReceiver(TEST_RECEIVER_PID) //
                 .addWire(TEST_EMITTER_PID, 0, UNDER_TEST_PID, IN_PORT) //
