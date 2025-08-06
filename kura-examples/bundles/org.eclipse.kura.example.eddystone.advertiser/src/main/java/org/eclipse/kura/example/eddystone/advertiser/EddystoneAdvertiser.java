@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kura.example.eddystone.advertiser;
 
-import java.util.Map;
-
 import org.eclipse.kura.KuraBluetoothBeaconAdvertiserNotAvailable;
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.ble.eddystone.BluetoothLeEddystone;
@@ -23,9 +21,26 @@ import org.eclipse.kura.bluetooth.le.BluetoothLeService;
 import org.eclipse.kura.bluetooth.le.beacon.BluetoothLeBeaconAdvertiser;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class }, //
+        enabled = true, //
+        name = "org.eclipse.kura.example.eddystone.advertiser.EddystoneAdvertiser" //
+
+)
+@Designate(ocd = EddystoneAdvertiserOCD.class, factory = false)
 public class EddystoneAdvertiser implements ConfigurableComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(EddystoneAdvertiser.class);
@@ -36,6 +51,11 @@ public class EddystoneAdvertiser implements ConfigurableComponent {
     private BluetoothLeBeaconAdvertiser<BluetoothLeEddystone> advertising;
     private EddystoneAdvertiserOptions options;
 
+    @Reference(name = "BluetoothLeService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unsetBluetoothLeService" //
+    )
     public void setBluetoothLeService(BluetoothLeService bluetoothLeService) {
         this.bluetoothLeService = bluetoothLeService;
     }
@@ -44,6 +64,11 @@ public class EddystoneAdvertiser implements ConfigurableComponent {
         this.bluetoothLeService = null;
     }
 
+    @Reference(name = "BluetoothLeEddystoneService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unsetBluetoothLeEddystoneService" //
+    )
     public void setBluetoothLeEddystoneService(BluetoothLeEddystoneService bluetoothLeEddystoneService) {
         this.bluetoothLeEddystoneService = bluetoothLeEddystoneService;
     }
@@ -57,15 +82,17 @@ public class EddystoneAdvertiser implements ConfigurableComponent {
     // Activation APIs
     //
     // --------------------------------------------------------------------
-    protected void activate(ComponentContext context, Map<String, Object> properties) {
+    @Activate
+    protected void activate(EddystoneAdvertiserOCD ocd) {
         logger.info("Activating Bluetooth Eddystone example...");
 
-        update(properties);
+        update(ocd);
 
         logger.debug("Activating Eddystone Example... Done.");
 
     }
 
+    @Deactivate
     protected void deactivate(ComponentContext context) {
 
         logger.debug("Deactivating Eddystone Example...");
@@ -86,10 +113,11 @@ public class EddystoneAdvertiser implements ConfigurableComponent {
         logger.debug("Deactivating Eddystone Example... Done.");
     }
 
-    protected void updated(Map<String, Object> properties) {
+    @Modified
+    protected void updated(EddystoneAdvertiserOCD ocd) {
         logger.info("Updating Bluetooth Eddystone example...");
 
-        update(properties);
+        update(ocd);
 
         logger.debug("Updating Eddystone Example... Done.");
     }
@@ -100,8 +128,8 @@ public class EddystoneAdvertiser implements ConfigurableComponent {
     //
     // --------------------------------------------------------------------
 
-    private void update(Map<String, Object> properties) {
-        this.options = new EddystoneAdvertiserOptions(properties);
+    private void update(EddystoneAdvertiserOCD ocd) {
+        this.options = new EddystoneAdvertiserOptions(ocd);
 
         // Stop the advertising
         if (this.advertising != null) {

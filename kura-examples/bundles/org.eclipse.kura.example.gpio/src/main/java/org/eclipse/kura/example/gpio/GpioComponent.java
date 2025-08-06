@@ -40,11 +40,25 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        enabled = true, //
+        name = "org.eclipse.kura.example.gpio.GpioComponent", //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class } //
+)
+
+@Designate(ocd = GpioComponentOCD.class, factory = false)
 public class GpioComponent implements ConfigurableComponent {
 
     /**
@@ -99,22 +113,24 @@ public class GpioComponent implements ConfigurableComponent {
     //
     // ----------------------------------------------------------------
 
-    protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
+    @Activate
+    protected void activate(ComponentContext componentContext, GpioComponentOCD ocd) {
         logger.debug("Activating {}", APP_ID);
 
         this.bundleContext = componentContext.getBundleContext();
 
-        this.gpioComponentOptions = new GpioComponentOptions(properties);
+        this.gpioComponentOptions = new GpioComponentOptions(ocd);
 
         this.gpioServiceTrackerCustomizer = new GPIOServiceTrackerCustomizer();
         initGPIOServiceTracking();
 
-        doUpdate(properties);
+        doUpdate();
 
         logger.info("Activating {}... Done.", APP_ID);
     }
 
-    protected void deactivate(ComponentContext componentContext) {
+    @Deactivate
+    protected void deactivate() {
         logger.debug("Deactivating {}", APP_ID);
 
         stopTasks();
@@ -127,17 +143,18 @@ public class GpioComponent implements ConfigurableComponent {
         this.executor.shutdownNow();
     }
 
-    public void updated(Map<String, Object> properties) {
+    @Modified
+    public void updated(GpioComponentOCD ocd) {
         logger.info("updated...");
 
-        this.gpioComponentOptions = new GpioComponentOptions(properties);
+        this.gpioComponentOptions = new GpioComponentOptions(ocd);
 
         if (nonNull(this.gpioServiceTracker)) {
             this.gpioServiceTracker.close();
         }
         initGPIOServiceTracking();
 
-        doUpdate(properties);
+        doUpdate();
     }
 
     // ----------------------------------------------------------------
@@ -149,7 +166,7 @@ public class GpioComponent implements ConfigurableComponent {
     /**
      * Called after a new set of properties has been configured on the service
      */
-    private void doUpdate(Map<String, Object> properties) {
+    private void doUpdate() {
         stopTasks();
         releasePins();
 
@@ -187,9 +204,9 @@ public class GpioComponent implements ConfigurableComponent {
 
     private void getPins() {
         String[] pins = this.gpioComponentOptions.getPins();
-        Integer[] directions = this.gpioComponentOptions.getDirections();
-        Integer[] modes = this.gpioComponentOptions.getModes();
-        Integer[] triggers = this.gpioComponentOptions.getTriggers();
+        int[] directions = this.gpioComponentOptions.getDirections();
+        int[] modes = this.gpioComponentOptions.getModes();
+        int[] triggers = this.gpioComponentOptions.getTriggers();
         for (int i = 0; i < pins.length; i++) {
             try {
                 logger.info("Acquiring GPIO pin {} with params:", pins[i]);
@@ -261,7 +278,8 @@ public class GpioComponent implements ConfigurableComponent {
         for (final KuraGPIOPin pin : inputPins) {
             logger.info("Attaching Pin Listener to GPIO pin {}", pin);
             try {
-                pin.addPinStatusListener(value -> logger.info("Pin status for GPIO pin {} changed to {}", pin, value));
+                pin.addPinStatusListener(pinStatusListener -> logger.info("Pin status for GPIO pin {} changed to {}",
+                        pin, pinStatusListener));
             } catch (Exception e) {
                 logException(pin, e);
             }
@@ -302,11 +320,9 @@ public class GpioComponent implements ConfigurableComponent {
 
     private KuraGPIODirection getPinDirection(int direction) {
         switch (direction) {
-        case 0:
-        case 2:
+        case 0, 2:
             return KuraGPIODirection.INPUT;
-        case 1:
-        case 3:
+        case 1, 3:
             return KuraGPIODirection.OUTPUT;
         default:
             return KuraGPIODirection.OUTPUT;

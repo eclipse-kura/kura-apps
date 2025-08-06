@@ -31,9 +31,23 @@ import org.eclipse.kura.cloudconnection.publisher.CloudPublisher;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.message.KuraPayload;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        enabled = true, //
+        name = "org.eclipse.kura.example.eddystone.scanner.EddystoneScanner", //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class } //
+)
+
+@Designate(ocd = EddystoneScannerOCD.class, factory = false)
 public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaconListener<BluetoothLeEddystone> {
 
     private static final String ADDRESS_MESSAGE_PROP_KEY = "address";
@@ -51,6 +65,11 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
 
     private CloudPublisher cloudPublisher;
 
+    @Reference(name = "BluetoothLeService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unsetBluetoothLeService" //
+    )
     public void setBluetoothLeService(BluetoothLeService bluetoothLeService) {
         this.bluetoothLeService = bluetoothLeService;
     }
@@ -59,6 +78,11 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
         this.bluetoothLeService = null;
     }
 
+    @Reference(name = "BluetoothLeEddystoneService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unsetBluetoothLeEddystoneService" //
+    )
     public void setBluetoothLeEddystoneService(BluetoothLeEddystoneService bluetoothLeEddystoneService) {
         this.bluetoothLeEddystoneService = bluetoothLeEddystoneService;
     }
@@ -67,6 +91,11 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
         this.bluetoothLeEddystoneService = null;
     }
 
+    @Reference(name = "CloudPublisher", //
+            policy = ReferencePolicy.DYNAMIC, //
+            cardinality = ReferenceCardinality.OPTIONAL, //
+            unbind = "unsetCloudPublisher" //
+    )
     public void setCloudPublisher(CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
     }
@@ -75,11 +104,11 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
         this.cloudPublisher = null;
     }
 
-    protected void activate(ComponentContext context, Map<String, Object> properties) {
+    protected void activate(EddystoneScannerOCD ocd) {
         logger.info("Activating Bluetooth Eddystone Scanner example...");
 
         this.publishTimes = new HashMap<>();
-        doUpdate(properties);
+        doUpdate(ocd);
         logger.info("Activating Bluetooth Eddystone Scanner example...Done");
     }
 
@@ -99,7 +128,7 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
         logger.debug("Deactivating Eddystone Scanner Example... Done.");
     }
 
-    protected void updated(Map<String, Object> properties) {
+    protected void updated(EddystoneScannerOCD ocd) {
         logger.debug("Updating Eddystone Scanner Example...");
 
         releaseResources();
@@ -112,13 +141,13 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
             this.worker.shutdown();
         }
 
-        doUpdate(properties);
+        doUpdate(ocd);
 
         logger.debug("Updating Eddystone Scanner Example... Done");
     }
 
-    private void doUpdate(Map<String, Object> properties) {
-        this.options = new EddystoneScannerOptions(properties);
+    private void doUpdate(EddystoneScannerOCD ocd) {
+        this.options = new EddystoneScannerOptions(ocd);
 
         if (this.options.isEnabled()) {
             this.worker = Executors.newSingleThreadExecutor();
@@ -176,7 +205,8 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
 
         Long lastPublishTime = this.publishTimes.get(eddystone.getAddress());
 
-        // If this beacon is new, or it last published more than 'publish.period' seconds ago
+        // If this beacon is new, or it last published more than 'publish.period'
+        // seconds ago
         if (lastPublishTime == null || now - lastPublishTime > this.options.getPublishPeriod() * 1000L) {
 
             // Store the publish time against the address
@@ -186,7 +216,7 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
                 logger.info("No cloud publisher selected. Cannot publish!");
                 return;
             }
-            
+
             // Publish the beacon data to the beacon's topic
             KuraPayload kp = new KuraPayload();
             kp.setTimestamp(new Date());
