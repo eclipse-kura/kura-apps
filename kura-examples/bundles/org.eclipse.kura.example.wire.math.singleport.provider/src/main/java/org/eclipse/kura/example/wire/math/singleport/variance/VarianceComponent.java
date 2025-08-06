@@ -21,7 +21,6 @@ import java.util.function.Function;
 
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.example.wire.math.singleport.RunningAverage;
-import org.eclipse.kura.example.wire.math.singleport.maximum.MaximumComponentOCD;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
 import org.eclipse.kura.wire.WireComponent;
@@ -53,7 +52,7 @@ import org.slf4j.LoggerFactory;
         service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
                 WireReceiver.class, WireEmitter.class }, //
         enabled = true, //
-        name = "org.eclipse.kura.wire.Variance", //
+        name = "org.eclipse.kura.example.wire.math.singleport.variance.VarianceComponent", //
         property = { //
                 "input.cardinality.minimum:Integer=1", //
                 "input.cardinality.maximum:Integer=1", //
@@ -61,11 +60,10 @@ import org.slf4j.LoggerFactory;
                 "output.cardinality.minimum:Integer=1", //
                 "output.cardinality.maximum:Integer=1", //
                 "output.cardinality.default:Integer=1", //
-                "kura.ui.service.hide:Boolean=true", //
-                "service.pid:String=org.eclipse.kura.wire.Variance" //
+                "kura.ui.service.hide:Boolean=true" //
         } //
 )
-@Designate(ocd = MaximumComponentOCD.class, factory = true)
+@Designate(ocd = VarianceComponentOCD.class, factory = true)
 public class VarianceComponent
         implements WireEmitter, WireReceiver, ConfigurableComponent, Function<TypedValue<?>, TypedValue<?>> {
 

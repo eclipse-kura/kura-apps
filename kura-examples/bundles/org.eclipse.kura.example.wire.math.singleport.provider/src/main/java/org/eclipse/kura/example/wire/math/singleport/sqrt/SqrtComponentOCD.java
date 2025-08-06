@@ -5,7 +5,7 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @SuppressWarnings("checkstyle:MethodName")
-@ObjectClassDefinition(id = "org.eclipse.kura.wire.SquareRoot", //
+@ObjectClassDefinition(id = "org.eclipse.kura.example.wire.math.singleport.sqrt.SqrtComponent", //
         name = "Square Root", //
         description = "A wire component that performs the square root of a configurable numeric property received in input in the component. The result will be emitted as a new property of type double." //
 )

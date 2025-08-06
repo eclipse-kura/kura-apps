@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
         service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
                 WireReceiver.class, WireEmitter.class }, //
         enabled = true, //
-        name = "org.eclipse.kura.wire.Median", //
+        name = "org.eclipse.kura.example.wire.math.singleport.median.MedianComponent", //
         property = { //
                 "input.cardinality.minimum:Integer=1", //
                 "input.cardinality.maximum:Integer=1", //
@@ -60,8 +60,7 @@ import org.slf4j.LoggerFactory;
                 "output.cardinality.minimum:Integer=1", //
                 "output.cardinality.maximum:Integer=1", //
                 "output.cardinality.default:Integer=1", //
-                "kura.ui.service.hide:Boolean=true", //
-                "service.pid:String=org.eclipse.kura.wire.Median" //
+                "kura.ui.service.hide:Boolean=true" //
         } //
 )
 @Designate(ocd = MedianComponentOCD.class, factory = true)

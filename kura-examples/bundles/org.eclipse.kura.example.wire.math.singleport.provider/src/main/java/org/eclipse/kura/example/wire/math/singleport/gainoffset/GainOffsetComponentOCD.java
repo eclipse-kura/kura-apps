@@ -5,7 +5,7 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @SuppressWarnings("checkstyle:MethodName")
-@ObjectClassDefinition(id = "org.eclipse.kura.wire.GainOffset", //
+@ObjectClassDefinition(id = "org.eclipse.kura.example.wire.math.singleport.gainoffset.GainOffsetComponent", //
         name = "Gain Offset", //
         description = "A wire component that applies a gain and an offset to a configurable set of input properties." //
 )
@@ -13,11 +13,11 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 public @interface GainOffsetComponentOCD {
 
     @AttributeDefinition(name = "Configuration", //
-            description = "Specifies the properties on which apply a gain and offset. Must be a list of items in the form &lt;property name&gt;|&lt;gain&gt;|&lt;offset&gt; separated by &#59; or by a new line. The offset parameter can be omitted, in this case it will be assumed as 0.|TextArea", //
+            description = "Specifies the properties on which apply a gain and offset. Must be a list of items in the form <property name>|<gain>|<offset> separated by ; or by a new line. The offset parameter can be omitted, in this case it will be assumed as 0.|TextArea", //
             required = true, //
             cardinality = 0 //
     )
-    public String configuration() default "toBeMultipliedByTwo | 2&#10;toBeMultipliedBy3AndIncreasedBy1 | 3 | 1";
+    public String configuration() default "toBeMultipliedByTwo | 2;toBeMultipliedBy3AndIncreasedBy1 | 3 | 1";
 
     @AttributeDefinition(//
             name = "Emit Received Properties", //

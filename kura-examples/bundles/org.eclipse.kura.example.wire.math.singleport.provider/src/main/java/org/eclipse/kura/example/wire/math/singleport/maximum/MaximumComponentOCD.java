@@ -5,7 +5,7 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @SuppressWarnings("checkstyle:MethodName")
-@ObjectClassDefinition(id = "org.eclipse.kura.wire.Maximum", //
+@ObjectClassDefinition(id = "org.eclipse.kura.example.wire.math.singleport.maximum.MaximumComponent", //
         name = "Maximum", //
         description = "A wire component that finds the maximum value of a numeric property in a fixed size buffer containing the last received values, emitting the result. For comparison, values are promoted to double which is also the type of the result." //
 )

@@ -5,7 +5,7 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @SuppressWarnings("checkstyle:MethodName")
-@ObjectClassDefinition(id = "org.eclipse.kura.wire.Median", //
+@ObjectClassDefinition(id = "org.eclipse.kura.example.wire.math.singleport.median.MedianComponent", //
         name = "Median", //
         description = "A wire component that finds the median value of a numeric property in a fixed size buffer containing the last received values, emitting the result. For comparison, values are promoted to double which is also the type of the result." //
 )

@@ -134,7 +134,8 @@ public class SqrtComponentTest {
 
         final BundleContext bundleContext = FrameworkUtil.getBundle(SqrtComponentTest.class).getBundleContext();
 
-        builder.addWireComponent(UNDER_TEST_PID, "org.eclipse.kura.wire.SquareRoot", 1, 1) //
+        builder.addWireComponent(UNDER_TEST_PID, "org.eclipse.kura.example.wire.math.singleport.sqrt.SqrtComponent", 1,
+                1) //
                 .addTestEmitterReceiver(TEST_EMITTER_PID) //
                 .addTestEmitterReceiver(TEST_RECEIVER_PID) //
                 .addWire(TEST_EMITTER_PID, 0, UNDER_TEST_PID, IN_PORT) //

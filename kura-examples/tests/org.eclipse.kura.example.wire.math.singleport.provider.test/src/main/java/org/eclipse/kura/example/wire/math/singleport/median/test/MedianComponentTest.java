@@ -136,7 +136,8 @@ public class MedianComponentTest {
 
         final BundleContext bundleContext = FrameworkUtil.getBundle(MedianComponentTest.class).getBundleContext();
 
-        builder.addWireComponent(UNDER_TEST_PID, "org.eclipse.kura.wire.Median", 1, 1) //
+        builder.addWireComponent(UNDER_TEST_PID, "org.eclipse.kura.example.wire.math.singleport.median.MedianComponent",
+                1, 1) //
                 .addTestEmitterReceiver(TEST_EMITTER_PID) //
                 .addTestEmitterReceiver(TEST_RECEIVER_PID) //
                 .addWire(TEST_EMITTER_PID, 0, UNDER_TEST_PID, IN_PORT) //
