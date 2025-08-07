@@ -116,7 +116,10 @@ public class LedExample implements ConfigurableComponent {
         try {
             pin.setValue(bool);
             TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException | KuraUnavailableDeviceException | IOException | KuraClosedDeviceException e) {
+        } catch (final InterruptedException e) {
+            LedExample.logger.error("Set Value Exception ", e);
+            Thread.currentThread().interrupt(); // Ripristina lo stato di interruzione
+        } catch (KuraUnavailableDeviceException | IOException | KuraClosedDeviceException e) {
             LedExample.logger.error("Set Value Exception ", e);
         }
     }
