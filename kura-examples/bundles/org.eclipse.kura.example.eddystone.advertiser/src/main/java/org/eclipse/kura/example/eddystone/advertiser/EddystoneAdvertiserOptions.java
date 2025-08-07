@@ -30,25 +30,28 @@ public class EddystoneAdvertiserOptions {
     private final Integer txPower;
     private final String iname;
 
-    public EddystoneAdvertiserOptions(EddystoneAdvertiserOCD ocd) {
+    public EddystoneAdvertiserOptions(final EddystoneAdvertiserOCD ocd) {
         this.enable = ocd.enable_advertising();
-        this.minInterval = ocd.minimum_beacon_advertising_interval();
-        this.maxInterval = ocd.maximum_beacon_advertising_interval();
+        this.minInterval = (int) (ocd.minimum_beacon_advertising_interval() / 0.625);
+        this.maxInterval = (int) (ocd.maximum_beacon_advertising_interval() / 0.625);
         this.eddystoneFrametype = ocd.eddystone_frame_type();
         this.urlUrl = ocd.eddystone_url();
 
-        int txPowerInt = ocd.transmission_power();
-        if (txPowerInt <= PROPERTY_TX_POWER_MAX && txPowerInt >= PROPERTY_TX_POWER_MIN) {
+        final int txPowerInt = ocd.transmission_power();
+        if (txPowerInt <= EddystoneAdvertiserOptions.PROPERTY_TX_POWER_MAX
+                && txPowerInt >= EddystoneAdvertiserOptions.PROPERTY_TX_POWER_MIN) {
             this.txPower = txPowerInt;
-        } else if (txPowerInt > PROPERTY_TX_POWER_MAX) {
-            this.txPower = PROPERTY_TX_POWER_MAX;
+        } else if (txPowerInt > EddystoneAdvertiserOptions.PROPERTY_TX_POWER_MAX) {
+            this.txPower = EddystoneAdvertiserOptions.PROPERTY_TX_POWER_MAX;
         } else {
-            this.txPower = PROPERTY_TX_POWER_MIN;
+            this.txPower = EddystoneAdvertiserOptions.PROPERTY_TX_POWER_MIN;
         }
 
         this.iname = ocd.bluetooth_interface_name();
-        this.uidNamespace = setInPropertyLimit(ocd.eddystone_uid_namespace(), PROPERTY_NAMESPACE_DEFAULT, 20);
-        this.uidInstance = setInPropertyLimit(ocd.eddystone_uid_instance(), PROPERTY_INSTANCE_DEFAULT, 12);
+        this.uidNamespace = setInPropertyLimit(ocd.eddystone_uid_namespace(),
+                EddystoneAdvertiserOptions.PROPERTY_NAMESPACE_DEFAULT, 20);
+        this.uidInstance = setInPropertyLimit(ocd.eddystone_uid_instance(),
+                EddystoneAdvertiserOptions.PROPERTY_INSTANCE_DEFAULT, 12);
     }
 
     public boolean isEnabled() {
@@ -87,7 +90,7 @@ public class EddystoneAdvertiserOptions {
         return this.iname;
     }
 
-    private String setInPropertyLimit(String property, String propertyDefault, int lengthLimit) {
+    private String setInPropertyLimit(final String property, final String propertyDefault, final int lengthLimit) {
         if (property.length() == lengthLimit) {
             return setInHex(property, propertyDefault);
         } else {
@@ -95,7 +98,7 @@ public class EddystoneAdvertiserOptions {
         }
     }
 
-    private String setInHex(String value, String defaultValue) {
+    private String setInHex(final String value, final String defaultValue) {
         if (!value.matches("^[0-9a-fA-F]+$")) {
             return defaultValue;
         } else {

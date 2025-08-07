@@ -46,7 +46,6 @@ import org.slf4j.LoggerFactory;
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
         service = { ConfigurableComponent.class } //
 )
-
 @Designate(ocd = EddystoneScannerOCD.class, factory = false)
 public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaconListener<BluetoothLeEddystone> {
 
@@ -70,11 +69,11 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unsetBluetoothLeService" //
     )
-    public void setBluetoothLeService(BluetoothLeService bluetoothLeService) {
+    public void setBluetoothLeService(final BluetoothLeService bluetoothLeService) {
         this.bluetoothLeService = bluetoothLeService;
     }
 
-    public void unsetBluetoothLeService(BluetoothLeService bluetoothLeService) {
+    public void unsetBluetoothLeService(final BluetoothLeService bluetoothLeService) {
         this.bluetoothLeService = null;
     }
 
@@ -83,11 +82,11 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unsetBluetoothLeEddystoneService" //
     )
-    public void setBluetoothLeEddystoneService(BluetoothLeEddystoneService bluetoothLeEddystoneService) {
+    public void setBluetoothLeEddystoneService(final BluetoothLeEddystoneService bluetoothLeEddystoneService) {
         this.bluetoothLeEddystoneService = bluetoothLeEddystoneService;
     }
 
-    public void unsetBluetoothLeEddystoneService(BluetoothLeEddystoneService bluetoothLeEddystoneService) {
+    public void unsetBluetoothLeEddystoneService(final BluetoothLeEddystoneService bluetoothLeEddystoneService) {
         this.bluetoothLeEddystoneService = null;
     }
 
@@ -96,24 +95,24 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
             cardinality = ReferenceCardinality.OPTIONAL, //
             unbind = "unsetCloudPublisher" //
     )
-    public void setCloudPublisher(CloudPublisher cloudPublisher) {
+    public void setCloudPublisher(final CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
     }
 
-    public void unsetCloudPublisher(CloudPublisher cloudPublisher) {
+    public void unsetCloudPublisher(final CloudPublisher cloudPublisher) {
         this.cloudPublisher = null;
     }
 
-    protected void activate(EddystoneScannerOCD ocd) {
-        logger.info("Activating Bluetooth Eddystone Scanner example...");
+    protected void activate(final EddystoneScannerOCD ocd) {
+        EddystoneScanner.logger.info("Activating Bluetooth Eddystone Scanner example...");
 
         this.publishTimes = new HashMap<>();
         doUpdate(ocd);
-        logger.info("Activating Bluetooth Eddystone Scanner example...Done");
+        EddystoneScanner.logger.info("Activating Bluetooth Eddystone Scanner example...Done");
     }
 
-    protected void deactivate(ComponentContext context) {
-        logger.debug("Deactivating Eddystone Scanner Example...");
+    protected void deactivate(final ComponentContext context) {
+        EddystoneScanner.logger.debug("Deactivating Eddystone Scanner Example...");
 
         releaseResources();
 
@@ -125,11 +124,11 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
             this.worker.shutdown();
         }
 
-        logger.debug("Deactivating Eddystone Scanner Example... Done.");
+        EddystoneScanner.logger.debug("Deactivating Eddystone Scanner Example... Done.");
     }
 
-    protected void updated(EddystoneScannerOCD ocd) {
-        logger.debug("Updating Eddystone Scanner Example...");
+    protected void updated(final EddystoneScannerOCD ocd) {
+        EddystoneScanner.logger.debug("Updating Eddystone Scanner Example...");
 
         releaseResources();
 
@@ -143,10 +142,10 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
 
         doUpdate(ocd);
 
-        logger.debug("Updating Eddystone Scanner Example... Done");
+        EddystoneScanner.logger.debug("Updating Eddystone Scanner Example... Done");
     }
 
-    private void doUpdate(EddystoneScannerOCD ocd) {
+    private void doUpdate(final EddystoneScannerOCD ocd) {
         this.options = new EddystoneScannerOptions(ocd);
 
         if (this.options.isEnabled()) {
@@ -156,7 +155,7 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
     }
 
     private void setup() {
-        BluetoothLeAdapter bluetoothLeAdapter = this.bluetoothLeService.getAdapter(this.options.getAdapterName());
+        final BluetoothLeAdapter bluetoothLeAdapter = this.bluetoothLeService.getAdapter(this.options.getAdapterName());
         if (bluetoothLeAdapter != null) {
             if (!bluetoothLeAdapter.isPowered()) {
                 bluetoothLeAdapter.setPowered(true);
@@ -165,11 +164,11 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
             this.bluetoothLeEddystoneScanner.addBeaconListener(this);
             try {
                 this.bluetoothLeEddystoneScanner.startBeaconScan(this.options.getScanDuration());
-            } catch (KuraException e) {
-                logger.error("iBeacon scanning failed", e);
+            } catch (final KuraException e) {
+                EddystoneScanner.logger.error("iBeacon scanning failed", e);
             }
         } else {
-            logger.warn("No Bluetooth adapter found ...");
+            EddystoneScanner.logger.warn("No Bluetooth adapter found ...");
         }
     }
 
@@ -183,27 +182,29 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
         }
     }
 
-    private double calculateDistance(int rssi, int txpower) {
+    private double calculateDistance(final int rssi, final int txpower) {
 
-        int ratioDB = txpower - rssi;
-        double ratioLinear = Math.pow(10, (double) ratioDB / 10);
+        final int ratioDB = txpower - rssi;
+        final double ratioLinear = Math.pow(10, (double) ratioDB / 10);
         return Math.sqrt(ratioLinear);
     }
 
     @Override
-    public void onBeaconsReceived(BluetoothLeEddystone eddystone) {
-        logger.info("Eddystone {} received from {}", eddystone.getFrameType(), eddystone.getAddress());
+    public void onBeaconsReceived(final BluetoothLeEddystone eddystone) {
+        EddystoneScanner.logger.info("Eddystone {} received from {}", eddystone.getFrameType(), eddystone.getAddress());
         if ("UID".equals(eddystone.getFrameType())) {
-            logger.info("Namespace : {}", bytesArrayToHexString(eddystone.getNamespace()));
-            logger.info("Instance : {}", bytesArrayToHexString(eddystone.getInstance()));
+            EddystoneScanner.logger.info("Namespace : {}",
+                    EddystoneScanner.bytesArrayToHexString(eddystone.getNamespace()));
+            EddystoneScanner.logger.info("Instance : {}",
+                    EddystoneScanner.bytesArrayToHexString(eddystone.getInstance()));
         } else if ("URL".equals(eddystone.getFrameType())) {
-            logger.info("URL : {}", eddystone.getUrlScheme() + eddystone.getUrl());
+            EddystoneScanner.logger.info("URL : {}", eddystone.getUrlScheme() + eddystone.getUrl());
         }
-        logger.info("TxPower : {}", eddystone.getTxPower());
-        logger.info("RSSI : {}", eddystone.getRssi());
-        long now = System.currentTimeMillis();
+        EddystoneScanner.logger.info("TxPower : {}", eddystone.getTxPower());
+        EddystoneScanner.logger.info("RSSI : {}", eddystone.getRssi());
+        final long now = System.currentTimeMillis();
 
-        Long lastPublishTime = this.publishTimes.get(eddystone.getAddress());
+        final Long lastPublishTime = this.publishTimes.get(eddystone.getAddress());
 
         // If this beacon is new, or it last published more than 'publish.period'
         // seconds ago
@@ -213,17 +214,17 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
             this.publishTimes.put(eddystone.getAddress(), now);
 
             if (this.cloudPublisher == null) {
-                logger.info("No cloud publisher selected. Cannot publish!");
+                EddystoneScanner.logger.info("No cloud publisher selected. Cannot publish!");
                 return;
             }
 
             // Publish the beacon data to the beacon's topic
-            KuraPayload kp = new KuraPayload();
+            final KuraPayload kp = new KuraPayload();
             kp.setTimestamp(new Date());
             kp.addMetric("type", eddystone.getFrameType());
             if ("UID".equals(eddystone.getFrameType())) {
-                kp.addMetric("namespace", bytesArrayToHexString(eddystone.getNamespace()));
-                kp.addMetric("instance", bytesArrayToHexString(eddystone.getInstance()));
+                kp.addMetric("namespace", EddystoneScanner.bytesArrayToHexString(eddystone.getNamespace()));
+                kp.addMetric("instance", EddystoneScanner.bytesArrayToHexString(eddystone.getInstance()));
             } else if ("URL".equals(eddystone.getFrameType())) {
                 kp.addMetric("URL", eddystone.getUrl());
             }
@@ -231,22 +232,22 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
             kp.addMetric("rssi", eddystone.getRssi());
             kp.addMetric("distance", calculateDistance(eddystone.getRssi(), eddystone.getTxPower()));
 
-            Map<String, Object> properties = new HashMap<>();
-            properties.put(ADDRESS_MESSAGE_PROP_KEY, eddystone.getAddress());
+            final Map<String, Object> properties = new HashMap<>();
+            properties.put(EddystoneScanner.ADDRESS_MESSAGE_PROP_KEY, eddystone.getAddress());
 
-            KuraMessage message = new KuraMessage(kp, properties);
+            final KuraMessage message = new KuraMessage(kp, properties);
 
             try {
                 this.cloudPublisher.publish(message);
-            } catch (KuraException e) {
-                logger.error("Unable to publish", e);
+            } catch (final KuraException e) {
+                EddystoneScanner.logger.error("Unable to publish", e);
             }
         }
     }
 
-    private static String bytesArrayToHexString(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
+    private static String bytesArrayToHexString(final byte[] bytes) {
+        final StringBuilder sb = new StringBuilder();
+        for (final byte b : bytes) {
             sb.append(String.format("%02X", b));
         }
         return sb.toString();

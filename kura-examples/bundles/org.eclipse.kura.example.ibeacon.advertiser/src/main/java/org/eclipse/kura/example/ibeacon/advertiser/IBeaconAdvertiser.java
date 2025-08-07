@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kura.example.ibeacon.advertiser;
 
-import java.util.Map;
-
 import org.eclipse.kura.KuraBluetoothBeaconAdvertiserNotAvailable;
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.ble.ibeacon.BluetoothLeIBeacon;
@@ -23,9 +21,26 @@ import org.eclipse.kura.bluetooth.le.BluetoothLeService;
 import org.eclipse.kura.bluetooth.le.beacon.BluetoothLeBeaconAdvertiser;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class }, //
+        enabled = true, //
+        name = "org.eclipse.kura.example.ibeacon.advertiser.IBeaconAdvertiser" //
+
+)
+@Designate(ocd = IBeaconAdvertiserOCD.class, factory = false)
 public class IBeaconAdvertiser implements ConfigurableComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(IBeaconAdvertiser.class);
@@ -36,19 +51,29 @@ public class IBeaconAdvertiser implements ConfigurableComponent {
     private BluetoothLeBeaconAdvertiser<BluetoothLeIBeacon> advertising;
     private IBeaconAdvertiserOptions options;
 
-    public void setBluetoothLeService(BluetoothLeService bluetoothLeService) {
+    @Reference(name = "BluetoothLeService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unsetBluetoothLeService" //
+    )
+    public void setBluetoothLeService(final BluetoothLeService bluetoothLeService) {
         this.bluetoothLeService = bluetoothLeService;
     }
 
-    public void unsetBluetoothLeService(BluetoothLeService bluetoothLeService) {
+    public void unsetBluetoothLeService(final BluetoothLeService bluetoothLeService) {
         this.bluetoothLeService = null;
     }
 
-    public void setBluetoothLeIBeaconService(BluetoothLeIBeaconService bluetoothLeIBeaconService) {
+    @Reference(name = "BluetoothLeIBeaconService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unsetBluetoothLeIBeaconService" //
+    )
+    public void setBluetoothLeIBeaconService(final BluetoothLeIBeaconService bluetoothLeIBeaconService) {
         this.bluetoothLeIBeaconService = bluetoothLeIBeaconService;
     }
 
-    public void unsetBluetoothLeIBeaconService(BluetoothLeIBeaconService bluetoothLeIBeaconService) {
+    public void unsetBluetoothLeIBeaconService(final BluetoothLeIBeaconService bluetoothLeIBeaconService) {
         this.bluetoothLeIBeaconService = null;
     }
 
@@ -57,41 +82,44 @@ public class IBeaconAdvertiser implements ConfigurableComponent {
     // Activation APIs
     //
     // --------------------------------------------------------------------
-    protected void activate(ComponentContext context, Map<String, Object> properties) {
-        logger.info("Activating Bluetooth iBeacon example...");
+    @Activate
+    protected void activate(final ComponentContext context, final IBeaconAdvertiserOCD ocd) {
+        IBeaconAdvertiser.logger.info("Activating Bluetooth iBeacon example...");
 
-        update(properties);
+        executeUpdate(ocd);
 
-        logger.debug("Activating iBeacon Example... Done.");
+        IBeaconAdvertiser.logger.debug("Activating iBeacon Example... Done.");
 
     }
 
-    protected void deactivate(ComponentContext context) {
+    @Deactivate
+    protected void deactivate(final IBeaconAdvertiserOCD ocd) {
 
-        logger.debug("Deactivating iBeacon Example...");
+        IBeaconAdvertiser.logger.debug("Deactivating iBeacon Example...");
 
         // Stop the advertising
         if (this.advertising != null) {
             try {
                 this.advertising.stopBeaconAdvertising();
                 this.bluetoothLeIBeaconService.deleteBeaconAdvertiser(this.advertising);
-            } catch (KuraException e) {
-                logger.error("Stop iBeacon advertising failed", e);
+            } catch (final KuraException e) {
+                IBeaconAdvertiser.logger.error("Stop iBeacon advertising failed", e);
             }
         }
 
         // cancel bluetoothAdapter
         this.bluetoothLeAdapter = null;
 
-        logger.debug("Deactivating iBeacon Example... Done.");
+        IBeaconAdvertiser.logger.debug("Deactivating iBeacon Example... Done.");
     }
 
-    protected void updated(Map<String, Object> properties) {
-        logger.info("Updating Bluetooth iBeacon example...");
+    @Modified
+    protected void updated(final IBeaconAdvertiserOCD ocd) {
+        IBeaconAdvertiser.logger.info("Updating Bluetooth iBeacon example...");
 
-        update(properties);
+        executeUpdate(ocd);
 
-        logger.debug("Updating iBeacon Example... Done.");
+        IBeaconAdvertiser.logger.debug("Updating iBeacon Example... Done.");
     }
 
     // --------------------------------------------------------------------
@@ -100,16 +128,16 @@ public class IBeaconAdvertiser implements ConfigurableComponent {
     //
     // --------------------------------------------------------------------
 
-    private void update(Map<String, Object> properties) {
-        this.options = new IBeaconAdvertiserOptions(properties);
+    private void executeUpdate(final IBeaconAdvertiserOCD ocd) {
+        this.options = new IBeaconAdvertiserOptions(ocd);
 
         // Stop the advertising
         if (this.advertising != null) {
             try {
                 this.advertising.stopBeaconAdvertising();
                 this.bluetoothLeIBeaconService.deleteBeaconAdvertiser(this.advertising);
-            } catch (KuraException e) {
-                logger.error("Stop iBeacon advertising failed", e);
+            } catch (final KuraException e) {
+                IBeaconAdvertiser.logger.error("Stop iBeacon advertising failed", e);
             }
         }
 
@@ -120,31 +148,31 @@ public class IBeaconAdvertiser implements ConfigurableComponent {
         if (this.options.isEnabled()) {
             this.bluetoothLeAdapter = this.bluetoothLeService.getAdapter(this.options.getIname());
             if (this.bluetoothLeAdapter != null) {
-                logger.info("Bluetooth adapter interface => {}", this.options.getIname());
-                logger.info("Bluetooth adapter address => {}", this.bluetoothLeAdapter.getAddress());
+                IBeaconAdvertiser.logger.info("Bluetooth adapter interface => {}", this.options.getIname());
+                IBeaconAdvertiser.logger.info("Bluetooth adapter address => {}", this.bluetoothLeAdapter.getAddress());
 
                 if (!this.bluetoothLeAdapter.isPowered()) {
-                    logger.info("Enabling bluetooth adapter...");
+                    IBeaconAdvertiser.logger.info("Enabling bluetooth adapter...");
                     this.bluetoothLeAdapter.setPowered(true);
                 }
 
                 try {
                     this.advertising = this.bluetoothLeIBeaconService.newBeaconAdvertiser(this.bluetoothLeAdapter);
                     configureBeacon();
-                } catch (KuraBluetoothBeaconAdvertiserNotAvailable e) {
-                    logger.error("Beacon Advertiser not available on {}", this.bluetoothLeAdapter.getInterfaceName(),
-                            e);
+                } catch (final KuraBluetoothBeaconAdvertiserNotAvailable e) {
+                    IBeaconAdvertiser.logger.error("Beacon Advertiser not available on {}",
+                            this.bluetoothLeAdapter.getInterfaceName(), e);
                 }
 
             } else {
-                logger.warn("No Bluetooth adapter found ...");
+                IBeaconAdvertiser.logger.warn("No Bluetooth adapter found ...");
             }
         }
     }
 
     private void configureBeacon() {
         try {
-            BluetoothLeIBeacon iBeacon = new BluetoothLeIBeacon(this.options.getUUID(),
+            final BluetoothLeIBeacon iBeacon = new BluetoothLeIBeacon(this.options.getUUID(),
                     this.options.getMajor().shortValue(), this.options.getMinor().shortValue(),
                     this.options.getTxPower().shortValue());
             this.advertising.updateBeaconAdvertisingData(iBeacon);
@@ -152,8 +180,8 @@ public class IBeaconAdvertiser implements ConfigurableComponent {
                     this.options.getMaxInterval());
 
             this.advertising.startBeaconAdvertising();
-        } catch (KuraException e) {
-            logger.error("IBeacon configuration failed", e);
+        } catch (final KuraException e) {
+            IBeaconAdvertiser.logger.error("IBeacon configuration failed", e);
         }
     }
 
