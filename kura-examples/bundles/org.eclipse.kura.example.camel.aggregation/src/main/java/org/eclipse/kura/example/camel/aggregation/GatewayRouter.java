@@ -13,20 +13,30 @@
 package org.eclipse.kura.example.camel.aggregation;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.eclipse.kura.camel.component.Configuration.asInt;
-
-import java.util.Map;
 
 import org.eclipse.kura.camel.component.AbstractJavaCamelComponent;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Example of the Kura Camel application.
  */
-public class GatewayRouter extends AbstractJavaCamelComponent implements ConfigurableComponent {
+@Component(immediate = true, //
+        enabled = true, //
+        name = "org.eclipse.kura.example.camel.aggregation.GatewayRouter", //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class } //
+)
+@Designate(ocd = GatewayRouterOCD.class, factory = true)
+public class GatewayRouter extends AbstractJavaCamelComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(GatewayRouter.class);
 
@@ -45,27 +55,30 @@ public class GatewayRouter extends AbstractJavaCamelComponent implements Configu
                 .to("log:averageTemperatureFromLast10Seconds");
     }
 
-    protected void activate(final ComponentContext componentContext, final Map<String, Object> properties)
+    @Activate
+    protected void activate(final ComponentContext componentContext, GatewayRouterOCD ocd)
             throws Exception {
         logger.info("Activated");
 
-        setProperties(properties);
+        setProperties(ocd);
         start();
     }
 
-    protected void modified(final Map<String, Object> properties) {
+    @Modified
+    protected void modified(GatewayRouterOCD ocd) {
         logger.info("Modified");
 
-        setProperties(properties);
+        setProperties(ocd);
     }
 
+    @Deactivate
     protected void deactivate() throws Exception {
         stop();
     }
 
-    private void setProperties(final Map<String, Object> properties) {
-        int minimum = asInt(properties, "minimum", DEFAULT_MINIMUM);
-        int maximum = asInt(properties, "maximum", DEFAULT_MAXIMUM);
+    private void setProperties(GatewayRouterOCD ocd) {
+        int minimum = ocd.minimum();
+        int maximum = ocd.maximum();
 
         if (maximum - minimum <= 0) {
             throw new IllegalArgumentException("Maximum must be at least one higher than minimum");

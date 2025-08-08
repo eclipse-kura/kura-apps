@@ -13,12 +13,9 @@
  *******************************************************************************/
 package org.eclipse.kura.example.camel.publisher;
 
-import java.util.Map;
-
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.kura.camel.cloud.KuraCloudComponent;
-import org.eclipse.kura.camel.component.Configuration;
 import org.eclipse.kura.camel.runner.CamelRunner;
 import org.eclipse.kura.camel.runner.CamelRunner.Builder;
 import org.eclipse.kura.camel.runner.ServiceConsumer;
@@ -28,6 +25,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,21 +56,22 @@ public abstract class AbstractSimplePublisher implements ConfigurableComponent {
      * Component activation
      *
      * @param properties
-     *            initial properties
+     *                   initial properties
      * @throws Exception
-     *             if something goes wrong
+     *                   if something goes wrong
      */
-    public void start(final Map<String, Object> properties) throws Exception {
-        logger.info("Start: {}", properties);
+    @Activate
+    public void start(ExampleCamelPublisherOCD ocd) throws Exception {
+        logger.info("Activate...");
 
         // create new filter and instance
 
-        final String cloudServiceFilterTmp = makeCloudServiceFilter(properties);
+        final String cloudServiceFilterTmp = makeCloudServiceFilter(ocd);
         this.camel = createCamelRunner(cloudServiceFilterTmp);
 
         // set routes
 
-        this.camel.setRoutes(fromProperties(properties));
+        this.camel.setRoutes(fromOcd(ocd));
 
         // start
 
@@ -81,14 +82,14 @@ public abstract class AbstractSimplePublisher implements ConfigurableComponent {
      * Component update
      *
      * @param properties
-     *            updated properties
+     *                   updated properties
      * @throws Exception
-     *             if something goes wrong
+     *                   if something goes wrong
      */
-    public void updated(final Map<String, Object> properties) throws Exception {
-        logger.info("Updating: {}", properties);
+    @Modified
+    public void updated(final ExampleCamelPublisherOCD ocd) throws Exception {
 
-        final String cloudServiceFilterTmp = makeCloudServiceFilter(properties);
+        final String cloudServiceFilterTmp = makeCloudServiceFilter(ocd);
         if (!this.cloudServiceFilter.equals(cloudServiceFilterTmp)) {
             // update the routes and the filter
 
@@ -99,14 +100,14 @@ public abstract class AbstractSimplePublisher implements ConfigurableComponent {
             this.camel = createCamelRunner(cloudServiceFilterTmp);
 
             // set the routes
-            this.camel.setRoutes(fromProperties(properties));
+            this.camel.setRoutes(fromOcd(ocd));
 
             // and restart again
             this.camel.start();
         } else {
             // only update the routes, this is done without restarting the context
 
-            this.camel.setRoutes(fromProperties(properties));
+            this.camel.setRoutes(fromOcd(ocd));
         }
     }
 
@@ -114,8 +115,9 @@ public abstract class AbstractSimplePublisher implements ConfigurableComponent {
      * Component de-activation
      *
      * @throws Exception
-     *             if something goes wrong
+     *                   if something goes wrong
      */
+    @Deactivate
     public void stop() throws Exception {
         if (this.camel != null) {
             this.camel.stop();
@@ -127,10 +129,11 @@ public abstract class AbstractSimplePublisher implements ConfigurableComponent {
      * Create a new camel runner with required dependencies
      *
      * @param cloudServiceFilter
-     *            the filter for locating a cloud service filter
+     *                           the filter for locating a cloud service filter
      * @return the new camel runner
      * @throws InvalidSyntaxException
-     *             in case the cloud service filter had an illegal syntax
+     *                                in case the cloud service filter had an
+     *                                illegal syntax
      */
     private CamelRunner createCamelRunner(final String cloudServiceFilter) throws InvalidSyntaxException {
         final BundleContext ctx = FrameworkUtil.getBundle(AbstractSimplePublisher.class).getBundleContext();
@@ -161,23 +164,21 @@ public abstract class AbstractSimplePublisher implements ConfigurableComponent {
      * Construct an OSGi filter for a cloud service instance
      *
      * @param properties
-     *            the properties to read from
+     *                   the properties to read from
      * @return the OSGi filter selecting the cloud service instance
      */
-    private static String makeCloudServiceFilter(final Map<String, Object> properties) {
-        final String filterPid = Configuration.asStringNotEmpty(properties, "cloudService",
-                "org.eclipse.kura.cloud.CloudService");
-        final String fullFilter = String.format("(&(%s=%s)(kura.service.pid=%s))", Constants.OBJECTCLASS,
+    private static String makeCloudServiceFilter(ExampleCamelPublisherOCD ocd) {
+        final String filterPid = ocd.cloud_service_pid();
+        return String.format("(&(%s=%s)(kura.service.pid=%s))", Constants.OBJECTCLASS,
                 CloudService.class.getName(), filterPid);
-        return fullFilter;
     }
 
     /**
      * Create a new RouteBuilder instance from the properties
      *
      * @param properties
-     *            the properties to read from
+     *                   the properties to read from
      * @return the new instance of RouteBuilder
      */
-    protected abstract RouteBuilder fromProperties(Map<String, Object> properties);
+    protected abstract RouteBuilder fromOcd(ExampleCamelPublisherOCD ocd);
 }

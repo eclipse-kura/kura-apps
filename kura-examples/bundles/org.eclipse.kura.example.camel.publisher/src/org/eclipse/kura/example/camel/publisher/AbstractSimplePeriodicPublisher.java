@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kura.example.camel.publisher;
 
-import static org.eclipse.kura.camel.component.Configuration.asBoolean;
-
 import java.util.Date;
 import java.util.Map;
 
@@ -27,7 +25,7 @@ public abstract class AbstractSimplePeriodicPublisher<T> extends AbstractSimpleP
 
     private final String appId;
 
-    protected abstract T parseConfiguration(Map<String, Object> properties);
+    protected abstract T parseConfiguration(ExampleCamelPublisherOCD ocd);
 
     protected abstract Map<String, Object> getPayload(T configuration);
 
@@ -39,17 +37,17 @@ public abstract class AbstractSimplePeriodicPublisher<T> extends AbstractSimpleP
      * Create a default route which periodically polls for data
      */
     @Override
-    protected RouteBuilder fromProperties(final Map<String, Object> properties) {
+    protected RouteBuilder fromOcd(ExampleCamelPublisherOCD ocd) {
 
         // we are disabled, to remove all routes
 
-        if (!asBoolean(properties, "enabled")) {
+        if (!ocd.enable_service()) {
             return NO_ROUTES;
         }
 
         // parse new configuration
 
-        final T configuration = parseConfiguration(properties);
+        final T configuration = parseConfiguration(ocd);
 
         // return new router builder
 
