@@ -1,6 +1,7 @@
 package org.eclipse.kura.example.camel.publisher;
 
 import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Icon;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 /**
@@ -10,7 +11,10 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 @ObjectClassDefinition( //
                 id = "org.eclipse.kura.example.camel.publisher.ExampleCamelPublisher", //
                 name = "Camel example publisher", //
-                description = "Configurable Apache Camel based example publisher. It publishes to 'camel/example'." //
+                description = "Configurable Apache Camel based example publisher. It publishes to 'camel/example'.", //
+                icon = { //
+                                @Icon(resource = "logos/logo.png", size = 32) //
+                } //
 )
 public @interface ExampleCamelPublisherOCD {
 
@@ -33,14 +37,14 @@ public @interface ExampleCamelPublisherOCD {
                         cardinality = 0, //
                         required = true //
         )
-        int integer_amplitude() default 20;
+        int integer_amplitude() default -20;
 
         @AttributeDefinition(name = "Integer Offset", //
                         description = "The offset of the integer value", //
                         cardinality = 0, //
                         required = true //
         )
-        int integer_offset() default 0;
+        int integer_offset() default 20;
 
         @AttributeDefinition(name = "Period For Integer Value", //
                         description = "This value specifies the period time in seconds for the integer value", //
@@ -54,14 +58,14 @@ public @interface ExampleCamelPublisherOCD {
                         cardinality = 0, //
                         required = true //
         )
-        double floating_point_amplitude() default 0.5;
+        double floating_point_amplitude() default -0.5;
 
         @AttributeDefinition(name = "Floating Point Offset", //
                         description = "The offset of the floating point value", //
                         cardinality = 0, //
                         required = true //
         )
-        double floating_point_offset() default 10.0;
+        double floating_point_offset() default 0.5;
 
         @AttributeDefinition(name = "Period For Floating Point Value", //
                         description = "This value specifies the period time in seconds for the floating point value", //

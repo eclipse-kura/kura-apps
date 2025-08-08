@@ -62,7 +62,7 @@ public abstract class AbstractSimplePublisher implements ConfigurableComponent {
      */
     @Activate
     public void start(ExampleCamelPublisherOCD ocd) throws Exception {
-        logger.info("Activate...");
+        logger.info("Activating...");
 
         // create new filter and instance
 
@@ -87,8 +87,8 @@ public abstract class AbstractSimplePublisher implements ConfigurableComponent {
      *                   if something goes wrong
      */
     @Modified
-    public void updated(final ExampleCamelPublisherOCD ocd) throws Exception {
-
+    public void updated(ExampleCamelPublisherOCD ocd) throws Exception {
+        logger.info("Updating...");
         final String cloudServiceFilterTmp = makeCloudServiceFilter(ocd);
         if (!this.cloudServiceFilter.equals(cloudServiceFilterTmp)) {
             // update the routes and the filter
@@ -168,9 +168,8 @@ public abstract class AbstractSimplePublisher implements ConfigurableComponent {
      * @return the OSGi filter selecting the cloud service instance
      */
     private static String makeCloudServiceFilter(ExampleCamelPublisherOCD ocd) {
-        final String filterPid = ocd.cloud_service_pid();
         return String.format("(&(%s=%s)(kura.service.pid=%s))", Constants.OBJECTCLASS,
-                CloudService.class.getName(), filterPid);
+                CloudService.class.getName(), ocd.cloud_service_pid());
     }
 
     /**

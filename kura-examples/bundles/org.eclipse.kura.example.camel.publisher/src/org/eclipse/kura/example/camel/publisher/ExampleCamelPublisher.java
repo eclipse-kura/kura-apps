@@ -17,12 +17,23 @@ import static java.lang.Math.round;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.camel.builder.RouteBuilder;
+import org.eclipse.kura.configuration.ConfigurableComponent;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.metatype.annotations.Designate;
 
 /**
  * An example publisher based on Apache Camel
  */
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        name = "org.eclipse.kura.example.camel.publisher.ExampleCamelPublisher", //
+        service = { ConfigurableComponent.class }, //
+        enabled = true //
+)
+@Designate(ocd = ExampleCamelPublisherOCD.class, factory = false)
 public class ExampleCamelPublisher
         extends AbstractSimplePeriodicPublisher<ExampleCamelPublisher.PublisherConfiguration> {
 
@@ -39,15 +50,16 @@ public class ExampleCamelPublisher
         private final double offsetDouble;
         private final int periodDouble;
 
-        private PublisherConfiguration(ExampleCamelPublisherOCD ocd) {
+        private PublisherConfiguration(final int ampInt, final int offsetInt, final int periodInt,
+                final double ampDouble, final double offsetDouble, final int periodDouble) {
 
-            this.ampInt = ocd.integer_amplitude();
-            this.offsetInt = ocd.integer_offset();
-            this.periodInt = ocd.period_for_integer_value();
+            this.ampInt = ampInt;
+            this.offsetInt = offsetInt;
+            this.periodInt = periodInt;
 
-            this.ampDouble = ocd.floating_point_amplitude();
-            this.offsetDouble = ocd.floating_point_offset();
-            this.periodDouble = ocd.period_for_floating_point_value();
+            this.ampDouble = ampDouble;
+            this.offsetDouble = offsetDouble;
+            this.periodDouble = periodDouble;
         }
 
         public int getAmpInt() {
@@ -74,6 +86,26 @@ public class ExampleCamelPublisher
             return this.periodDouble;
         }
 
+        /**
+         * Parse configuration from properties
+         *
+         * @param properties
+         *                   the properties to parse from
+         * @return the result configuration
+         */
+        public static PublisherConfiguration fromProperties(ExampleCamelPublisherOCD ocd) {
+            Objects.requireNonNull(ocd);
+
+            final int ampInt = ocd.integer_amplitude();
+            final int offsetInt = ocd.integer_offset();
+            final int periodInt = ocd.period_for_integer_value();
+
+            final double ampDouble = ocd.floating_point_amplitude();
+            final double offsetDouble = ocd.floating_point_offset();
+            final int periodDouble = ocd.period_for_floating_point_value();
+
+            return new PublisherConfiguration(ampInt, offsetInt, periodInt, ampDouble, offsetDouble, periodDouble);
+        }
     }
 
     public ExampleCamelPublisher() {
@@ -82,7 +114,7 @@ public class ExampleCamelPublisher
 
     @Override
     protected PublisherConfiguration parseConfiguration(ExampleCamelPublisherOCD ocd) {
-        return PublisherConfiguration.fromOcd(ocd);
+        return PublisherConfiguration.fromProperties(ocd);
     }
 
     @Override
@@ -109,11 +141,5 @@ public class ExampleCamelPublisher
         final double v = System.currentTimeMillis() / 1000.0;
 
         return Math.sin(freq * v) * amp + offset;
-    }
-
-    @Override
-    protected RouteBuilder fromOcd(ExampleCamelPublisherOCD ocd) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fromOcd'");
     }
 }
