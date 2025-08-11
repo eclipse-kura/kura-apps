@@ -30,13 +30,13 @@ public @interface ModbusExampleOCD {
             defaultValue = "(kura.service.pid=changeme)")
     String cloud_publisher_target_filter();
 
-    @AttributeDefinition(name = "protocol", //
+    @AttributeDefinition(name = "Modbus Protocol", //
             description = "Type of connection : Serial Mode (RS232), TCP-RTU for TCP-encapsulated Modbus, or ModbusTCP/IP for the full TCP/IP implementation.", //
             defaultValue = "RS232", //
             required = false, //
             options = { @Option(label = "RS-232", value = "RS232"), @Option(label = "TCP-RTU", value = "TCP-RTU"),
                     @Option(label = "TCP/IP", value = "TCP/IP") })
-    String protocol();
+    String modbus_protocol();
 
     @AttributeDefinition(name = "Serial port", //
             description = "Serial Port Name.", //

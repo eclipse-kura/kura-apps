@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 @Component(immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        property = { "service.pid=org.eclipse.kura.example.can.CanSocketExample" }, //
+        name = "org.eclipse.kura.example.can.CanSocketExample", //
         service = { ConfigurableComponent.class }, //
         enabled = true //
 )

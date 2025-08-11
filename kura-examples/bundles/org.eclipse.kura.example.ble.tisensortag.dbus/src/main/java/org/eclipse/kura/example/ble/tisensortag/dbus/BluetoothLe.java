@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 @Component(immediate = true, //
         service = { ConfigurableComponent.class }, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        property = { "service.pid=org.eclipse.kura.example.ble.tisensortag.dbus.BluetoothLe" }, //
+        name = "org.eclipse.kura.example.ble.tisensortag.dbus.BluetoothLe", //
         enabled = true)
 @Designate(ocd = BluetoothLeOCD.class, factory = false)
 public class BluetoothLe implements ConfigurableComponent {

@@ -13,8 +13,6 @@
 package org.eclipse.kura.demo.heater;
 
 import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -44,7 +42,7 @@ import org.slf4j.LoggerFactory;
 @Component(immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
         service = { ConfigurableComponent.class, CloudConnectionListener.class, CloudDeliveryListener.class }, //
-        property = { "service.pid=org.eclipse.kura.demo.heater.Heater" }, //
+        name = "org.eclipse.kura.demo.heater.Heater", //
         enabled = true //
 )
 @Designate(ocd = HeaterOCD.class, factory = false)
@@ -53,24 +51,14 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     private static final Logger logger = LoggerFactory.getLogger(Heater.class);
 
     // Publishing Property Names
-    private static final String MODE_PROP_NAME = "mode";
     private static final String MODE_PROP_PROGRAM = "Program";
     private static final String MODE_PROP_MANUAL = "Manual";
     private static final String MODE_PROP_VACATION = "Vacation";
-
-    private static final String PROGRAM_SETPOINT_NAME = "program.setPoint";
-    private static final String MANUAL_SETPOINT_NAME = "manual.setPoint";
-
-    private static final String TEMP_INITIAL_PROP_NAME = "temperature.initial";
-    private static final String TEMP_INCREMENT_PROP_NAME = "temperature.increment";
-
-    private static final String PUBLISH_RATE_PROP_NAME = "publish.rate";
 
     private final ScheduledExecutorService worker;
     private ScheduledFuture<?> handle;
 
     private float temperature;
-    private Map<String, Object> properties;
     private final Random random;
 
     private CloudPublisher cloudPublisher;
@@ -111,19 +99,14 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     // ----------------------------------------------------------------
 
     @Activate
-    protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
+    protected void activate(ComponentContext componentContext, HeaterOCD ocd) {
         logger.info("Activating Heater...");
-
-        this.properties = properties;
-        for (Entry<String, Object> property : properties.entrySet()) {
-            logger.info("Update - {}: {}", property.getKey(), property.getValue());
-        }
 
         // get the mqtt client for this application
         try {
             // Don't subscribe because these are handled by the default
             // subscriptions and we don't want to get messages twice
-            doUpdate(false);
+            doUpdate(false, ocd);
         } catch (Exception e) {
             logger.error("Error during component activation", e);
             throw new ComponentException(e);
@@ -142,17 +125,11 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     }
 
     @Modified
-    public void updated(Map<String, Object> properties) {
+    public void updated(HeaterOCD ocd) {
         logger.info("Updated Heater...");
 
-        // store the properties received
-        this.properties = properties;
-        for (Entry<String, Object> property : properties.entrySet()) {
-            logger.info("Update - {}: {}", property.getKey(), property.getValue());
-        }
-
         // try to kick off a new job
-        doUpdate(true);
+        doUpdate(true, ocd);
         logger.info("Updated Heater... Done.");
     }
 
@@ -195,32 +172,25 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     /**
      * Called after a new set of properties has been configured on the service
      */
-    private void doUpdate(boolean onUpdate) {
+    private void doUpdate(boolean onUpdate, HeaterOCD ocd) {
         // cancel a current worker handle if one if active
         if (this.handle != null) {
             this.handle.cancel(true);
         }
 
-        if (!this.properties.containsKey(TEMP_INITIAL_PROP_NAME)
-                || !this.properties.containsKey(PUBLISH_RATE_PROP_NAME)) {
-            logger.info(
-                    "Update Heater - Ignore as properties do not contain TEMP_INITIAL_PROP_NAME and PUBLISH_RATE_PROP_NAME.");
-            return;
-        }
-
         // reset the temperature to the initial value
         if (!onUpdate) {
-            this.temperature = (Float) this.properties.get(TEMP_INITIAL_PROP_NAME);
+            this.temperature = ocd.temperature_initial();
         }
 
         // schedule a new worker based on the properties of the service
-        int pubrate = (Integer) this.properties.get(PUBLISH_RATE_PROP_NAME);
+        int pubrate = ocd.publish_rate();
         this.handle = this.worker.scheduleAtFixedRate(new Runnable() {
 
             @Override
             public void run() {
                 Thread.currentThread().setName(getClass().getSimpleName());
-                doPublish();
+                doPublish(ocd);
             }
         }, 0, pubrate, TimeUnit.SECONDS);
     }
@@ -228,22 +198,22 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     /**
      * Called at the configured rate to publish the next temperature measurement.
      */
-    private void doPublish() {
+    private void doPublish(HeaterOCD ocd) {
         if (this.cloudPublisher == null) {
             logger.info("No cloud publisher selected. Cannot publish!");
             return;
         }
 
         // fetch the publishing configuration from the publishing properties
-        String mode = (String) this.properties.get(MODE_PROP_NAME);
+        String mode = ocd.mode();
 
         // Increment the simulated temperature value
         float setPoint = 0;
-        float tempIncr = (Float) this.properties.get(TEMP_INCREMENT_PROP_NAME);
+        float tempIncr = ocd.temperature_increment();
         if (MODE_PROP_PROGRAM.equals(mode)) {
-            setPoint = (Float) this.properties.get(PROGRAM_SETPOINT_NAME);
+            setPoint = ocd.program_set_point();
         } else if (MODE_PROP_MANUAL.equals(mode)) {
-            setPoint = (Float) this.properties.get(MANUAL_SETPOINT_NAME);
+            setPoint = ocd.manual_set_point();
         } else if (MODE_PROP_VACATION.equals(mode)) {
             setPoint = 6.0F;
         }

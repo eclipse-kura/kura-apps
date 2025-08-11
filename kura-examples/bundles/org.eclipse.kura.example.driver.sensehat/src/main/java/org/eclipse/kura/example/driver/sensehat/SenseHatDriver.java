@@ -108,7 +108,9 @@ public class SenseHatDriver implements Driver, ConfigurableComponent, JoystickEv
     public void activate(SenseHatDriverOCD ocd) {
         logger.info("Activating SenseHat Driver...");
         getSensehatInterface(this.senseHat);
-        senseHatInterface.addJoystickEventListener(this);
+        if (senseHatInterface != null) {
+            senseHatInterface.addJoystickEventListener(this);
+        }
         logger.info("Activating SenseHat Driver... Done");
     }
 

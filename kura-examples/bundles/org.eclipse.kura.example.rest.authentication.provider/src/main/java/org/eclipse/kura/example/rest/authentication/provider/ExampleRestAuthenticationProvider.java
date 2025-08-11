@@ -38,7 +38,7 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 @Priority(50)
 @Component(immediate = true, //
         enabled = true, //
-        name = "org.eclipse.kura.example.ibeacon.scanner.IBeaconScanner", //
+        name = "org.eclipse.kura.example.rest.authentication.provider.ExampleRestAuthenticationProvider", //
         service = { AuthenticationProvider.class } //
 )
 @Designate(ocd = ExampleRestAuthenticationProviderOCD.class, factory = false)

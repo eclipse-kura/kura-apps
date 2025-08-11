@@ -34,8 +34,7 @@ import org.slf4j.LoggerFactory;
 @Component(//
         immediate = true, //
         service = { ConfigurableComponent.class, ContainerSignatureValidationService.class }, //
-        property = {
-                "service.pid=org.eclipse.kura.example.container.signature.validation.DummyContainerSignatureValidationService" }, //
+        name = "org.eclipse.kura.example.container.signature.validation.DummyContainerSignatureValidationService", //
         configurationPolicy = ConfigurationPolicy.REQUIRE //
 )
 @Designate(ocd = DummyContainerSignatureValidationServiceOCD.class, factory = false)

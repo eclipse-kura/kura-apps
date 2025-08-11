@@ -21,7 +21,6 @@ import org.eclipse.kura.wire.WireEnvelope;
 import org.eclipse.kura.wire.WireHelperService;
 import org.eclipse.kura.wire.WireReceiver;
 import org.eclipse.kura.wire.WireSupport;
-import org.eclipse.kura.wire.devel.driver.dummy.DummyDriverOCD;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -44,7 +43,7 @@ import org.slf4j.LoggerFactory;
         enabled = true, //
         name = "org.eclipse.kura.wire.devel.sink.Sink" //
 )
-@Designate(ocd = DummyDriverOCD.class, factory = true)
+@Designate(ocd = SinkOCD.class, factory = true)
 public class Sink implements WireReceiver, ConfigurableComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(Sink.class);

@@ -23,12 +23,10 @@ import org.eclipse.kura.raspberrypi.sensehat.sensors.LSM9DS1;
 import org.eclipse.kura.raspsberrypi.sensehat.joystick.Joystick;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(immediate = true, //
-        configurationPolicy = ConfigurationPolicy.REQUIRE, //
         service = { SenseHat.class }, //
         enabled = true, //
         name = "org.eclipse.kura.raspberrypi.sensehat.impl.SenseHatImpl" //
