@@ -30,9 +30,19 @@ import org.eclipse.kura.raspberrypi.sensehat.sensors.LSM9DS1;
 import org.eclipse.kura.raspsberrypi.sensehat.joystick.Joystick;
 import org.eclipse.kura.raspsberrypi.sensehat.joystick.JoystickEvent;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class }, //
+        enabled = true, //
+        name = "org.eclipse.kura.raspberrypi.sensehat.example.SenseHatExample" //
+)
+@Designate(ocd = SenseHatExampleOCD.class, factory = false)
 public class SenseHatExample implements ConfigurableComponent {
 
     private static final Logger s_logger = LoggerFactory.getLogger(SenseHatExample.class);
@@ -80,9 +90,9 @@ public class SenseHatExample implements ConfigurableComponent {
 
     private SenseHat senseHat;
 
-    private LSM9DS1 imuSensor;          // Inertial Measurement Unit (Accelerometer, Gyroscope, Magnetometer)
-    private LPS25H pressureSensor;     // Atmospheric Pressure
-    private HTS221 humiditySensor;     // Humidity
+    private LSM9DS1 imuSensor; // Inertial Measurement Unit (Accelerometer, Gyroscope, Magnetometer)
+    private LPS25H pressureSensor; // Atmospheric Pressure
+    private HTS221 humiditySensor; // Humidity
     private Map<String, Object> properties;
 
     private static ScheduledFuture<?> startUpdateThread;
