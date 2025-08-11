@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -33,8 +33,11 @@ import org.eclipse.kura.type.DataType;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.wire.devel.DataTypeHelper;
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,11 +58,13 @@ public class DummyDriver implements Driver, ConfigurableComponent {
     private final ChannelListenerManager channelListenerManager = new ChannelListenerManager(this);
     private final ConnectionManager connectionManager = new ConnectionManager();
 
+    DummyDriverOptions options;
+
     @Activate
-    public void activate(Map<String, Object> properties) {
+    public void activate(DummyDriverOCD ocd) {
         logger.info("activating...");
 
-        updated(properties);
+        updated(ocd);
         this.channelListenerManager.start();
 
         logger.info("activating...done");
@@ -76,11 +81,11 @@ public class DummyDriver implements Driver, ConfigurableComponent {
     }
 
     @Modified
-    public void updated(Map<String, Object> properties) {
+    public void updated(DummyDriverOCD ocd) {
         logger.info("updating..");
 
         values.clear();
-        this.options = new DummyDriverOptions(properties);
+        this.options = new DummyDriverOptions(ocd);
 
         this.connectionManager.setOptions(options);
 

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kura.wire.devel.delay;
 
-import java.util.Map;
 import java.util.Random;
 
 import org.eclipse.kura.configuration.ConfigurableComponent;
@@ -25,8 +24,16 @@ import org.eclipse.kura.wire.WireSupport;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.wireadmin.Consumer;
+import org.osgi.service.wireadmin.Producer;
 import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

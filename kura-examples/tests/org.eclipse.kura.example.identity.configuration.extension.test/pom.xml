@@ -30,7 +30,6 @@
     <packaging>eclipse-test-plugin</packaging>
 
     <properties>
-        <kura.basedir>${project.basedir}/../../..</kura.basedir>
         <sonar.coverage.jacoco.xmlReportPaths>
             ${project.build.directory}/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>

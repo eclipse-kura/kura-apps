@@ -13,6 +13,7 @@
 package org.eclipse.kura.wire.devel.delay;
 
 import org.osgi.service.component.annotations.ComponentPropertyType;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @SuppressWarnings("checkstyle:MethodName")
@@ -29,7 +30,7 @@ public @interface DelayOCD {
                         required = true, //
                         min = "0" //
         )
-        Integer delay_average() default 1000;
+        int delay_average() default 1000;
 
         @AttributeDefinition(//
                         name = "Delay Standard Deviation", //
@@ -37,5 +38,5 @@ public @interface DelayOCD {
                         required = true, //
                         min = "0" //
         )
-        Integer delay_standard_deviation() default 100;
+        int delay_standard_deviation() default 100;
 }
