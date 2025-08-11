@@ -10,6 +10,7 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
+
 package org.eclipse.kura.example.factory.component.test;
 
 import static org.junit.Assert.assertEquals;
