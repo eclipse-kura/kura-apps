@@ -24,21 +24,37 @@ import org.eclipse.kura.wire.WireReceiver;
 import org.eclipse.kura.wire.WireSupport;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
+                WireReceiver.class, WireEmitter.class }, //
+        enabled = true, //
+        name = "org.eclipse.kura.wire.devel.delay.Delay" //
+)
+@Designate(ocd = DelayOCD.class, factory = true)
 public class Delay implements WireEmitter, WireReceiver, ConfigurableComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(Delay.class);
 
-    private volatile WireHelperService wireHelperService;
+    private WireHelperService wireHelperService;
     private WireSupport wireSupport;
 
     private final Random random = new Random();
     private int delayAverage;
     private int delayStdDev;
 
+    @Reference(name = "WireHelperService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unbindWireHelperService" //
+    )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.wireHelperService = wireHelperService;
     }
@@ -48,29 +64,30 @@ public class Delay implements WireEmitter, WireReceiver, ConfigurableComponent {
     }
 
     @SuppressWarnings("unchecked")
-    public void activate(final ComponentContext context, final Map<String, Object> properties) {
+    @Activate
+    public void activate(final ComponentContext context, DelayOCD ocd) {
         logger.info("acitvating..");
 
         wireSupport = this.wireHelperService.newWireSupport(this,
                 (ServiceReference<WireComponent>) context.getServiceReference());
 
-        updated(properties);
+        updated(ocd);
 
         logger.info("activating...done");
     }
 
+    @Deactivate
     public void deactivate() {
         logger.info("deactivating..");
         logger.info("deactivating...done");
     }
 
-    public void updated(final Map<String, Object> properties) {
+    @Modified
+    public void updated(final DelayOCD ocd) {
         logger.info("updating..");
 
-        final DelayOptions options = new DelayOptions(properties);
-
-        this.delayAverage = options.getAverageDelay();
-        this.delayStdDev = options.getDelayStdDev();
+        this.delayAverage = ocd.delay_average();
+        this.delayStdDev = ocd.delay_standard_deviation();
 
         logger.info("updating...done");
     }

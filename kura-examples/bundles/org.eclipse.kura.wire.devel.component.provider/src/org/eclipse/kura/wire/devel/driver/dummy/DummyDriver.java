@@ -32,9 +32,19 @@ import org.eclipse.kura.driver.PreparedRead;
 import org.eclipse.kura.type.DataType;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.wire.devel.DataTypeHelper;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class, Driver.class }, //
+        enabled = true, //
+        name = "org.eclipse.kura.wire.devel.driver.dummy.DummyDriver" //
+)
+@Designate(ocd = DummyDriverOCD.class, factory = true)
 public class DummyDriver implements Driver, ConfigurableComponent {
 
     static final ChannelStatus SUCCESS = new ChannelStatus(ChannelFlag.SUCCESS);
@@ -45,8 +55,7 @@ public class DummyDriver implements Driver, ConfigurableComponent {
     private final ChannelListenerManager channelListenerManager = new ChannelListenerManager(this);
     private final ConnectionManager connectionManager = new ConnectionManager();
 
-    private DummyDriverOptions options;
-
+    @Activate
     public void activate(Map<String, Object> properties) {
         logger.info("activating...");
 
@@ -56,6 +65,7 @@ public class DummyDriver implements Driver, ConfigurableComponent {
         logger.info("activating...done");
     }
 
+    @Deactivate
     public void deactivate() {
         logger.info("deactivating...");
 
@@ -65,6 +75,7 @@ public class DummyDriver implements Driver, ConfigurableComponent {
         logger.info("deactivating...done");
     }
 
+    @Modified
     public void updated(Map<String, Object> properties) {
         logger.info("updating..");
 
@@ -109,7 +120,8 @@ public class DummyDriver implements Driver, ConfigurableComponent {
     public void registerChannelListener(Map<String, Object> channelConfig, ChannelListener listener)
             throws ConnectionException {
         this.channelListenerManager.registerChannelListener(channelConfig, listener);
-        // the driver should try to connect to the remote device and start sending notifications to the listener,
+        // the driver should try to connect to the remote device and start sending
+        // notifications to the listener,
         // but it should avoid performing blocking operations in this method
         this.connectionManager.connectAsync();
     }
@@ -215,7 +227,8 @@ public class DummyDriver implements Driver, ConfigurableComponent {
             this.validRequests = new ArrayList<>(records.size());
             for (final ChannelRecord record : records) {
                 try {
-                    // records with valid configuration will be processed during the execute() method
+                    // records with valid configuration will be processed during the execute()
+                    // method
                     validRequests.add(new ReadRequest(record));
                 } catch (Exception e) {
                     // requests with invalid configuration can be immediately marked as failed
