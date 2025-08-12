@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,7 +13,6 @@
 
 package org.eclipse.kura.example.wire.logic.multiport.provider;
 
-import java.util.Map;
 import java.util.function.BiFunction;
 
 import org.eclipse.kura.wire.graph.BarrierAggregatorFactory;
@@ -32,17 +31,6 @@ public class LogicalComponentOptions {
         NOT
     }
 
-    private static final String FIRST_OPERAND_NAME_PROP_NAME = "operand.name.1";
-    private static final String SECOND_OPERAND_NAME_PROP_NAME = "operand.name.2";
-    private static final String RESULT_NAME_PROP_NAME = "result.name";
-    private static final String BARRIER_MODALITY_PROPERTY_KEY = "barrier";
-    private static final String BOOLEAN_OPERATION = "logical.operator";
-
-    private static final String OPERAND_NAME_DEFAULT = "operand";
-    private static final String RESULT_NAME_DEFAULT = "result";
-    private static final boolean BARRIER_MODALITY_PROPERTY_DEFAULT = false;
-    private static final OperatorOption BOOLEAN_OPERATION_DEFAULT = OperatorOption.AND;
-
     private final String firstOperandName;
     private final String secondOperandName;
     private final String resultName;
@@ -51,16 +39,14 @@ public class LogicalComponentOptions {
 
     private final PortAggregatorFactory portAggregatorFactory;
 
-    public LogicalComponentOptions(final Map<String, Object> properties, BundleContext context) {
-        this.operator = OperatorOption
-                .valueOf(getSafe(properties.get(BOOLEAN_OPERATION), BOOLEAN_OPERATION_DEFAULT.name()));
-        this.firstOperandName = getSafe(properties.get(FIRST_OPERAND_NAME_PROP_NAME), OPERAND_NAME_DEFAULT);
-        this.secondOperandName = getSafe(properties.get(SECOND_OPERAND_NAME_PROP_NAME), OPERAND_NAME_DEFAULT);
-        this.resultName = getSafe(properties.get(RESULT_NAME_PROP_NAME), RESULT_NAME_DEFAULT);
+    public LogicalComponentOptions(LogicalComponentOCD ocd, BundleContext context) {
+        this.operator = OperatorOption.valueOf(ocd.logical_operator());
+        this.firstOperandName = ocd.operand_name_1();
+        this.secondOperandName = ocd.operand_name_2();
+        this.resultName = ocd.result_name();
         this.booleanFunction = getLogicalFunction(this.operator);
 
-        final boolean useBarrier = getSafe(properties.get(BARRIER_MODALITY_PROPERTY_KEY),
-                BARRIER_MODALITY_PROPERTY_DEFAULT);
+        final boolean useBarrier = ocd.barrier();
 
         if (useBarrier && !OperatorOption.NOT.equals(this.operator)) {
             this.portAggregatorFactory = context
@@ -115,10 +101,5 @@ public class LogicalComponentOptions {
 
     public boolean isUnaryOperator() {
         return OperatorOption.NOT.equals(this.operator);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T getSafe(Object o, T defaultValue) {
-        return defaultValue.getClass().isInstance(o) ? (T) o : defaultValue;
     }
 }

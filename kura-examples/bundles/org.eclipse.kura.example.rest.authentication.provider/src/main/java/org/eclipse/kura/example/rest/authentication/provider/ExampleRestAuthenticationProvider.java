@@ -12,26 +12,36 @@
  *******************************************************************************/
 package org.eclipse.kura.example.rest.authentication.provider;
 
-import static java.util.Objects.isNull;
-
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-
-import jakarta.annotation.Priority;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.container.ContainerRequestContext;
 
 import org.eclipse.kura.audit.AuditConstants;
 import org.eclipse.kura.audit.AuditContext;
 import org.eclipse.kura.crypto.CryptoService;
 import org.eclipse.kura.rest.auth.AuthenticationProvider;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.useradmin.User;
 import org.osgi.service.useradmin.UserAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.annotation.Priority;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.container.ContainerRequestContext;
+
 @Priority(50)
+@Component(immediate = true, //
+        enabled = true, //
+        name = "org.eclipse.kura.example.rest.authentication.provider.ExampleRestAuthenticationProvider", //
+        service = { AuthenticationProvider.class } //
+)
+@Designate(ocd = ExampleRestAuthenticationProviderOCD.class, factory = false)
 public class ExampleRestAuthenticationProvider implements AuthenticationProvider {
 
     private static final String KURA_USER_PREFIX = "kura.user.";
@@ -44,22 +54,30 @@ public class ExampleRestAuthenticationProvider implements AuthenticationProvider
     private UserAdmin userAdmin;
     private CryptoService cryptoService;
 
+    @Reference(name = "UserAdmin", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY //
+    )
     public void bindUserAdmin(final UserAdmin userAdmin) {
         this.userAdmin = userAdmin;
     }
 
+    @Reference(name = "CryptoService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY //
+    )
     public void bindCryptoService(final CryptoService cryptoService) {
         this.cryptoService = cryptoService;
     }
 
     @Override
     public void onEnabled() {
-        logger.info("Example auth provider enabled");
+        ExampleRestAuthenticationProvider.logger.info("Example auth provider enabled");
     }
 
     @Override
     public void onDisabled() {
-        logger.info("Example auth provider disabled");
+        ExampleRestAuthenticationProvider.logger.info("Example auth provider disabled");
     }
 
     @Override
@@ -77,28 +95,32 @@ public class ExampleRestAuthenticationProvider implements AuthenticationProvider
 
         auditContext.getProperties().put(AuditConstants.KEY_IDENTITY.getValue(), username.get());
 
-        final User user = (User) userAdmin.getRole(KURA_USER_PREFIX + username.get());
+        final User user = (User) userAdmin.getRole(ExampleRestAuthenticationProvider.KURA_USER_PREFIX + username.get());
 
-        if ("true".equals(user.getProperties().get(KURA_NEED_PASSWORD_CHANGE))) {
+        if ("true".equals(user.getProperties().get(ExampleRestAuthenticationProvider.KURA_NEED_PASSWORD_CHANGE))) {
             return Optional.empty();
         }
 
-        final String passwordHash = (String) user.getCredentials().get(KURA_PASSWORD_CREDENTIAL);
+        final String passwordHash = (String) user.getCredentials()
+                .get(ExampleRestAuthenticationProvider.KURA_PASSWORD_CREDENTIAL);
 
-        if (isNull(passwordHash)) {
+        if (Objects.isNull(passwordHash)) {
             return Optional.empty();
         }
 
         try {
             if (cryptoService.sha256Hash(password.get()).equals(passwordHash)) {
-                auditLogger.info("{} Rest - Success - Example Password Authentication succeeded", auditContext);
+                ExampleRestAuthenticationProvider.auditLogger
+                        .info("{} Rest - Success - Example Password Authentication succeeded", auditContext);
                 return Optional.of(username::get);
             } else {
-                auditLogger.warn("{} Rest - Failure - Example Password Authentication failed", auditContext);
+                ExampleRestAuthenticationProvider.auditLogger
+                        .warn("{} Rest - Failure - Example Password Authentication failed", auditContext);
                 return Optional.empty();
             }
         } catch (final Exception e) {
-            auditLogger.warn("{} Rest - Failure - Example Password Authentication failed", auditContext);
+            ExampleRestAuthenticationProvider.auditLogger
+                    .warn("{} Rest - Failure - Example Password Authentication failed", auditContext);
             return Optional.empty();
         }
     }

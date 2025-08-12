@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,7 +13,6 @@
 
 package org.eclipse.kura.example.wire.math.trig;
 
-import java.util.Map;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -21,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 public class TrigonometricComponentOptions {
 
-    public enum OperatorOption {
+    public enum TrigonometricFunction {
         SIN,
         COS,
         TAN,
@@ -30,37 +29,27 @@ public class TrigonometricComponentOptions {
         ATAN
     }
 
-    private static final String PARAMETER_NAME_PROP_NAME = "parameter.name";
-    private static final String RESULT_NAME_PROP_NAME = "result.name";
-    private static final String TRIGONOMETRIC_FUNCTION = "trigonometric.function";
-    private static final String EMIT_RECEIVED_PROPERTIES_PROP_NAME = "emit.received.properties";
-
-    private static final String PARAMETER_NAME_DEFAULT = "parameter";
-    private static final String RESULT_NAME_DEFAULT = "result";
-    private static final OperatorOption TRIGONOMETRIC_FUNCTION_DEFAULT = OperatorOption.SIN;
-    private static final boolean EMIT_RECEIVED_PROPERTIES_DEFAULT = false;
+    private static final TrigonometricFunction TRIGONOMETRIC_FUNCTION_DEFAULT = TrigonometricFunction.SIN;
 
     private static final Logger logger = LoggerFactory.getLogger(TrigonometricComponentOptions.class);
 
-    private final String operandName;
+    private final String parameterName;
     private final String resultName;
-    private final OperatorOption operatorOption;
+    private final TrigonometricFunction operatorOption;
     private final boolean emitReceivedProperties;
     private final Function<Double, Double> trigonometricFunction;
 
-    public TrigonometricComponentOptions(final Map<String, Object> properties) {
-        this.operandName = getSafe(properties.get(PARAMETER_NAME_PROP_NAME), PARAMETER_NAME_DEFAULT);
-        this.resultName = getSafe(properties.get(RESULT_NAME_PROP_NAME), RESULT_NAME_DEFAULT);
-        this.operatorOption = getLogicalOperator(
-                getSafe(properties.get(TRIGONOMETRIC_FUNCTION), TRIGONOMETRIC_FUNCTION_DEFAULT.name()));
+    public TrigonometricComponentOptions(TrigonometricComponentOCD ocd) {
+        this.parameterName = ocd.parameter_name();
+        this.resultName = ocd.result_name();
+        this.operatorOption = getLogicalOperator(ocd.trigonometric_function());
         this.trigonometricFunction = getTrigonometricFunction(this.operatorOption);
-        this.emitReceivedProperties = getSafe(properties.get(EMIT_RECEIVED_PROPERTIES_PROP_NAME),
-                EMIT_RECEIVED_PROPERTIES_DEFAULT);
+        this.emitReceivedProperties = ocd.emit_received_properties();
     }
 
-    private OperatorOption getLogicalOperator(String op) {
+    private TrigonometricFunction getLogicalOperator(String op) {
         try {
-            return OperatorOption.valueOf(op);
+            return TrigonometricFunction.valueOf(op);
         } catch (Exception e) {
             logger.warn("Unknown operator, falling back to default operator {}", TRIGONOMETRIC_FUNCTION_DEFAULT);
             return TRIGONOMETRIC_FUNCTION_DEFAULT;
@@ -68,14 +57,14 @@ public class TrigonometricComponentOptions {
     }
 
     public String getParameterName() {
-        return this.operandName;
+        return this.parameterName;
     }
 
     public String getResultName() {
         return this.resultName;
     }
 
-    public OperatorOption getTrigonometricOperation() {
+    public TrigonometricFunction getTrigonometricOperation() {
         return this.operatorOption;
     }
 
@@ -87,7 +76,7 @@ public class TrigonometricComponentOptions {
         return this.trigonometricFunction;
     }
 
-    private Function<Double, Double> getTrigonometricFunction(OperatorOption o) {
+    private Function<Double, Double> getTrigonometricFunction(TrigonometricFunction o) {
         switch (o) {
         case COS:
             return parameter -> Math.cos(parameter.doubleValue());
@@ -103,10 +92,5 @@ public class TrigonometricComponentOptions {
         default:
             return parameter -> Math.sin(parameter.doubleValue());
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T getSafe(Object o, T defaultValue) {
-        return defaultValue.getClass().isInstance(o) ? (T) o : defaultValue;
     }
 }

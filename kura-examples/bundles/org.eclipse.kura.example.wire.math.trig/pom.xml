@@ -29,8 +29,8 @@
 	<packaging>eclipse-plugin</packaging>
 
 	<properties>
-		<kura.basedir>${project.basedir}/../.. </kura.basedir>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../../tests/org.eclipse.kura.example.wire.math.trig.test/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.coverage.jacoco.xmlReportPaths>
+			${project.basedir}/../../tests/org.eclipse.kura.example.wire.math.trig.test/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 </project>

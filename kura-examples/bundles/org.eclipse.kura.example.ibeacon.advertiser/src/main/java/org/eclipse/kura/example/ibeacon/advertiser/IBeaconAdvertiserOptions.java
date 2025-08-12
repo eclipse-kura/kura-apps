@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kura.example.ibeacon.advertiser;
 
-import static java.util.Objects.requireNonNull;
-
-import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -58,26 +55,23 @@ public class IBeaconAdvertiserOptions {
 
     private static final Logger logger = LoggerFactory.getLogger(IBeaconAdvertiserOptions.class);
 
-    public IBeaconAdvertiserOptions(Map<String, Object> properties) {
-        requireNonNull(properties, "Required not null");
-        this.enable = getProperty(properties, PROPERTY_ENABLE, PROPERTY_ENABLE_DEFAULT);
-        this.minInterval = (int) (getProperty(properties, PROPERTY_MIN_INTERVAL, PROPERTY_MIN_INTERVAL_DEFAULT)
-                / 0.625);
-        this.maxInterval = (int) (getProperty(properties, PROPERTY_MAX_INTERVAL, PROPERTY_MAX_INTERVAL_DEFAULT)
-                / 0.625);
-        this.major = setInRange(getProperty(properties, PROPERTY_MAJOR, PROPERTY_MAJOR_DEFAULT), PROPERTY_MAJOR_MAX,
-                PROPERTY_MAJOR_MIN);
-        this.minor = setInRange(getProperty(properties, PROPERTY_MINOR, PROPERTY_MINOR_DEFAULT), PROPERTY_MINOR_MAX,
-                PROPERTY_MINOR_MIN);
-        this.txPower = setInRange(getProperty(properties, PROPERTY_TX_POWER, PROPERTY_TX_POWER_DEFAULT),
-                PROPERTY_TX_POWER_MAX, PROPERTY_TX_POWER_MIN);
-        this.iname = getProperty(properties, PROPERTY_INAME, PROPERTY_INAME_DEFAULT);
-        String uuidString = getProperty(properties, PROPERTY_UUID, PROPERTY_UUID_DEFAULT);
+    public IBeaconAdvertiserOptions(final IBeaconAdvertiserOCD ocd) {
+        this.enable = ocd.enable_advertising();
+        this.minInterval = (int) (ocd.min_beacon_interval() / 0.625);
+        this.maxInterval = (int) (ocd.max_beacon_interval() / 0.625);
+        this.major = setInRange(ocd.major(), IBeaconAdvertiserOptions.PROPERTY_MAJOR_MAX,
+                IBeaconAdvertiserOptions.PROPERTY_MAJOR_MIN);
+        this.minor = setInRange(ocd.minor(), IBeaconAdvertiserOptions.PROPERTY_MINOR_MAX,
+                IBeaconAdvertiserOptions.PROPERTY_MINOR_MIN);
+        this.txPower = setInRange(ocd.tx_power(), IBeaconAdvertiserOptions.PROPERTY_TX_POWER_MAX,
+                IBeaconAdvertiserOptions.PROPERTY_TX_POWER_MIN);
+        this.iname = ocd.iname();
+        final String uuidString = ocd.uuid();
         if (uuidString.trim().replace("-", "").length() != 32) {
-            logger.warn("UUID is too short or too long!");
-            this.uuid = UUID.fromString(PROPERTY_UUID_DEFAULT);
+            IBeaconAdvertiserOptions.logger.warn("UUID is too short or too long!");
+            this.uuid = UUID.fromString(IBeaconAdvertiserOptions.PROPERTY_UUID_DEFAULT);
         } else {
-            this.uuid = UUID.fromString(setInHex(uuidString, PROPERTY_UUID_DEFAULT));
+            this.uuid = UUID.fromString(setInHex(uuidString, IBeaconAdvertiserOptions.PROPERTY_UUID_DEFAULT));
         }
     }
 
@@ -113,7 +107,7 @@ public class IBeaconAdvertiserOptions {
         return this.iname;
     }
 
-    private int setInRange(int value, int max, int min) {
+    private int setInRange(final int value, final int max, final int min) {
         if (value <= max && value >= min) {
             return value;
         } else {
@@ -121,21 +115,11 @@ public class IBeaconAdvertiserOptions {
         }
     }
 
-    private String setInHex(String value, String defaultValue) {
+    private String setInHex(final String value, final String defaultValue) {
         if (!value.trim().replace("-", "").matches("^[0-9a-fA-F]+$")) {
             return defaultValue;
         } else {
             return value;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T getProperty(Map<String, Object> properties, String propertyName, T defaultValue) {
-        Object prop = properties.getOrDefault(propertyName, defaultValue);
-        if (prop != null && prop.getClass().isAssignableFrom(defaultValue.getClass())) {
-            return (T) prop;
-        } else {
-            return defaultValue;
         }
     }
 }

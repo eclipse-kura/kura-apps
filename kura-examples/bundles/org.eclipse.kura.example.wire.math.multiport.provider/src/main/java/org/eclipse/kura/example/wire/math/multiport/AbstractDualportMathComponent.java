@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -16,7 +16,7 @@ package org.eclipse.kura.example.wire.math.multiport;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.type.TypedValue;
@@ -35,22 +35,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDualportMathComponent implements WireEmitter, MultiportWireReceiver,
-        ConfigurableComponent, BiFunction<TypedValue<?>, TypedValue<?>, TypedValue<?>> {
+        ConfigurableComponent, BinaryOperator<TypedValue<?>> {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractDualportMathComponentOptions.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractDualportMathComponent.class);
 
-    private WireHelperService wireHelperService;
+    protected WireHelperService wireHelperService;
     private MultiportWireSupport wireSupport;
     protected AbstractDualportMathComponentOptions options;
     protected BundleContext context;
 
-    public void bindWireHelperService(final WireHelperService wireHelperService) {
-        this.wireHelperService = wireHelperService;
-    }
-
-    public void unbindWireHelperService(final WireHelperService wireHelperService) {
-        this.wireHelperService = null;
-    }
+    protected static final String FIRST_OPERAND_NAME_PROP_NAME = "operand.name.1";
+    protected static final String SECOND_OPERAND_NAME_PROP_NAME = "operand.name.2";
+    protected static final String RESULT_NAME_PROP_NAME = "result.name";
+    protected static final String BARRIER_MODALITY_PROPERTY_KEY = "barrier";
 
     public void activate(final Map<String, Object> properties, ComponentContext context) {
         this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(this,

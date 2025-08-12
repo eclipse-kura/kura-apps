@@ -27,4 +27,19 @@ public class Colors {
     public static final short[] WHITE = { 255, 255, 255 };
     public static final short[] BLACK = { 0, 0, 0 };
 
+    public static short[] fromColorString(String color) {
+        return switch (color) {
+            case "RED" -> RED;
+            case "ORANGE" -> ORANGE;
+            case "YELLOW" -> YELLOW;
+            case "GREEN" -> GREEN;
+            case "BLUE" -> BLUE;
+            case "PURPLE" -> PURPLE;
+            case "VIOLET" -> VIOLET;
+            case "WHITE" -> WHITE;
+            case "BLACK" -> BLACK;
+            default -> throw new IllegalArgumentException("Unknown color: " + color);
+        };
+    }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -31,9 +31,25 @@ import org.eclipse.kura.cloudconnection.publisher.CloudPublisher;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.message.KuraPayload;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        enabled = true, //
+        name = "org.eclipse.kura.example.ibeacon.scanner.IBeaconScanner", //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class } //
+)
+@Designate(ocd = IBeaconScannerOCD.class, factory = false)
 public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconListener<BluetoothLeIBeacon> {
 
     private static final String ADDRESS_MESSAGE_PROP_KEY = "address";
@@ -51,40 +67,57 @@ public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconL
 
     private CloudPublisher cloudPublisher;
 
-    public void setBluetoothLeService(BluetoothLeService bluetoothLeService) {
+    @Reference(name = "BluetoothLeService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unsetBluetoothLeService" //
+    )
+    public void setBluetoothLeService(final BluetoothLeService bluetoothLeService) {
         this.bluetoothLeService = bluetoothLeService;
     }
 
-    public void unsetBluetoothLeService(BluetoothLeService bluetoothLeService) {
+    public void unsetBluetoothLeService(final BluetoothLeService bluetoothLeService) {
         this.bluetoothLeService = null;
     }
 
-    public void setBluetoothLeIBeaconService(BluetoothLeIBeaconService bluetoothLeIBeaconService) {
+    @Reference(name = "BluetoothLeIBeaconService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unsetBluetoothLeIBeaconService" //
+    )
+    public void setBluetoothLeIBeaconService(final BluetoothLeIBeaconService bluetoothLeIBeaconService) {
         this.bluetoothLeIBeaconService = bluetoothLeIBeaconService;
     }
 
-    public void unsetBluetoothLeIBeaconService(BluetoothLeIBeaconService bluetoothLeIBeaconService) {
+    public void unsetBluetoothLeIBeaconService(final BluetoothLeIBeaconService bluetoothLeIBeaconService) {
         this.bluetoothLeIBeaconService = null;
     }
 
-    public void setCloudPublisher(CloudPublisher cloudPublisher) {
+    @Reference(name = "CloudPublisher", //
+            policy = ReferencePolicy.DYNAMIC, //
+            cardinality = ReferenceCardinality.OPTIONAL, //
+            unbind = "unsetCloudPublisher" //
+    )
+    public void setCloudPublisher(final CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
     }
 
-    public void unsetCloudPublisher(CloudPublisher cloudPublisher) {
+    public void unsetCloudPublisher(final CloudPublisher cloudPublisher) {
         this.cloudPublisher = null;
     }
 
-    protected void activate(ComponentContext context, Map<String, Object> properties) {
-        logger.info("Activating Bluetooth iBeacon Scanner example...");
+    @Activate
+    protected void activate(final ComponentContext context, final IBeaconScannerOCD ocd) {
+        IBeaconScanner.logger.info("Activating Bluetooth iBeacon Scanner example...");
 
         this.publishTimes = new HashMap<>();
-        doUpdate(properties);
-        logger.info("Activating Bluetooth iBeacon Scanner example...Done");
+        doUpdate(ocd);
+        IBeaconScanner.logger.info("Activating Bluetooth iBeacon Scanner example...Done");
     }
 
-    protected void deactivate(ComponentContext context) {
-        logger.debug("Deactivating iBeacon Scanner Example...");
+    @Deactivate
+    protected void deactivate(final ComponentContext context) {
+        IBeaconScanner.logger.debug("Deactivating iBeacon Scanner Example...");
 
         releaseResources();
 
@@ -96,11 +129,12 @@ public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconL
             this.worker.shutdown();
         }
 
-        logger.debug("Deactivating iBeacon Scanner Example... Done.");
+        IBeaconScanner.logger.debug("Deactivating iBeacon Scanner Example... Done.");
     }
 
-    protected void updated(Map<String, Object> properties) {
-        logger.debug("Updating iBeacon Scanner Example...");
+    @Modified
+    protected void updated(final IBeaconScannerOCD ocd) {
+        IBeaconScanner.logger.debug("Updating iBeacon Scanner Example...");
 
         releaseResources();
 
@@ -112,13 +146,13 @@ public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconL
             this.worker.shutdown();
         }
 
-        doUpdate(properties);
+        doUpdate(ocd);
 
-        logger.debug("Updating iBeacon Scanner Example... Done");
+        IBeaconScanner.logger.debug("Updating iBeacon Scanner Example... Done");
     }
 
-    private void doUpdate(Map<String, Object> properties) {
-        this.options = new IBeaconScannerOptions(properties);
+    private void doUpdate(final IBeaconScannerOCD ocd) {
+        this.options = new IBeaconScannerOptions(ocd);
 
         if (this.options.isEnabled()) {
             this.worker = Executors.newSingleThreadExecutor();
@@ -127,7 +161,7 @@ public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconL
     }
 
     private void setup() {
-        BluetoothLeAdapter bluetoothLeAdapter = this.bluetoothLeService.getAdapter(this.options.getAdapterName());
+        final BluetoothLeAdapter bluetoothLeAdapter = this.bluetoothLeService.getAdapter(this.options.getAdapterName());
         if (bluetoothLeAdapter != null) {
             if (!bluetoothLeAdapter.isPowered()) {
                 bluetoothLeAdapter.setPowered(true);
@@ -136,11 +170,11 @@ public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconL
             this.bluetoothLeIBeaconScanner.addBeaconListener(this);
             try {
                 this.bluetoothLeIBeaconScanner.startBeaconScan(this.options.getScanDuration());
-            } catch (KuraException e) {
-                logger.error("iBeacon scanning failed", e);
+            } catch (final KuraException e) {
+                IBeaconScanner.logger.error("iBeacon scanning failed", e);
             }
         } else {
-            logger.warn("No Bluetooth adapter found ...");
+            IBeaconScanner.logger.warn("No Bluetooth adapter found ...");
         }
     }
 
@@ -154,24 +188,24 @@ public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconL
         }
     }
 
-    private double calculateDistance(int rssi, int txpower) {
+    private double calculateDistance(final int rssi, final int txpower) {
 
-        int ratioDB = txpower - rssi;
-        double ratioLinear = Math.pow(10, (double) ratioDB / 10);
+        final int ratioDB = txpower - rssi;
+        final double ratioLinear = Math.pow(10, (double) ratioDB / 10);
         return Math.sqrt(ratioLinear);
     }
 
     @Override
-    public void onBeaconsReceived(BluetoothLeIBeacon iBeacon) {
-        logger.info("iBeacon received from {}", iBeacon.getAddress());
-        logger.info("UUID : {}", iBeacon.getUuid());
-        logger.info("Major : {}", iBeacon.getMajor());
-        logger.info("Minor : {}", iBeacon.getMinor());
-        logger.info("TxPower : {}", iBeacon.getTxPower());
-        logger.info("RSSI : {}", iBeacon.getRssi());
-        long now = System.currentTimeMillis();
+    public void onBeaconsReceived(final BluetoothLeIBeacon iBeacon) {
+        IBeaconScanner.logger.info("iBeacon received from {}", iBeacon.getAddress());
+        IBeaconScanner.logger.info("UUID : {}", iBeacon.getUuid());
+        IBeaconScanner.logger.info("Major : {}", iBeacon.getMajor());
+        IBeaconScanner.logger.info("Minor : {}", iBeacon.getMinor());
+        IBeaconScanner.logger.info("TxPower : {}", iBeacon.getTxPower());
+        IBeaconScanner.logger.info("RSSI : {}", iBeacon.getRssi());
+        final long now = System.currentTimeMillis();
 
-        Long lastPublishTime = this.publishTimes.get(iBeacon.getAddress());
+        final Long lastPublishTime = this.publishTimes.get(iBeacon.getAddress());
 
         // If this beacon is new, or it last published more than 'rateLimit' seconds ago
         if (lastPublishTime == null || now - lastPublishTime > this.options.getPublishPeriod() * 1000L) {
@@ -180,12 +214,12 @@ public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconL
             this.publishTimes.put(iBeacon.getAddress(), now);
 
             if (this.cloudPublisher == null) {
-                logger.info("No cloud publisher selected. Cannot publish!");
+                IBeaconScanner.logger.info("No cloud publisher selected. Cannot publish!");
                 return;
             }
 
             // Publish the beacon data to the beacon's topic
-            KuraPayload kp = new KuraPayload();
+            final KuraPayload kp = new KuraPayload();
             kp.setTimestamp(new Date());
             kp.addMetric("uuid", iBeacon.getUuid().toString());
             kp.addMetric("txpower", (int) iBeacon.getTxPower());
@@ -194,14 +228,14 @@ public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconL
             kp.addMetric("minor", (int) iBeacon.getMinor());
             kp.addMetric("distance", calculateDistance(iBeacon.getRssi(), iBeacon.getTxPower()));
 
-            Map<String, Object> properties = new HashMap<>();
-            properties.put(ADDRESS_MESSAGE_PROP_KEY, iBeacon.getAddress());
+            final Map<String, Object> properties = new HashMap<>();
+            properties.put(IBeaconScanner.ADDRESS_MESSAGE_PROP_KEY, iBeacon.getAddress());
 
-            KuraMessage message = new KuraMessage(kp, properties);
+            final KuraMessage message = new KuraMessage(kp, properties);
             try {
                 this.cloudPublisher.publish(message);
-            } catch (KuraException e) {
-                logger.error("Unable to publish", e);
+            } catch (final KuraException e) {
+                IBeaconScanner.logger.error("Unable to publish", e);
             }
         }
     }

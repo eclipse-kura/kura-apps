@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -14,8 +14,6 @@
 package org.eclipse.kura.demo.modbus;
 
 import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -30,40 +28,50 @@ import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.message.KuraPayload;
 import org.eclipse.kura.protocol.modbus.ModbusProtocolDeviceService;
 import org.eclipse.kura.protocol.modbus.ModbusProtocolException;
-import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class, CloudConnectionListener.class, CloudDeliveryListener.class }, //
+        name = "org.eclipse.kura.demo.modbus.ModbusExample", //
+        enabled = true //
+)
+@Designate(ocd = ModbusExampleOCD.class, factory = false)
 public class ModbusExample implements ConfigurableComponent, CloudConnectionListener, CloudDeliveryListener {
 
     private static final Logger logger = LoggerFactory.getLogger(ModbusExample.class);
 
     // Publishing Property Names
-    private static final String MODBUS_PROTOCOL = "protocol";
-    private static final String MODBUS_SLAVE_ADDRESS = "slaveAddr";
+    private static final String MODBUS_PROTOCOL = "modbus.protocol";
+    private static final String MODBUS_SLAVE_ADDRESS = "slave.address";
 
     private static final String SERIAL_DEVICE_PROP_NAME = "serial.port";
     private static final String SERIAL_BAUDRATE_PROP_NAME = "serial.baudrate";
-    private static final String SERIAL_DATA_BITS_PROP_NAME = "serial.data-bits";
+    private static final String SERIAL_DATA_BITS_PROP_NAME = "serial.data.bits";
     private static final String SERIAL_PARITY_PROP_NAME = "serial.parity";
-    private static final String SERIAL_STOP_BITS_PROP_NAME = "serial.stop-bits";
+    private static final String SERIAL_STOP_BITS_PROP_NAME = "serial.stop.bits";
 
-    private static final String ETHERNET_IP_ADDRESS = "ipAddress";
+    private static final String ETHERNET_IP_ADDRESS = "ip.address";
     private static final String ETHERNET_TCP_PORT = "tcp.port";
 
-    private static final String POLL_INTERVAL = "pollInterval";
-    private static final String PUBLISH_INTERVAL = "publishInterval";
+    private static final String POLL_INTERVAL = "poll.interval";
+    private static final String PUBLISH_INTERVAL = "publish.interval";
 
-    private static final String INPUT_ADDRESS = "inputAddress";
-    private static final String REGISTER_ADDRESS = "registerAddress";
+    private static final String INPUT_ADDRESS = "input.address";
+    private static final String REGISTER_ADDRESS = "register.address";
 
     private boolean doConnection = true;
 
     private ScheduledExecutorService worker;
     private Future<?> handle;
 
-    private ModbusProtocolDeviceService protocolDevice;
-    private Map<String, Object> properties;
     private Properties modbusProperties;
     private boolean configured;
     private int slaveAddr;
@@ -74,7 +82,11 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
     private int registeraddr = 0;
 
     private CloudPublisher cloudPublisher;
+    private ModbusProtocolDeviceService protocolDevice;
 
+    @Reference(name = "ModbusProtocolDeviceService", //
+            policy = org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC, //
+            cardinality = org.osgi.service.component.annotations.ReferenceCardinality.MANDATORY)
     public void setModbusProtocolDeviceService(ModbusProtocolDeviceService modbusService) {
         this.protocolDevice = modbusService;
     }
@@ -83,6 +95,10 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
         this.protocolDevice = null;
     }
 
+    @Reference(name = "CloudPublisher", //
+            policy = ReferencePolicy.DYNAMIC, //
+            cardinality = ReferenceCardinality.OPTIONAL //
+    )
     public void setCloudPublisher(CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
         this.cloudPublisher.registerCloudConnectionListener(ModbusExample.this);
@@ -101,16 +117,16 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
     //
     // ----------------------------------------------------------------
 
-    protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
+    protected void activate(ModbusExampleOCD ocd) {
         logger.info("Activating ModbusExample...");
 
         this.worker = Executors.newSingleThreadScheduledExecutor();
 
         this.configured = false;
-        doUpdate(properties);
+        doUpdate(ocd);
     }
 
-    protected void deactivate(ComponentContext componentContext) {
+    protected void deactivate() {
         logger.info("ModbusExample deactivate...");
         if (this.handle != null) {
             this.handle.cancel(true);
@@ -127,10 +143,10 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
         this.configured = false;
     }
 
-    public void updated(Map<String, Object> properties) {
+    public void updated(ModbusExampleOCD ocd) {
         logger.info("updated...");
         this.configured = false;
-        doUpdate(properties);
+        doUpdate(ocd);
     }
 
     // ----------------------------------------------------------------
@@ -142,12 +158,8 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
     /**
      * Called after a new set of properties has been configured on the service
      */
-    private void doUpdate(Map<String, Object> properties) {
+    private void doUpdate(ModbusExampleOCD ocd) {
         try {
-
-            for (Entry<String, Object> property : properties.entrySet()) {
-                logger.info("Update - {}: {}", property.getKey(), property.getValue());
-            }
 
             // cancel a current worker handle if one if active
             if (this.handle != null) {
@@ -163,23 +175,17 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
             }
             this.configured = false;
 
-            this.properties = properties;
-            this.modbusProperties = getModbusProperties();
+            this.modbusProperties = getModbusProperties(ocd);
             if (this.modbusProperties == null) {
                 logger.error("Something is wrong in the properties, program cannot continue");
                 return;
             }
 
-            if (this.properties.get(PUBLISH_INTERVAL) != null) {
-                this.publishInterval = (Integer) this.properties.get(PUBLISH_INTERVAL);
-            }
+            this.publishInterval = ocd.publish_interval();
 
-            if (this.properties.get(INPUT_ADDRESS) != null) {
-                this.inputaddr = (Integer) this.properties.get(INPUT_ADDRESS);
-            }
-            if (this.properties.get(REGISTER_ADDRESS) != null) {
-                this.registeraddr = (Integer) this.properties.get(REGISTER_ADDRESS);
-            }
+            this.inputaddr = ocd.input_address();
+
+            this.registeraddr = ocd.register_address();
 
             if (!this.configured) {
                 try {
@@ -192,10 +198,8 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
             }
 
             // schedule a new worker based on the properties of the service
-            int pubrate = 1000;
-            if (this.properties.get(POLL_INTERVAL) != null) {
-                pubrate = (Integer) this.properties.get(POLL_INTERVAL);
-            }
+
+            int pubrate = ocd.poll_interval();
             logger.info("scheduleAtFixedRate {}", pubrate);
             this.handle = this.worker.scheduleAtFixedRate(new Runnable() {
 
@@ -282,58 +286,47 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
         }
     }
 
-    private Properties getModbusProperties() {
-
-        if (this.properties == null) {
-            return null;
-        }
+    private Properties getModbusProperties(ModbusExampleOCD ocd) {
 
         Properties prop = new Properties();
 
         String modbusProtocol = null;
-        if (this.properties.get(MODBUS_SLAVE_ADDRESS) != null) {
-            modbusProtocol = (String) this.properties.get(MODBUS_PROTOCOL);
-        } else {
-            return null;
-        }
+
+        modbusProtocol = ocd.modbus_protocol();
+        logger.info("Configuring Modbus with protocol: {}", modbusProtocol);
         prop.setProperty("connectionType", modbusProtocol);
 
-        String slave = "1";
-        if (this.properties.get(MODBUS_SLAVE_ADDRESS) != null) {
-            slave = (String) this.properties.get(MODBUS_SLAVE_ADDRESS);
-        }
+        String slave = ocd.slave_address();
         prop.setProperty("slaveAddr", slave);
 
         boolean isTCP = "TCP-RTU".equals(modbusProtocol) || "TCP/IP".equals(modbusProtocol);
         if (isTCP) {
-            if (this.properties.get(ETHERNET_TCP_PORT) != null) {
-                int iport = (Integer) this.properties.get(ETHERNET_TCP_PORT);
-                prop.setProperty("ethport", String.valueOf(iport));
-            }
-            prop.setProperty("ipAddress", (String) this.properties.get(ETHERNET_IP_ADDRESS));
+            int iport = ocd.tcp_port();
+            prop.setProperty("ethport", String.valueOf(iport));
+            prop.setProperty("ipAddress", ocd.ip_address());
+            logger.info("Configuring TCP connection - IP: {}, Port: {}", ocd.ip_address(), iport);
         } else {
             String portName = null;
             String baudRate = null;
             String bitsPerWord = null;
             String stopBits = null;
             String parity = null;
-            if (this.properties.get(SERIAL_DEVICE_PROP_NAME) != null) {
-                portName = (String) this.properties.get(SERIAL_DEVICE_PROP_NAME);
-            }
-            if (this.properties.get(SERIAL_BAUDRATE_PROP_NAME) != null) {
-                baudRate = (String) this.properties.get(SERIAL_BAUDRATE_PROP_NAME);
-            }
-            if (this.properties.get(SERIAL_DATA_BITS_PROP_NAME) != null) {
-                bitsPerWord = (String) this.properties.get(SERIAL_DATA_BITS_PROP_NAME);
-            }
-            if (this.properties.get(SERIAL_STOP_BITS_PROP_NAME) != null) {
-                stopBits = (String) this.properties.get(SERIAL_STOP_BITS_PROP_NAME);
-            }
-            if (this.properties.get(SERIAL_PARITY_PROP_NAME) != null) {
-                parity = (String) this.properties.get(SERIAL_PARITY_PROP_NAME);
-            }
+
+            portName = ocd.serial_port();
+
+            baudRate = ocd.serial_baudrate();
+
+            bitsPerWord = ocd.serial_data_bits();
+
+            stopBits = ocd.serial_stop_bits();
+
+            parity = ocd.serial_parity();
+
+            logger.info("Configuring Serial connection - Port: {}, Baud: {}, Data bits: {}, Stop bits: {}, Parity: {}",
+                    portName, baudRate, bitsPerWord, stopBits, parity);
 
             if (portName == null) {
+                logger.error("Serial port name is null!");
                 return null;
             }
             if (baudRate == null) {
@@ -360,6 +353,9 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
         prop.setProperty("transmissionMode", "RTU");
         prop.setProperty("respTimeout", "1000");
         this.slaveAddr = Integer.valueOf(slave);
+
+        logger.info("Final Modbus properties: {}", prop);
+        logger.info("Slave address: {}", this.slaveAddr);
 
         return prop;
     }

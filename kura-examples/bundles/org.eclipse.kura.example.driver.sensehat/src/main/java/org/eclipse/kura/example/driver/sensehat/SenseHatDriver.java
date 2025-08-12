@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -40,9 +40,26 @@ import org.eclipse.kura.raspberrypi.sensehat.SenseHat;
 import org.eclipse.kura.type.DataType;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        enabled = true, //
+        name = "org.eclipse.kura.example.driver.sensehat.SenseHatDriver", //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class, Driver.class } //
+)
+
+@Designate(ocd = SenseHatDriverOCD.class, factory = true)
 public class SenseHatDriver implements Driver, ConfigurableComponent, JoystickEventListener {
 
     private static final ChannelStatus CHANNEL_STATUS_OK = new ChannelStatus(ChannelFlag.SUCCESS);
@@ -55,6 +72,11 @@ public class SenseHatDriver implements Driver, ConfigurableComponent, JoystickEv
 
     private final Map<Resource, Set<ChannelListenerRegistration>> channelListeners = new HashMap<>();
 
+    @Reference(name = "SenseHat", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unbindSenseHat" //
+    )
     public void bindSenseHat(final SenseHat senseHat) {
         this.senseHat = senseHat;
     }
@@ -82,17 +104,22 @@ public class SenseHatDriver implements Driver, ConfigurableComponent, JoystickEv
         }
     }
 
-    public void activate(final Map<String, Object> properties) {
+    @Activate
+    public void activate(SenseHatDriverOCD ocd) {
         logger.info("Activating SenseHat Driver...");
         getSensehatInterface(this.senseHat);
-        senseHatInterface.addJoystickEventListener(this);
+        if (senseHatInterface != null) {
+            senseHatInterface.addJoystickEventListener(this);
+        }
         logger.info("Activating SenseHat Driver... Done");
     }
 
-    public void updated(final Map<String, Object> properties) {
-        // no need
+    @Modified
+    public void updated(SenseHatDriverOCD ocd) {
+        // Nothing to do
     }
 
+    @Deactivate
     public void deactivate() {
         logger.info("Deactivating SenseHat Driver...");
         try {

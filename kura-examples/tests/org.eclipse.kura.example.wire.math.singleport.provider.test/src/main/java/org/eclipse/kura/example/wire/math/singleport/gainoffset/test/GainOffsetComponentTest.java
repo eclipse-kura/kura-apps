@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -18,8 +18,8 @@ import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -43,15 +43,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.service.component.ComponentContext;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GainOffsetComponentTest {
-    // See:
-    // http://stackoverflow.com/questions/7161338/using-osgi-declarative-services-in-the-context-of-a-junit-test
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(GainOffsetComponentTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(GainOffsetComponentTest.class);
 
+    private static final String FACTORY_PID = "org.eclipse.kura.example.wire.math.singleport.gainoffset.GainOffsetComponent";
     private static final String UNDER_TEST_PID = "under.test";
     private static final String TEST_EMITTER_PID = "test.emitter.pid";
     private static final String TEST_RECEIVER_PID = "test.receiver.pid";
@@ -66,44 +65,17 @@ public class GainOffsetComponentTest {
     private static final String CONFIGURATION_PROP_NAME = "configuration";
     private static final String EMIT_RECEIVED_PROPERTIES = "emit.received.properties";
 
-    private static final String CONFIGURATION_PROP_NAME_DEFAULT = "toBeMultipliedByTwo | 2\ntoBeMultipliedBy3AndIncreasedBy1 | 3 | 1";
+    private static final String CONFIGURATION_PROP_NAME_DEFAULT = "toBeMultipliedByTwo | 2;toBeMultipliedBy3AndIncreasedBy1 | 3 | 1";
     private static final boolean EMIT_RECEIVED_PROPERTIES_DEFAULT = false;
 
     private static WireGraphService wireGraphService;
     private static ConfigurationService configurationService;
-    private static CountDownLatch dependencyLatch = new CountDownLatch(3); // initialize with number of dependencies
 
     private static TestEmitterReceiver outReceiver;
     private static TestEmitterReceiver inEmitter;
 
-    public GainOffsetComponentTest() {
-        super();
-        logger.info("{} created", System.identityHashCode(this));
-    }
-
-    //
-    // OSGi activation methods. These methods are called only once.
-    // There is only a single instance of this class created by the OSGi framework.
-    protected void activate(ComponentContext componentContext) {
-        logger.info("{} activated", System.identityHashCode(this));
-        dependencyLatch.countDown();
-    }
-
-    protected void deactivate(ComponentContext componentContext) {
-        logger.info("{} deactivated", System.identityHashCode(this));
-    }
-
-    public void bindWireGraphService(WireGraphService wireGraphService) {
-        logger.info("{} bound", System.identityHashCode(this));
-        GainOffsetComponentTest.wireGraphService = wireGraphService;
-        dependencyLatch.countDown();
-    }
-
-    public void bindConfigurationService(ConfigurationService configurationService) {
-        logger.info("{} bound", System.identityHashCode(this));
-        GainOffsetComponentTest.configurationService = configurationService;
-        dependencyLatch.countDown();
-    }
+    final GraphBuilder builder = new GraphBuilder();
+    final BundleContext bundleContext = FrameworkUtil.getBundle(GainOffsetComponentTest.class).getBundleContext();
 
     //
     // JUnit 4 stuff
@@ -112,10 +84,13 @@ public class GainOffsetComponentTest {
         // Wait for OSGi dependencies
         logger.info("waiting for dependencies...");
 
-        if (!dependencyLatch.await(5, TimeUnit.SECONDS)) {
-            throw new IllegalStateException("timeout waiting for dependencies");
-        } else {
-            logger.info("waiting for dependencies... done");
+        try {
+            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
+                    TimeUnit.SECONDS);
+            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty()).get(30,
+                    TimeUnit.SECONDS);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to setup WireGraphService", e);
         }
 
     }
@@ -124,24 +99,19 @@ public class GainOffsetComponentTest {
     public void setUp() throws KuraException, InterruptedException, TimeoutException, ExecutionException {
         logger.info("{} setup", System.identityHashCode(this));
 
-        inEmitter = null;
-        outReceiver = null;
-
-        final GraphBuilder builder = new GraphBuilder();
-
-        final BundleContext bundleContext = FrameworkUtil.getBundle(GainOffsetComponentTest.class).getBundleContext();
-
-        builder.addWireComponent(UNDER_TEST_PID, "org.eclipse.kura.wire.GainOffset", 1, 1) //
+        builder.addWireComponent(UNDER_TEST_PID, FACTORY_PID, 1, 1) //
                 .addTestEmitterReceiver(TEST_EMITTER_PID) //
                 .addTestEmitterReceiver(TEST_RECEIVER_PID) //
                 .addWire(TEST_EMITTER_PID, 0, UNDER_TEST_PID, IN_PORT) //
                 .addWire(UNDER_TEST_PID, OUT_PORT, TEST_RECEIVER_PID, 0);
 
         try {
+
             builder.replaceExistingGraph(bundleContext, wireGraphService).get(30, TimeUnit.SECONDS);
 
             inEmitter = builder.getTrackedWireComponent(TEST_EMITTER_PID);
             outReceiver = builder.getTrackedWireComponent(TEST_RECEIVER_PID);
+
         } catch (KuraException | ExecutionException e) {
             logger.error("Test error", e);
             throw e;

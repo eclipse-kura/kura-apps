@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -30,10 +30,38 @@ import org.eclipse.kura.wire.WireRecord;
 import org.eclipse.kura.wire.WireSupport;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.wireadmin.Consumer;
+import org.osgi.service.wireadmin.Producer;
 import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
+                WireReceiver.class, WireEmitter.class }, //
+        enabled = true, //
+        name = "org.eclipse.kura.example.wire.math.singleport.gainoffset.GainOffsetComponent", //
+        property = { //
+                "input.cardinality.minimum:Integer=1", //
+                "input.cardinality.maximum:Integer=1", //
+                "input.cardinality.default:Integer=1", //
+                "output.cardinality.minimum:Integer=1", //
+                "output.cardinality.maximum:Integer=1", //
+                "output.cardinality.default:Integer=1", //
+                "kura.ui.service.hide:Boolean=true" //
+        } //
+)
+@Designate(ocd = GainOffsetComponentOCD.class, factory = true)
 public class GainOffsetComponent implements WireEmitter, WireReceiver, ConfigurableComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(GainOffsetComponent.class);
@@ -43,6 +71,11 @@ public class GainOffsetComponent implements WireEmitter, WireReceiver, Configura
 
     private GainOffsetComponentOptions options;
 
+    @Reference(name = "WireHelperService", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unbindWireHelperService" //
+    )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.wireHelperService = wireHelperService;
     }
@@ -51,22 +84,27 @@ public class GainOffsetComponent implements WireEmitter, WireReceiver, Configura
         this.wireHelperService = null;
     }
 
-    public void activate(final Map<String, Object> properties, ComponentContext componentContext) {
+    @Activate
+    public void activate(ComponentContext componentContext, GainOffsetComponentOCD ocd) {
         this.wireSupport = this.wireHelperService.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
-        updated(properties);
+        updated(ocd);
     }
 
-    public void updated(final Map<String, Object> properties) {
+    @Modified
+    public void updated(GainOffsetComponentOCD ocd) {
         try {
-            this.options = new GainOffsetComponentOptions(properties);
+            this.options = new GainOffsetComponentOptions(ocd);
         } catch (Exception e) {
             logger.warn("Invalid configuration, please review", e);
             this.options = null;
         }
     }
 
+    @Deactivate
     public void deactivate() {
+        logger.info("Deactivating...");
+        logger.info("Deactivating...Done");
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -32,21 +30,29 @@ import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.message.KuraPayload;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.ComponentException;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.io.ConnectionFactory;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        enabled = true, //
+        name = "org.eclipse.kura.example.serial.publisher.ExampleSerialPublisher", //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class } //
+)
+@Designate(ocd = ExampleSerialPublisherOCD.class, factory = false)
 public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubscriberListener {
 
     private static final Logger logger = LoggerFactory.getLogger(ExampleSerialPublisher.class);
-
-    private static final String SERIAL_DEVICE_PROP_NAME = "serial.device";
-    private static final String SERIAL_BAUDRATE_PROP_NAME = "serial.baudrate";
-    private static final String SERIAL_DATA_BITS_PROP_NAME = "serial.data-bits";
-    private static final String SERIAL_PARITY_PROP_NAME = "serial.parity";
-    private static final String SERIAL_STOP_BITS_PROP_NAME = "serial.stop-bits";
-
-    private static final String SERIAL_ECHO_PROP_NAME = "serial.echo";
 
     private ConnectionFactory connectionFactory;
 
@@ -56,8 +62,6 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
 
     private final ScheduledExecutorService worker;
     private Future<?> handle;
-
-    private Map<String, Object> properties;
 
     private CloudPublisher cloudPublisher;
     private CloudSubscriber cloudSubscriber;
@@ -73,29 +77,44 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
         this.worker = Executors.newSingleThreadScheduledExecutor();
     }
 
-    public void setCloudPublisher(CloudPublisher cloudPublisher) {
+    @Reference(name = "CloudPublisher", //
+            policy = ReferencePolicy.DYNAMIC, //
+            cardinality = ReferenceCardinality.OPTIONAL, //
+            unbind = "unsetCloudPublisher" //
+    )
+    public void setCloudPublisher(final CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
     }
 
-    public void unsetCloudPublisher(CloudPublisher cloudPublisher) {
+    public void unsetCloudPublisher(final CloudPublisher cloudPublisher) {
         this.cloudPublisher = null;
     }
-    
-    public void setCloudSubscriber(CloudSubscriber cloudSubscriber) {
+
+    @Reference(name = "CloudSubscriber", //
+            policy = ReferencePolicy.DYNAMIC, //
+            cardinality = ReferenceCardinality.OPTIONAL, //
+            unbind = "unsetCloudSubscriber" //
+    )
+    public void setCloudSubscriber(final CloudSubscriber cloudSubscriber) {
         this.cloudSubscriber = cloudSubscriber;
         this.cloudSubscriber.registerCloudSubscriberListener(ExampleSerialPublisher.this);
     }
 
-    public void unsetCloudSubscriber(CloudSubscriber cloudSubscriber) {
+    public void unsetCloudSubscriber(final CloudSubscriber cloudSubscriber) {
         this.cloudSubscriber.unregisterCloudSubscriberListener(ExampleSerialPublisher.this);
         this.cloudSubscriber = null;
     }
 
-    public void setConnectionFactory(ConnectionFactory connectionFactory) {
+    @Reference(name = "ConnectionFactory", //
+            policy = ReferencePolicy.STATIC, //
+            cardinality = ReferenceCardinality.MANDATORY, //
+            unbind = "unsetConnectionFactory" //
+    )
+    public void setConnectionFactory(final ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 
-    public void unsetConnectionFactory(ConnectionFactory connectionFactory) {
+    public void unsetConnectionFactory(final ConnectionFactory connectionFactory) {
         this.connectionFactory = null;
     }
 
@@ -105,26 +124,26 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
     //
     // ----------------------------------------------------------------
 
-    protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
-        logger.info("Activating ExampleSerialPublisher...");
-
-        this.properties = new HashMap<String, Object>();
+    @Activate
+    protected void activate(final ExampleSerialPublisherOCD ocd) {
+        ExampleSerialPublisher.logger.info("Activating ExampleSerialPublisher...");
 
         // get the mqtt client for this application
         try {
 
             // Don't subscribe because these are handled by the default
             // subscriptions and we don't want to get messages twice
-            doUpdate(properties);
-        } catch (Exception e) {
-            logger.error("Error during component activation", e);
+            doUpdate(ocd);
+        } catch (final Exception e) {
+            ExampleSerialPublisher.logger.error("Error during component activation", e);
             throw new ComponentException(e);
         }
-        logger.info("Activating ExampleSerialPublisher... Done.");
+        ExampleSerialPublisher.logger.info("Activating ExampleSerialPublisher... Done.");
     }
 
-    protected void deactivate(ComponentContext componentContext) {
-        logger.info("Deactivating ExampleSerialPublisher...");
+    @Deactivate
+    protected void deactivate(final ComponentContext componentContext) {
+        ExampleSerialPublisher.logger.info("Deactivating ExampleSerialPublisher...");
 
         this.handle.cancel(true);
 
@@ -133,15 +152,16 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
 
         closePort();
 
-        logger.info("Deactivating ExampleSerialPublisher... Done.");
+        ExampleSerialPublisher.logger.info("Deactivating ExampleSerialPublisher... Done.");
     }
 
-    public void updated(Map<String, Object> properties) {
-        logger.info("Updated ExampleSerialPublisher...");
+    @Modified
+    public void updated(final ExampleSerialPublisherOCD ocd) {
+        ExampleSerialPublisher.logger.info("Updated ExampleSerialPublisher...");
 
         // try to kick off a new job
-        doUpdate(properties);
-        logger.info("Updated ExampleSerialPublisher... Done.");
+        doUpdate(ocd);
+        ExampleSerialPublisher.logger.info("Updated ExampleSerialPublisher... Done.");
     }
 
     // ----------------------------------------------------------------
@@ -153,12 +173,8 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
     /**
      * Called after a new set of properties has been configured on the service
      */
-    private void doUpdate(Map<String, Object> properties) {
+    private void doUpdate(final ExampleSerialPublisherOCD ocd) {
         try {
-
-            for (String s : properties.keySet()) {
-                logger.info("Update - " + s + ": " + properties.get(s));
-            }
 
             // cancel a current worker handle if one if active
             if (this.handle != null) {
@@ -167,89 +183,82 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
 
             closePort();
 
-            this.properties.clear();
-            this.properties.putAll(properties);
-
-            openPort();
+            openPort(ocd);
 
             this.handle = this.worker.submit(new Runnable() {
 
                 @Override
                 public void run() {
-                    doSerial();
+                    doSerial(ocd);
                 }
             });
-        } catch (Throwable t) {
-            logger.error("Unexpected Throwable", t);
+        } catch (final Throwable t) {
+            ExampleSerialPublisher.logger.error("Unexpected Throwable", t);
         }
     }
 
-    private void openPort() {
-        String port = (String) this.properties.get(SERIAL_DEVICE_PROP_NAME);
+    private void openPort(final ExampleSerialPublisherOCD ocd) {
+        final String port = ocd.serial_device();
 
         if (port == null) {
-            logger.info("Port name not configured");
+            ExampleSerialPublisher.logger.info("Port name not configured");
             return;
         }
 
-        int baudRate = Integer.valueOf((String) this.properties.get(SERIAL_BAUDRATE_PROP_NAME));
-        int dataBits = Integer.valueOf((String) this.properties.get(SERIAL_DATA_BITS_PROP_NAME));
-        int stopBits = Integer.valueOf((String) this.properties.get(SERIAL_STOP_BITS_PROP_NAME));
-
-        String sParity = (String) this.properties.get(SERIAL_PARITY_PROP_NAME);
-
-        int parity = CommURI.PARITY_NONE;
-        if (sParity.equals("none")) {
-            parity = CommURI.PARITY_NONE;
-        } else if (sParity.equals("odd")) {
-            parity = CommURI.PARITY_ODD;
-        } else if (sParity.equals("even")) {
-            parity = CommURI.PARITY_EVEN;
-        }
-
-        String uri = new CommURI.Builder(port).withBaudRate(baudRate).withDataBits(dataBits).withStopBits(stopBits)
-                .withParity(parity).withTimeout(1000).build().toString();
+        final String uri = new CommURI.Builder(port).withBaudRate(Integer.parseInt(ocd.serial_baudrate()))
+                .withDataBits(Integer.parseInt(ocd.serial_data_bits()))
+                .withStopBits(Integer.parseInt(ocd.serial_stop_bits())).withParity(retrieveParity(ocd.serial_parity()))
+                .withOpenTimeout(1000).build().toString();
 
         try {
             this.commConnection = (CommConnection) this.connectionFactory.createConnection(uri, 1, false);
             this.commIs = this.commConnection.openInputStream();
             this.commOs = this.commConnection.openOutputStream();
 
-            logger.info("{} open", port);
-        } catch (IOException e) {
-            logger.error("Failed to open port", e);
+            ExampleSerialPublisher.logger.info("{} open", port);
+        } catch (final IOException e) {
+            ExampleSerialPublisher.logger.error("Failed to open port", e);
             cleanupPort();
         }
+    }
+
+    private int retrieveParity(final String sParity) {
+        return switch (sParity) {
+        case "none" -> CommURI.PARITY_NONE;
+        case "odd" -> CommURI.PARITY_ODD;
+        case "even" -> CommURI.PARITY_EVEN;
+        default -> throw new IllegalArgumentException("Invalid parity: " + sParity);
+        };
     }
 
     private void cleanupPort() {
         if (this.commIs != null) {
             try {
-                logger.info("Closing port input stream...");
+                ExampleSerialPublisher.logger.info("Closing port input stream...");
                 this.commIs.close();
-                logger.info("Closed port input stream");
-            } catch (IOException e) {
-                logger.error("Cannot close port input stream", e);
+                ExampleSerialPublisher.logger.info("Closed port input stream");
+            } catch (final IOException e) {
+                ExampleSerialPublisher.logger.error("Cannot close port input stream", e);
             }
             this.commIs = null;
         }
         if (this.commOs != null) {
             try {
-                logger.info("Closing port output stream...");
+                ExampleSerialPublisher.logger.info("Closing port output stream...");
                 this.commOs.close();
-                logger.info("Closed port output stream");
-            } catch (IOException e) {
-                logger.error("Cannot close port output stream", e);
+                ExampleSerialPublisher.logger.info("Closed port output stream");
+            } catch (final IOException e) {
+                ExampleSerialPublisher.logger.error("Cannot close port output stream", e);
             }
             this.commOs = null;
         }
         if (this.commConnection != null) {
             try {
-                logger.info("Closing port...");
+                ExampleSerialPublisher.logger.info("Closing port...");
                 this.commConnection.close();
-                logger.info("Closed port");
-            } catch (IOException e) {
-                logger.error("Cannot close port", e);
+                ExampleSerialPublisher.logger.info("Closed port");
+            } catch (final IOException e) {
+                ExampleSerialPublisher.logger.error("Cannot close port", e);
             }
             this.commConnection = null;
         }
@@ -259,80 +268,85 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
         cleanupPort();
     }
 
-    private void doSerial() {
-        Boolean echo = (Boolean) this.properties.get(SERIAL_ECHO_PROP_NAME);
+    private void doSerial(final ExampleSerialPublisherOCD ocd) {
+        if (this.commIs == null) {
+            return;
+        }
 
-        if (this.commIs != null) {
+        final boolean echo = ocd.serial_echo();
+        final StringBuilder lineBuffer = new StringBuilder();
 
-            try {
-                int c = -1;
-                StringBuilder sb = new StringBuilder();
+        try (InputStream inputStream = this.commIs) {
+            final byte[] buffer = new byte[1024];
 
-                while (this.commIs != null) {
+            while (!Thread.currentThread().isInterrupted() && this.commIs != null) {
+                final int bytesRead = inputStream.read(buffer);
 
-                    if (this.commIs.available() != 0) {
-                        c = this.commIs.read();
-                    } else {
-                        try {
-                            Thread.sleep(100);
-                            continue;
-                        } catch (InterruptedException e) {
-                            return;
-                        }
-                    }
-
-                    if (echo && this.commOs != null) {
-                        this.commOs.write((char) c);
-                    }
-
-                    // on reception of CR, publish the received sentence
-                    if (c == 13) {
-                        
-                        if (this.cloudPublisher == null) {
-                            logger.info("No cloud publisher selected. Cannot publish!");
-                            continue;
-                        }
-
-                        // Allocate a new payload
-                        KuraPayload payload = new KuraPayload();
-
-                        // Timestamp the message
-                        payload.setTimestamp(new Date());
-
-                        payload.addMetric("line", sb.toString());
-
-                        KuraMessage message = new KuraMessage(payload);
-                        // Publish the message
-                        try {
-                            this.cloudPublisher.publish(message);
-                            logger.info("Published message: {}", payload);
-                        } catch (Exception e) {
-                            logger.error("Cannot publish message: {}", message,  e);
-                        }
-
-                        sb = new StringBuilder();
-
-                    } else if (c != 10) {
-                        sb.append((char) c);
-                    }
-                }
-            } catch (IOException e) {
-                logger.error("Cannot read port", e);
-            } finally {
-                try {
-                    if (this.commIs != null) {
-                    this.commIs.close();
-                    }
-                } catch (IOException e) {
-                    logger.error("Cannot close buffered reader", e);
+                if (bytesRead > 0) {
+                    processReceivedData(buffer, bytesRead, echo, lineBuffer);
                 }
             }
+        } catch (final IOException e) {
+            ExampleSerialPublisher.logger.error("Error reading from serial port", e);
+        }
+    }
+
+    private void processReceivedData(final byte[] buffer, final int length, final boolean echo,
+            final StringBuilder lineBuffer) {
+        try {
+            for (int i = 0; i < length; i++) {
+                final char ch = (char) buffer[i];
+
+                // Echo se richiesto
+                if (echo && this.commOs != null) {
+                    this.commOs.write(ch);
+                }
+
+                // Gestione fine linea
+                if (ch == '\r') {  // Carriage Return
+                    publishLine(lineBuffer.toString());
+                    lineBuffer.setLength(0);  // Reset buffer
+                } else if (ch != '\n') {  // Ignora Line Feed
+                    lineBuffer.append(ch);
+                }
+            }
+
+            // Flush echo output
+            if (echo && this.commOs != null) {
+                this.commOs.flush();
+            }
+        } catch (final IOException e) {
+            ExampleSerialPublisher.logger.error("Error processing serial data", e);
+        }
+    }
+
+    private void publishLine(final String line) {
+        if (this.cloudPublisher == null) {
+            ExampleSerialPublisher.logger.debug("No cloud publisher available");
+            return;
+        }
+
+        if (line.trim().isEmpty()) {
+            return; // Non pubblicare linee vuote
+        }
+
+        final KuraPayload payload = new KuraPayload();
+        payload.setTimestamp(new Date());
+        payload.addMetric("line", line);
+
+        final KuraMessage message = new KuraMessage(payload);
+
+        try {
+            this.cloudPublisher.publish(message);
+            ExampleSerialPublisher.logger.debug("Published: {}", line);
+        } catch (final Exception e) {
+            ExampleSerialPublisher.logger.error("Failed to publish message", e);
         }
     }
 
     @Override
-    public void onMessageArrived(KuraMessage message) {
+    public void onMessageArrived(final KuraMessage message) {
         // TODO Auto-generated method stub
-        
+
     }
 }

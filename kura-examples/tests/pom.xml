@@ -312,18 +312,8 @@
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
                                 <requirement>
-                                    <type>p2-installable-unit</type>
-                                    <id>org.eclipse.kura.wire.provider</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
                                     <type>eclipse-plugin</type>
                                     <id>org.eclipse.kura.wire.helper.provider</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
-                                    <type>eclipse-plugin</type>
-                                    <id>org.eclipse.kura.wire.provider</id>
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
                                 <requirement>

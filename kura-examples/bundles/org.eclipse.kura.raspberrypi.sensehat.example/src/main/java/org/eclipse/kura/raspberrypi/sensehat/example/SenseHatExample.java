@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kura.raspberrypi.sensehat.example;
 
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -29,10 +28,22 @@ import org.eclipse.kura.raspberrypi.sensehat.sensors.LPS25H;
 import org.eclipse.kura.raspberrypi.sensehat.sensors.LSM9DS1;
 import org.eclipse.kura.raspsberrypi.sensehat.joystick.Joystick;
 import org.eclipse.kura.raspsberrypi.sensehat.joystick.JoystickEvent;
-import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(immediate = true, //
+        configurationPolicy = ConfigurationPolicy.REQUIRE, //
+        service = { ConfigurableComponent.class }, //
+        enabled = true, //
+        name = "org.eclipse.kura.raspberrypi.sensehat.example.SenseHatExample" //
+)
+@Designate(ocd = SenseHatExampleOCD.class, factory = false)
 public class SenseHatExample implements ConfigurableComponent {
 
     private static final Logger s_logger = LoggerFactory.getLogger(SenseHatExample.class);
@@ -45,30 +56,6 @@ public class SenseHatExample implements ConfigurableComponent {
     private static final int I2C_PRE_ADDRESS = 0x5C;
     private static final int I2C_HUM_ADDRESS = 0x5F;
 
-    private static final String IMU_ACC_ENABLE = "imu.accelerometer.enable";
-    private static final String IMU_GYRO_ENABLE = "imu.gyroscope.enable";
-    private static final String IMU_COMP_ENABLE = "imu.compass.enable";
-    private static final String IMU_SAMPLES = "imu.sample.number";
-    private static final String PRE_ENABLE = "pressure.enable";
-    private static final String HUM_ENABLE = "humidity.enable";
-    private static final String LCD_ENABLE = "screen.enable";
-    private static final String STICK_ENABLE = "stick.enable";
-    private static final String SCREEN_MESSAGE = "screen.message";
-    private static final String SCREEN_ROTATION = "screen.rotation";
-    private static final String SCREEN_TEXT_COLOR = "screen.text.color";
-
-    private boolean imuAccEnable = false;
-    private boolean imuGyroEnable = false;
-    private boolean imuCompEnable = false;
-    private int imuSamples = 20;
-    private boolean preEnable = false;
-    private boolean humEnable = false;
-    private boolean lcdEnable = false;
-    private boolean stickEnable = false;
-    private String screenMessage = "";
-    private int screenRotation = 0;
-    private short[] screenTextColor = Colors.ORANGE;
-
     private Joystick senseHatJoystick;
     private JoystickEvent je;
     private boolean runThread;
@@ -80,10 +67,9 @@ public class SenseHatExample implements ConfigurableComponent {
 
     private SenseHat senseHat;
 
-    private LSM9DS1 imuSensor;          // Inertial Measurement Unit (Accelerometer, Gyroscope, Magnetometer)
-    private LPS25H pressureSensor;     // Atmospheric Pressure
-    private HTS221 humiditySensor;     // Humidity
-    private Map<String, Object> properties;
+    private LSM9DS1 imuSensor; // Inertial Measurement Unit (Accelerometer, Gyroscope, Magnetometer)
+    private LPS25H pressureSensor; // Atmospheric Pressure
+    private HTS221 humiditySensor; // Humidity
 
     private static ScheduledFuture<?> startUpdateThread;
     private ScheduledThreadPoolExecutor executor;
@@ -112,14 +98,13 @@ public class SenseHatExample implements ConfigurableComponent {
     //
     // ----------------------------------------------------------------
 
-    protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
+    @Activate
+    protected void activate(SenseHatExampleOCD ocd) {
         s_logger.info("Activating Sense Hat Application...");
 
         this.executor = new ScheduledThreadPoolExecutor(1);
         this.executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
         this.executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
-
-        getProperties(properties);
 
         if (startUpdateThread != null) {
             startUpdateThread.cancel(true);
@@ -129,14 +114,15 @@ public class SenseHatExample implements ConfigurableComponent {
 
             @Override
             public void run() {
-                update();
+                update(ocd);
             }
         }, 0, TimeUnit.MILLISECONDS);
 
         s_logger.info("Activating Sense Hat Application... Done.");
     }
 
-    protected void deactivate(ComponentContext componentContext) {
+    @Deactivate
+    protected void deactivate() {
         s_logger.info("Deactivating Sense Hat Application...");
 
         LPS25H.closeDevice();
@@ -168,11 +154,9 @@ public class SenseHatExample implements ConfigurableComponent {
         s_logger.info("Deactivating Sense Hat Application... Done.");
     }
 
-    public void updated(Map<String, Object> properties) {
+    @Modified
+    public void updated(SenseHatExampleOCD ocd) {
         s_logger.info("Updated Sense Hat Application...");
-
-        // store the properties received
-        getProperties(properties);
 
         if (startUpdateThread != null) {
             startUpdateThread.cancel(true);
@@ -182,7 +166,7 @@ public class SenseHatExample implements ConfigurableComponent {
 
             @Override
             public void run() {
-                update();
+                update(ocd);
             }
         }, 0, TimeUnit.MILLISECONDS);
 
@@ -195,32 +179,33 @@ public class SenseHatExample implements ConfigurableComponent {
     //
     // ----------------------------------------------------------------
 
-    private void update() {
-        if (this.imuAccEnable || this.imuGyroEnable || this.imuCompEnable) {
+    private void update(SenseHatExampleOCD ocd) {
+        if (ocd.imu_accelerometer_enable() || ocd.imu_gyroscope_enable() || ocd.imu_compass_enable()) {
 
             this.imuSensor = this.senseHat.getIMUSensor(I2C_BUS, I2C_ACC_ADDRESS, I2C_MAG_ADDRESS, I2C_ADDRESS_SIZE,
                     I2C_FREQUENCY);
-            boolean status = this.imuSensor.initDevice(this.imuAccEnable, this.imuGyroEnable, this.imuCompEnable);
+            boolean status = this.imuSensor.initDevice(ocd.imu_accelerometer_enable(), ocd.imu_gyroscope_enable(),
+                    ocd.imu_compass_enable());
             if (!status) {
                 s_logger.error("Unable to initialize IMU sensor.");
             } else {
-                if (this.imuAccEnable) {
+                if (ocd.imu_accelerometer_enable()) {
                     float[] acc = new float[3];
-                    for (int i = 0; i < this.imuSamples; i++) {
+                    for (int i = 0; i < ocd.imu_sample_number(); i++) {
                         acc = this.imuSensor.getAccelerometerRaw();
                     }
                     s_logger.info("Acceleration X : " + acc[0] + " Y : " + acc[1] + " Z : " + acc[2]);
                 }
-                if (this.imuGyroEnable) {
+                if (ocd.imu_gyroscope_enable()) {
                     float[] gyro = new float[3];
-                    for (int i = 0; i < this.imuSamples; i++) {
+                    for (int i = 0; i < ocd.imu_sample_number(); i++) {
                         gyro = this.imuSensor.getGyroscopeRaw();
                     }
                     s_logger.info("Orientation X : " + gyro[0] + " Y : " + gyro[1] + " Z : " + gyro[2]);
                 }
-                if (this.imuCompEnable) {
+                if (ocd.imu_compass_enable()) {
                     float[] comp = new float[3];
-                    for (int i = 0; i < this.imuSamples; i++) {
+                    for (int i = 0; i < ocd.imu_sample_number(); i++) {
                         comp = this.imuSensor.getCompassRaw();
                     }
                     s_logger.info("Compass X : " + comp[0] + " Y : " + comp[1] + " Z : " + comp[2]);
@@ -230,7 +215,7 @@ public class SenseHatExample implements ConfigurableComponent {
             LSM9DS1.closeDevice();
         }
 
-        if (this.preEnable) {
+        if (ocd.pressure_enable()) {
 
             this.pressureSensor = this.senseHat.getPressureSensor(I2C_BUS, I2C_PRE_ADDRESS, I2C_ADDRESS_SIZE,
                     I2C_FREQUENCY);
@@ -246,7 +231,7 @@ public class SenseHatExample implements ConfigurableComponent {
             LPS25H.closeDevice();
         }
 
-        if (this.humEnable) {
+        if (ocd.humidity_enable()) {
 
             this.humiditySensor = this.senseHat.getHumiditySensor(I2C_BUS, I2C_HUM_ADDRESS, I2C_ADDRESS_SIZE,
                     I2C_FREQUENCY);
@@ -262,11 +247,12 @@ public class SenseHatExample implements ConfigurableComponent {
             HTS221.closeDevice();
         }
 
-        if (this.lcdEnable) {
+        if (ocd.lcd_screen_enabled()) {
 
             this.frameBuffer = this.senseHat.getFrameBuffer();
-            FrameBuffer.setRotation(this.screenRotation);
-            this.frameBuffer.showMessage(this.screenMessage, this.screenTextColor, Colors.BLACK);
+            FrameBuffer.setRotation(ocd.screen_rotation());
+            this.frameBuffer.showMessage(ocd.screen_message(), Colors.fromColorString(ocd.screen_text_color()),
+                    Colors.BLACK);
 
         } else {
             if (this.frameBuffer != null) {
@@ -276,7 +262,7 @@ public class SenseHatExample implements ConfigurableComponent {
             }
         }
 
-        if (this.stickEnable) {
+        if (ocd.stick_enable()) {
 
             this.senseHatJoystick = this.senseHat.getJoystick();
             this.runThread = true;
@@ -351,63 +337,6 @@ public class SenseHatExample implements ConfigurableComponent {
                 s_logger.info("Down key released.");
             } else if (je.getValue() == Joystick.STATE_HOLD) {
                 s_logger.info("Down key held.");
-            }
-        }
-
-    }
-
-    private void getProperties(Map<String, Object> properties) {
-
-        this.properties = properties;
-        if (this.properties.get(IMU_ACC_ENABLE) != null) {
-            this.imuAccEnable = (Boolean) this.properties.get(IMU_ACC_ENABLE);
-        }
-        if (this.properties.get(IMU_GYRO_ENABLE) != null) {
-            this.imuGyroEnable = (Boolean) this.properties.get(IMU_GYRO_ENABLE);
-        }
-        if (this.properties.get(IMU_COMP_ENABLE) != null) {
-            this.imuCompEnable = (Boolean) this.properties.get(IMU_COMP_ENABLE);
-        }
-        if (this.properties.get(IMU_SAMPLES) != null) {
-            this.imuSamples = (Integer) this.properties.get(IMU_SAMPLES);
-        }
-        if (this.properties.get(PRE_ENABLE) != null) {
-            this.preEnable = (Boolean) this.properties.get(PRE_ENABLE);
-        }
-        if (this.properties.get(HUM_ENABLE) != null) {
-            this.humEnable = (Boolean) this.properties.get(HUM_ENABLE);
-        }
-        if (this.properties.get(LCD_ENABLE) != null) {
-            this.lcdEnable = (Boolean) this.properties.get(LCD_ENABLE);
-        }
-        if (this.properties.get(STICK_ENABLE) != null) {
-            this.stickEnable = (Boolean) this.properties.get(STICK_ENABLE);
-        }
-        if (this.properties.get(SCREEN_MESSAGE) != null) {
-            this.screenMessage = (String) this.properties.get(SCREEN_MESSAGE);
-        }
-        if (this.properties.get(SCREEN_ROTATION) != null) {
-            this.screenRotation = (Integer) this.properties.get(SCREEN_ROTATION);
-        }
-        if (this.properties.get(SCREEN_TEXT_COLOR) != null) {
-            if (((String) this.properties.get(SCREEN_TEXT_COLOR)).contains("RED")) {
-                this.screenTextColor = Colors.RED;
-            } else if (((String) this.properties.get(SCREEN_TEXT_COLOR)).contains("ORANGE")) {
-                this.screenTextColor = Colors.ORANGE;
-            } else if (((String) this.properties.get(SCREEN_TEXT_COLOR)).contains("YELLOW")) {
-                this.screenTextColor = Colors.YELLOW;
-            } else if (((String) this.properties.get(SCREEN_TEXT_COLOR)).contains("GREEN")) {
-                this.screenTextColor = Colors.GREEN;
-            } else if (((String) this.properties.get(SCREEN_TEXT_COLOR)).contains("BLUE")) {
-                this.screenTextColor = Colors.BLUE;
-            } else if (((String) this.properties.get(SCREEN_TEXT_COLOR)).contains("PURPLE")) {
-                this.screenTextColor = Colors.PURPLE;
-            } else if (((String) this.properties.get(SCREEN_TEXT_COLOR)).contains("VIOLET")) {
-                this.screenTextColor = Colors.VIOLET;
-            } else if (((String) this.properties.get(SCREEN_TEXT_COLOR)).contains("WHITE")) {
-                this.screenTextColor = Colors.WHITE;
-            } else if (((String) this.properties.get(SCREEN_TEXT_COLOR)).contains("BLACK")) {
-                this.screenTextColor = Colors.BLACK;
             }
         }
 

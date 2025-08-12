@@ -13,12 +13,11 @@
     Contributors:
      Eurotech
 
--->
-<target name="kura-apps Target Definition" sequenceNumber="75">
+--><target name="kura-apps Target Definition" sequenceNumber="75">
     <locations>
         <location includeDependencyDepth="direct" includeDependencyScopes="compile,test"
             missingManifest="ignore" type="Maven">
-            <dependencies>
+        <dependencies>
 			    <dependency>
 				    <groupId>org.eclipse.kura</groupId>
 				    <artifactId>kura-bom</artifactId>
@@ -89,7 +88,7 @@
 				    <id>central</id>
 				    <url>https://repo1.maven.org/maven2/</url>
 			    </repository>
-            </repositories>
-        </location>
+		    </repositories>
+	    </location>
     </locations>
 </target>
