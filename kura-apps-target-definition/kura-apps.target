@@ -15,8 +15,9 @@
 
 --><target name="kura-apps Target Definition" sequenceNumber="75">
     <locations>
-	    <location includeDependencyDepth="direct" includeDependencyScopes="compile,test" missingManifest="ignore" type="Maven">
-		    <dependencies>
+        <location includeDependencyDepth="direct" includeDependencyScopes="compile,test"
+            missingManifest="ignore" type="Maven">
+        <dependencies>
 			    <dependency>
 				    <groupId>org.eclipse.kura</groupId>
 				    <artifactId>kura-bom</artifactId>
