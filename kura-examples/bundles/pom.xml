@@ -19,9 +19,13 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.eclipse.kura</groupId>
+    <parent>
+        <groupId>org.eclipse.kura</groupId>
+        <artifactId>kura-examples</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </parent>
+
     <artifactId>kura-examples.parent</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Parent POM for kura-examples</name>
