@@ -30,7 +30,7 @@
 
 	<properties>
 		<sonar.coverage.jacoco.xmlReportPaths>
-			${project.basedir}/../../../tests/org.eclipse.kura.example.container.signature.validation.test/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+			${project.basedir}/../../../tests/container-validation-tests/org.eclipse.kura.example.container.signature.validation.test/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 </project>
