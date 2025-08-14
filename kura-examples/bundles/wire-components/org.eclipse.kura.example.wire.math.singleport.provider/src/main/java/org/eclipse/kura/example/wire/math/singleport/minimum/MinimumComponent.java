@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.example.wire.math.singleport.RunningExtremum;
@@ -65,13 +65,13 @@ import org.slf4j.LoggerFactory;
 )
 @Designate(ocd = MinimumComponentOCD.class, factory = true)
 public class MinimumComponent
-        implements WireEmitter, WireReceiver, ConfigurableComponent, Function<TypedValue<?>, TypedValue<?>> {
+        implements WireEmitter, WireReceiver, ConfigurableComponent, UnaryOperator<TypedValue<?>> {
 
     private static final Logger logger = LoggerFactory.getLogger(MinimumComponent.class);
 
     private WireHelperService wireHelperService;
     private WireSupport wireSupport;
-    protected MinimumComponentOptions options;
+    protected MinimumComponentOptions minOptions;
 
     private RunningExtremum<Double> runningExtremum;
 
@@ -89,16 +89,10 @@ public class MinimumComponent
     }
 
     @Activate
-    public void activate(ComponentContext componentContext, MinimumComponentOCD ocd) {
+    public void activate(final ComponentContext componentContext, final MinimumComponentOCD ocd) {
         this.wireSupport = this.wireHelperService.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(ocd);
-    }
-
-    @Modified
-    public void updated(MinimumComponentOCD ocd) {
-        this.options = getOptions(ocd);
-        init();
     }
 
     @Deactivate
@@ -107,39 +101,45 @@ public class MinimumComponent
         logger.info("Deactivating...Done");
     }
 
-    protected MinimumComponentOptions getOptions(MinimumComponentOCD ocd) {
+    @Modified
+    public void updated(final MinimumComponentOCD ocd) {
+        this.minOptions = getMinimumOptions(ocd);
+        init();
+    }
+
+    protected MinimumComponentOptions getMinimumOptions(final MinimumComponentOCD ocd) {
         return new MinimumComponentOptions(ocd);
     }
 
     @Override
-    public Object polled(Wire wire) {
-        return wireSupport.polled(wire);
-    }
-
-    @Override
-    public void consumersConnected(Wire[] wires) {
-        wireSupport.consumersConnected(wires);
-    }
-
-    @Override
-    public void updated(Wire wire, Object value) {
+    public void updated(final Wire wire, final Object value) {
         wireSupport.updated(wire, value);
     }
 
     @Override
-    public void producersConnected(Wire[] wires) {
+    public void producersConnected(final Wire[] wires) {
         wireSupport.producersConnected(wires);
     }
 
     @Override
-    public void onWireReceive(WireEnvelope wireEnvelope) {
+    public Object polled(final Wire wire) {
+        return wireSupport.polled(wire);
+    }
+
+    @Override
+    public void consumersConnected(final Wire[] wires) {
+        wireSupport.consumersConnected(wires);
+    }
+
+    @Override
+    public void onWireReceive(final WireEnvelope wireEnvelope) {
         final List<WireRecord> records = wireEnvelope.getRecords();
         if (records.isEmpty()) {
             logger.warn("Received empty envelope");
             return;
         }
         final Map<String, TypedValue<?>> properties = records.get(0).getProperties();
-        final TypedValue<?> operand = properties.get(this.options.getOperandName());
+        final TypedValue<?> operand = properties.get(this.minOptions.getOperandName());
         if (operand == null) {
             logger.warn("Missing operand");
             return;
@@ -149,13 +149,13 @@ public class MinimumComponent
             return;
         }
         final TypedValue<?> result = this.apply(operand);
-        if (this.options.shouldEmitReceivedProperties()) {
+        if (this.minOptions.shouldEmitReceivedProperties().booleanValue()) {
             final Map<String, TypedValue<?>> resultProperties = new HashMap<>(properties);
-            resultProperties.put(this.options.getResultName(), result);
+            resultProperties.put(this.minOptions.getResultName(), result);
             this.wireSupport.emit(Collections.singletonList(new WireRecord(resultProperties)));
         } else {
             this.wireSupport.emit(Collections
-                    .singletonList(new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
+                    .singletonList(new WireRecord(Collections.singletonMap(this.minOptions.getResultName(), result))));
         }
     }
 
@@ -163,9 +163,10 @@ public class MinimumComponent
         this.runningExtremum = null;
     }
 
-    public TypedValue<?> apply(TypedValue<?> t) {
+    @Override
+    public TypedValue<?> apply(final TypedValue<?> t) {
         if (runningExtremum == null) {
-            this.runningExtremum = new RunningExtremum<>(this.options.getWindowSize());
+            this.runningExtremum = new RunningExtremum<>(this.minOptions.getWindowSize());
         }
         final double value = ((Number) t.getValue()).doubleValue();
         this.runningExtremum.add(value);

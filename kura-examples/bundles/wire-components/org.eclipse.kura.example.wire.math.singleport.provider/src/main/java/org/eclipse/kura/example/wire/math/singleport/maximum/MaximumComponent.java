@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.example.wire.math.singleport.RunningExtremum;
@@ -65,12 +65,12 @@ import org.slf4j.LoggerFactory;
 )
 @Designate(ocd = MaximumComponentOCD.class, factory = true)
 public class MaximumComponent
-        implements WireEmitter, WireReceiver, ConfigurableComponent, Function<TypedValue<?>, TypedValue<?>> {
+        implements WireEmitter, WireReceiver, ConfigurableComponent, UnaryOperator<TypedValue<?>> {
 
     private static final Logger logger = LoggerFactory.getLogger(MaximumComponent.class);
 
-    private WireHelperService wireHelperService;
-    private WireSupport wireSupport;
+    private WireHelperService wireHelperServiceBind;
+    private WireSupport wireSup;
     protected MaximumComponentOptions options;
 
     private RunningExtremum<Double> runningExtremum;
@@ -81,58 +81,60 @@ public class MaximumComponent
             unbind = "unbindWireHelperService" //
     )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
-        this.wireHelperService = wireHelperService;
+        this.wireHelperServiceBind = wireHelperService;
     }
 
     public void unbindWireHelperService(final WireHelperService wireHelperService) {
-        this.wireHelperService = null;
+        if (this.wireHelperServiceBind != null) {
+            this.wireHelperServiceBind = null;
+        }
     }
 
     @Activate
-    public void activate(ComponentContext componentContext, MaximumComponentOCD ocd) {
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
+    public void activate(final ComponentContext componentContext, final MaximumComponentOCD ocd) {
+        this.wireSup = this.wireHelperServiceBind.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(ocd);
     }
 
+    @Deactivate
+    public void deactivate() {
+        logger.info("Deactivating component...");
+        logger.info("Deactivating component...Done");
+    }
+
     @Modified
-    public void updated(MaximumComponentOCD ocd) {
+    public void updated(final MaximumComponentOCD ocd) {
         this.options = getOptions(ocd);
         init();
     }
 
-    @Deactivate
-    public void deactivate() {
-        logger.info("Deactivating...");
-        logger.info("Deactivating...Done");
-    }
-
-    protected MaximumComponentOptions getOptions(MaximumComponentOCD ocd) {
+    protected MaximumComponentOptions getOptions(final MaximumComponentOCD ocd) {
         return new MaximumComponentOptions(ocd);
     }
 
     @Override
-    public Object polled(Wire wire) {
-        return wireSupport.polled(wire);
+    public Object polled(final Wire wire) {
+        return wireSup.polled(wire);
     }
 
     @Override
-    public void consumersConnected(Wire[] wires) {
-        wireSupport.consumersConnected(wires);
+    public void updated(final Wire wire, final Object value) {
+        wireSup.updated(wire, value);
     }
 
     @Override
-    public void updated(Wire wire, Object value) {
-        wireSupport.updated(wire, value);
+    public void consumersConnected(final Wire[] wires) {
+        wireSup.consumersConnected(wires);
     }
 
     @Override
-    public void producersConnected(Wire[] wires) {
-        wireSupport.producersConnected(wires);
+    public void producersConnected(final Wire[] wires) {
+        wireSup.producersConnected(wires);
     }
 
     @Override
-    public void onWireReceive(WireEnvelope wireEnvelope) {
+    public void onWireReceive(final WireEnvelope wireEnvelope) {
         final List<WireRecord> records = wireEnvelope.getRecords();
         if (records.isEmpty()) {
             logger.warn("Received empty envelope");
@@ -149,12 +151,12 @@ public class MaximumComponent
             return;
         }
         final TypedValue<?> result = this.apply(operand);
-        if (this.options.shouldEmitReceivedProperties()) {
+        if (this.options.shouldEmitReceivedProperties().booleanValue()) {
             final Map<String, TypedValue<?>> resultProperties = new HashMap<>(properties);
             resultProperties.put(this.options.getResultName(), result);
-            this.wireSupport.emit(Collections.singletonList(new WireRecord(resultProperties)));
+            this.wireSup.emit(Collections.singletonList(new WireRecord(resultProperties)));
         } else {
-            this.wireSupport.emit(Collections
+            this.wireSup.emit(Collections
                     .singletonList(new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
         }
     }
@@ -163,7 +165,8 @@ public class MaximumComponent
         this.runningExtremum = null;
     }
 
-    public TypedValue<?> apply(TypedValue<?> t) {
+    @Override
+    public TypedValue<?> apply(final TypedValue<?> t) {
         if (runningExtremum == null) {
             this.runningExtremum = new RunningExtremum<>(this.options.getWindowSize());
         }

@@ -69,7 +69,7 @@ public class GainOffsetComponent implements WireEmitter, WireReceiver, Configura
     private WireHelperService wireHelperService;
     private WireSupport wireSupport;
 
-    private GainOffsetComponentOptions options;
+    private GainOffsetComponentOptions gainOpts;
 
     @Reference(name = "WireHelperService", //
             policy = ReferencePolicy.STATIC, //
@@ -81,79 +81,81 @@ public class GainOffsetComponent implements WireEmitter, WireReceiver, Configura
     }
 
     public void unbindWireHelperService(final WireHelperService wireHelperService) {
-        this.wireHelperService = null;
+        if (this.wireHelperService != null) {
+            this.wireHelperService = null;
+        }
     }
 
     @Activate
-    public void activate(ComponentContext componentContext, GainOffsetComponentOCD ocd) {
+    public void activate(final ComponentContext componentContext, final GainOffsetComponentOCD ocd) {
         this.wireSupport = this.wireHelperService.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(ocd);
     }
 
     @Modified
-    public void updated(GainOffsetComponentOCD ocd) {
+    public void updated(final GainOffsetComponentOCD ocd) {
         try {
-            this.options = new GainOffsetComponentOptions(ocd);
-        } catch (Exception e) {
+            this.gainOpts = new GainOffsetComponentOptions(ocd);
+        } catch (final Exception e) {
             logger.warn("Invalid configuration, please review", e);
-            this.options = null;
+            this.gainOpts = null;
         }
     }
 
     @Deactivate
     public void deactivate() {
-        logger.info("Deactivating...");
-        logger.info("Deactivating...Done");
+        logger.info("Deactivating gain offset component...");
+        logger.info("Deactivating gain offset component...Done");
     }
 
     @Override
-    public Object polled(Wire wire) {
+    public Object polled(final Wire wire) {
         return wireSupport.polled(wire);
     }
 
     @Override
-    public void consumersConnected(Wire[] wires) {
+    public void consumersConnected(final Wire[] wires) {
         wireSupport.consumersConnected(wires);
     }
 
     @Override
-    public void updated(Wire wire, Object value) {
+    public void updated(final Wire wire, final Object value) {
         wireSupport.updated(wire, value);
     }
 
     @Override
-    public void producersConnected(Wire[] wires) {
+    public void producersConnected(final Wire[] wires) {
         wireSupport.producersConnected(wires);
     }
 
     @Override
-    public void onWireReceive(WireEnvelope wireEnvelope) {
-        if (options == null) {
+    public void onWireReceive(final WireEnvelope wireEnvelope) {
+        if (gainOpts == null) {
             logger.warn("Invalid configuration, please review");
         }
         final List<WireRecord> inputRecords = wireEnvelope.getRecords();
         final List<WireRecord> records = new ArrayList<>(inputRecords.size());
-        for (final WireRecord record : inputRecords) {
-            records.add(processRecord(record));
+        for (final WireRecord inputWireRecord : inputRecords) {
+            records.add(processRecord(inputWireRecord));
         }
         this.wireSupport.emit(records);
     }
 
-    private WireRecord processRecord(WireRecord record) {
-        final Map<String, TypedValue<?>> inputProperties = record.getProperties();
+    private WireRecord processRecord(final WireRecord inputWireRecord) {
+        final Map<String, TypedValue<?>> inputProperties = inputWireRecord.getProperties();
         final Map<String, TypedValue<?>> outProperties = new HashMap<>();
-        if (this.options.shouldEmitReceivedProperties()) {
+        if (this.gainOpts.shouldEmitReceivedProperties()) {
             outProperties.putAll(inputProperties);
         }
-        for (GainOffsetEntry e : this.options.getEntries()) {
+        for (final GainOffsetEntry e : this.gainOpts.getEntries()) {
             final String propertyName = e.getPropertyName();
             final TypedValue<?> typedValue = inputProperties.get(propertyName);
             if (typedValue == null) {
                 continue;
             }
             final Object value = typedValue.getValue();
-            if (value == null || !(value instanceof Number)) {
+            if (!(value instanceof Number)) {
                 logger.warn("Invalid property value: {}={}", propertyName, typedValue);
                 continue;
             }
