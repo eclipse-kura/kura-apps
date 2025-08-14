@@ -228,7 +228,7 @@ public class FrameBuffer {
         short[][][] message = new short[(text.length() + 2) * 8][8][3];
         System.arraycopy(alphabet.getLetter(" "), 0, message, 0, 8);
         for (int i = 0; i < text.length(); i++) {
-            parseMessage(text, i);
+            parseMessage(text, i, message);
         }
         System.arraycopy(alphabet.getLetter(" "), 0, message, message.length - 8, 8);
 
@@ -257,7 +257,7 @@ public class FrameBuffer {
         }
     }
 
-    private void parseMessage(String text, int i) {
+    private void parseMessage(String text, int i, short[][][] message) {
         if (!alphabet.isAvailable(String.valueOf(text.charAt(i)))) {
             s_logger.warn("Letter not available");
             clearFrameBuffer();
