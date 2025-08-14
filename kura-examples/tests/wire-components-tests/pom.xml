@@ -35,6 +35,7 @@
         <module>org.eclipse.kura.example.wire.math.singleport.provider.test</module>
         <module>org.eclipse.kura.example.wire.math.trig.test</module>
         <module>org.eclipse.kura.example.wire.math.multiport.provider.test</module>
+        <!-- <module>org.eclipse.kura.example.wire.devel.component.provider.test</module> -->
     </modules>
 
 </project>

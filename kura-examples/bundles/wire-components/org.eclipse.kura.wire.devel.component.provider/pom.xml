@@ -27,5 +27,10 @@
 	<artifactId>org.eclipse.kura.wire.devel.component.provider</artifactId>
 	<version>3.0.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
+	
+	<properties>
+		<sonar.coverage.jacoco.xmlReportPaths>
+			${project.basedir}/../../../tests/wire-components-tests/org.eclipse.kura.wire.devel.component.provider.test/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
 
 </project>
