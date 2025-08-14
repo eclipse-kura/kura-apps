@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -16,8 +16,8 @@ package org.eclipse.kura.example.driver.sensehat;
 import java.util.Map;
 import java.util.Optional;
 
-import org.eclipse.kura.raspsberrypi.sensehat.joystick.Joystick;
-import org.eclipse.kura.raspsberrypi.sensehat.joystick.JoystickEvent;
+import org.eclipse.kura.raspberrypi.sensehat.joystick.Joystick;
+import org.eclipse.kura.raspberrypi.sensehat.joystick.JoystickEvent;
 
 public enum Resource {
     LED_MATRIX_CHARS,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 Red Hat Inc and others
+ * Copyright (c) 2017, 2025 Red Hat Inc and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kura.example.camel.aggregation;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.support.ExpressionAdapter;
@@ -22,8 +22,6 @@ final class RandomTemperatureGenerator extends ExpressionAdapter {
     private int minimum;
     private int maximum;
 
-    private final Random random = new Random();
-
     public RandomTemperatureGenerator(int minimum, int maximum) {
         this.minimum = minimum;
         this.maximum = maximum;
@@ -31,7 +29,7 @@ final class RandomTemperatureGenerator extends ExpressionAdapter {
 
     @Override
     public Object evaluate(Exchange exchange) {
-        return this.random.nextInt(this.maximum - this.minimum) + this.minimum;
+        return ThreadLocalRandom.current().nextInt(this.minimum, this.maximum);
     }
 
     public void setMinimum(int minimum) {

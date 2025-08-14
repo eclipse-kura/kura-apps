@@ -10,7 +10,7 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-package org.eclipse.kura.raspsberrypi.sensehat.joystick;
+package org.eclipse.kura.raspberrypi.sensehat.joystick;
 
 import java.nio.ShortBuffer;
 

@@ -15,12 +15,12 @@ package org.eclipse.kura.raspberrypi.sensehat.impl;
 import java.io.IOException;
 
 import org.eclipse.kura.raspberrypi.sensehat.SenseHat;
+import org.eclipse.kura.raspberrypi.sensehat.joystick.Joystick;
 import org.eclipse.kura.raspberrypi.sensehat.ledmatrix.FrameBuffer;
 import org.eclipse.kura.raspberrypi.sensehat.ledmatrix.FrameBufferRaw;
 import org.eclipse.kura.raspberrypi.sensehat.sensors.HTS221;
 import org.eclipse.kura.raspberrypi.sensehat.sensors.LPS25H;
 import org.eclipse.kura.raspberrypi.sensehat.sensors.LSM9DS1;
-import org.eclipse.kura.raspsberrypi.sensehat.joystick.Joystick;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
