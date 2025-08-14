@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kura.wire.devel.delay;
 
-import java.util.Random;
+import java.security.SecureRandom;
 
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.wire.WireComponent;
@@ -53,7 +53,7 @@ public class Delay implements WireEmitter, WireReceiver, ConfigurableComponent {
     private WireHelperService wireHelperService;
     private WireSupport wireSupport;
 
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
     private int delayAverage;
     private int delayStdDev;
 
@@ -72,7 +72,7 @@ public class Delay implements WireEmitter, WireReceiver, ConfigurableComponent {
 
     @SuppressWarnings("unchecked")
     @Activate
-    public void activate(final ComponentContext context, DelayOCD ocd) {
+    public void activate(final ComponentContext context, final DelayOCD ocd) {
         logger.info("acitvating..");
 
         wireSupport = this.wireHelperService.newWireSupport(this,
@@ -109,7 +109,7 @@ public class Delay implements WireEmitter, WireReceiver, ConfigurableComponent {
 
             try {
                 Thread.sleep(delayMs);
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }

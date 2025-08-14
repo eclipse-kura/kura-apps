@@ -16,8 +16,8 @@ package org.eclipse.kura.example.camel.quickstart;
 import static java.util.Collections.singletonMap;
 import static org.eclipse.kura.camel.component.Configuration.asInt;
 
+import java.security.SecureRandom;
 import java.util.Map;
-import java.util.Random;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
@@ -45,7 +45,7 @@ public class GatewayRouterJava implements ConfigurableComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(GatewayRouterJava.class);
 
-    private Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     /**
      * A RouterBuilder instance which has no routes
@@ -173,7 +173,7 @@ public class GatewayRouterJava implements ConfigurableComponent {
                 from("timer://heartbeat").process(new Processor() {
 
                     @Override
-                    public void process(Exchange exchange) throws Exception {
+                    public void process(final Exchange exchange) throws Exception {
                         final int value = random.nextInt(maxTemp);
                         final Map<String, Integer> data = singletonMap("temperature", value);
                         exchange.getIn().setBody(data);
@@ -192,8 +192,8 @@ public class GatewayRouterJava implements ConfigurableComponent {
                 from("timer://xmltopic").process(new Processor() {
 
                     @Override
-                    public void process(Exchange exchange) throws Exception {
-                        KuraPayload payload = new KuraPayload();
+                    public void process(final Exchange exchange) throws Exception {
+                        final KuraPayload payload = new KuraPayload();
                         payload.addMetric("temperature", random.nextInt(20));
                         exchange.getIn().setBody(payload);
                     }

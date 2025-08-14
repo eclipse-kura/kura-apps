@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kura.example.camel.aggregation;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.security.SecureRandom;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.support.ExpressionAdapter;
@@ -22,21 +22,23 @@ final class RandomTemperatureGenerator extends ExpressionAdapter {
     private int minimum;
     private int maximum;
 
-    public RandomTemperatureGenerator(int minimum, int maximum) {
+    private final SecureRandom random = new SecureRandom();
+
+    public RandomTemperatureGenerator(final int minimum, final int maximum) {
         this.minimum = minimum;
         this.maximum = maximum;
     }
 
     @Override
-    public Object evaluate(Exchange exchange) {
-        return ThreadLocalRandom.current().nextInt(this.minimum, this.maximum);
+    public Object evaluate(final Exchange exchange) {
+        return this.random.nextInt(this.maximum - this.minimum) + this.minimum;
     }
 
-    public void setMinimum(int minimum) {
+    public void setMinimum(final int minimum) {
         this.minimum = minimum;
     }
 
-    public void setMaximum(int maximum) {
+    public void setMaximum(final int maximum) {
         this.maximum = maximum;
     }
 

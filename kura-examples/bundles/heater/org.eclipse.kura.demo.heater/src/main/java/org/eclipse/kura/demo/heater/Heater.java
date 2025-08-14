@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kura.demo.heater;
 
+import java.security.SecureRandom;
 import java.util.Date;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -59,7 +59,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     private ScheduledFuture<?> handle;
 
     private float temperature;
-    private final Random random;
+    private final SecureRandom random;
 
     private CloudPublisher cloudPublisher;
 
@@ -71,8 +71,8 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
 
     public Heater() {
         super();
-        this.random = new Random();
         this.worker = Executors.newSingleThreadScheduledExecutor();
+        this.random = new SecureRandom();
     }
 
     @Reference(name = "CloudPublisher", //
@@ -80,13 +80,13 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
             unbind = "unsetCloudPublisher", //
             cardinality = ReferenceCardinality.OPTIONAL //
     )
-    public void setCloudPublisher(CloudPublisher cloudPublisher) {
+    public void setCloudPublisher(final CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
         this.cloudPublisher.registerCloudConnectionListener(Heater.this);
         this.cloudPublisher.registerCloudDeliveryListener(Heater.this);
     }
 
-    public void unsetCloudPublisher(CloudPublisher cloudPublisher) {
+    public void unsetCloudPublisher(final CloudPublisher cloudPublisher) {
         this.cloudPublisher.unregisterCloudConnectionListener(Heater.this);
         this.cloudPublisher.unregisterCloudDeliveryListener(Heater.this);
         this.cloudPublisher = null;
@@ -99,7 +99,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     // ----------------------------------------------------------------
 
     @Activate
-    protected void activate(ComponentContext componentContext, HeaterOCD ocd) {
+    protected void activate(final ComponentContext componentContext, final HeaterOCD ocd) {
         logger.info("Activating Heater...");
 
         // get the mqtt client for this application
@@ -107,7 +107,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
             // Don't subscribe because these are handled by the default
             // subscriptions and we don't want to get messages twice
             doUpdate(false, ocd);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.error("Error during component activation", e);
             throw new ComponentException(e);
         }
@@ -115,7 +115,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     }
 
     @Deactivate
-    protected void deactivate(ComponentContext componentContext) {
+    protected void deactivate(final ComponentContext componentContext) {
         logger.debug("Deactivating Heater...");
 
         // shutting down the worker and cleaning up the properties
@@ -125,7 +125,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     }
 
     @Modified
-    public void updated(HeaterOCD ocd) {
+    public void updated(final HeaterOCD ocd) {
         logger.info("Updated Heater...");
 
         // try to kick off a new job
@@ -152,7 +152,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     }
 
     @Override
-    public void onMessageConfirmed(String messageId) {
+    public void onMessageConfirmed(final String messageId) {
         // TODO Auto-generated method stub
 
     }
@@ -172,7 +172,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     /**
      * Called after a new set of properties has been configured on the service
      */
-    private void doUpdate(boolean onUpdate, HeaterOCD ocd) {
+    private void doUpdate(final boolean onUpdate, final HeaterOCD ocd) {
         // cancel a current worker handle if one if active
         if (this.handle != null) {
             this.handle.cancel(true);
@@ -184,7 +184,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
         }
 
         // schedule a new worker based on the properties of the service
-        int pubrate = ocd.publish_rate();
+        final int pubrate = ocd.publish_rate();
         this.handle = this.worker.scheduleAtFixedRate(new Runnable() {
 
             @Override
@@ -198,18 +198,18 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
     /**
      * Called at the configured rate to publish the next temperature measurement.
      */
-    private void doPublish(HeaterOCD ocd) {
+    private void doPublish(final HeaterOCD ocd) {
         if (this.cloudPublisher == null) {
             logger.info("No cloud publisher selected. Cannot publish!");
             return;
         }
 
         // fetch the publishing configuration from the publishing properties
-        String mode = ocd.mode();
+        final String mode = ocd.mode();
 
         // Increment the simulated temperature value
         float setPoint = 0;
-        float tempIncr = ocd.temperature_increment();
+        final float tempIncr = ocd.temperature_increment();
         if (MODE_PROP_PROGRAM.equals(mode)) {
             setPoint = ocd.program_set_point();
         } else if (MODE_PROP_MANUAL.equals(mode)) {
@@ -224,7 +224,7 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
         }
 
         // Allocate a new payload
-        KuraPayload payload = new KuraPayload();
+        final KuraPayload payload = new KuraPayload();
 
         // Timestamp the message
         payload.setTimestamp(new Date());
@@ -234,20 +234,20 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
         payload.addMetric("temperatureExternal", 5.0F);
         payload.addMetric("temperatureExhaust", 30.0F);
 
-        int code = this.random.nextInt();
+        final int code = this.random.nextInt();
         if (this.random.nextInt() % 5 == 0) {
             payload.addMetric("errorCode", code);
         } else {
             payload.addMetric("errorCode", 0);
         }
 
-        KuraMessage message = new KuraMessage(payload);
+        final KuraMessage message = new KuraMessage(payload);
 
         // Publish the message
         try {
             this.cloudPublisher.publish(message);
             logger.info("Published message: {}", payload);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logger.error("Cannot publish message: {}", message, e);
         }
     }
