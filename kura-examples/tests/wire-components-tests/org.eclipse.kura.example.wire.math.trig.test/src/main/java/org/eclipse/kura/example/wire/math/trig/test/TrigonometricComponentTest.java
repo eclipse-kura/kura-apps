@@ -49,7 +49,6 @@ public class TrigonometricComponentTest {
 
     private static final Logger logger = LoggerFactory.getLogger(TrigonometricComponentTest.class);
 
-    private static final String FACTORY_PID = "org.eclipse.kura.example.wire.math.trig.TrigonometricComponent";
     private static final String TEST_EMITTER_PID = "test.emitter.pid";
     private static final String TEST_RECEIVER_PID = "test.receiver.pid";
 
