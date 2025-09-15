@@ -1,25 +1,9 @@
-/*******************************************************************************
- * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
- * 
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
- * 
- * Contributors:
- *  Eurotech
- *******************************************************************************/
-
-package org.eclipse.kura.example.wire.math.singleport.maximum.test;
+package org.eclipse.kura.wire.devel.delay;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -28,13 +12,9 @@ import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.configuration.ConfigurationService;
-import org.eclipse.kura.type.TypedValue;
-import org.eclipse.kura.type.TypedValues;
 import org.eclipse.kura.util.wire.test.GraphBuilder;
 import org.eclipse.kura.util.wire.test.TestEmitterReceiver;
 import org.eclipse.kura.util.wire.test.WireTestUtil;
-import org.eclipse.kura.wire.WireEnvelope;
-import org.eclipse.kura.wire.WireRecord;
 import org.eclipse.kura.wire.graph.WireGraphConfiguration;
 import org.eclipse.kura.wire.graph.WireGraphService;
 import org.junit.After;
@@ -46,11 +26,11 @@ import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MaximumComponentTest {
+public class DelayComponentTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(MaximumComponentTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(DelayComponentTest.class);
 
-    private static final String FACTORY_PID = "org.eclipse.kura.example.wire.math.singleport.maximum.MaximumComponent";
+    private static final String FACTORY_PID = "org.eclipse.kura.wire.devel.delay.Delay";
     private static final String TEST_EMITTER_PID = "test.emitter.pid";
     private static final String TEST_RECEIVER_PID = "test.receiver.pid";
 
@@ -64,15 +44,11 @@ public class MaximumComponentTest {
     private static TestEmitterReceiver outReceiver;
 
     // configuration properties of component under test
-    private static final String OPERAND_NAME_PROP_NAME = "operand.name";
-    private static final String RESULT_NAME_PROP_NAME = "result.name";
-    private static final String EMIT_RECEIVED_PROPERTIES = "emit.received.properties";
-    private static final String WINDOW_SIZE_PROP_NAME = "window.size";
+    private static final String DELAY_AVERAGE_NAME_PROP_NAME = "delay.average";
+    private static final String DELAY_STANDARD_DEVIATION_NAME_PROP_NAME = "delay.standard.deviation";
 
-    private static final String OPERAND_NAME_DEFAULT = "operand";
-    private static final String RESULT_NAME_DEFAULT = "result";
-    private static final boolean EMIT_RECEIVED_PROPERTIES_DEFAULT = false;
-    private static final int WINDOW_SIZE_DEFAULT = 10;
+    private static final int DELAY_AVERAGE_NAME_DEFAULT = 1000;
+    private static final int DELAY_STANDARD_DEVIATION_NAME_DEFAULT = 100;
 
     private static WireGraphService wireGraphService;
     private static ConfigurationService configurationService;
@@ -81,7 +57,7 @@ public class MaximumComponentTest {
 
     private final GraphBuilder builder = new GraphBuilder();
     private WireGraphConfiguration wireGraphConfiguration;
-    private final BundleContext bundleContext = FrameworkUtil.getBundle(MaximumComponentTest.class)
+    private final BundleContext bundleContext = FrameworkUtil.getBundle(DelayComponentTest.class)
             .getBundleContext();
 
     String activeWirePid;
@@ -119,7 +95,6 @@ public class MaximumComponentTest {
             logger.error("Test error", e);
             throw e;
         }
-
     }
 
     @Test
@@ -153,48 +128,11 @@ public class MaximumComponentTest {
     private boolean matchesDefaultConfiguration(ComponentConfiguration cc) {
         if (cc.getPid().equals(this.activeWirePid)) {
             Map<String, Object> props = cc.getConfigurationProperties();
-            return OPERAND_NAME_DEFAULT.equals(props.get(OPERAND_NAME_PROP_NAME))
-                    && EMIT_RECEIVED_PROPERTIES_DEFAULT == (boolean) props.get(EMIT_RECEIVED_PROPERTIES)
-                    && WINDOW_SIZE_DEFAULT == (int) props.get(WINDOW_SIZE_PROP_NAME)
-                    && RESULT_NAME_DEFAULT.equals(props.get(RESULT_NAME_PROP_NAME));
+            return DELAY_AVERAGE_NAME_DEFAULT == (int) props.get(DELAY_AVERAGE_NAME_PROP_NAME)
+                    && DELAY_STANDARD_DEVIATION_NAME_DEFAULT == (int) props
+                            .get(DELAY_STANDARD_DEVIATION_NAME_PROP_NAME);
         }
         return false;
-    }
-
-    @Test
-    public void testMaximum() throws Exception {
-        logger.info("### TESTING MAXIMUM COMPONENT ###");
-        Map<String, Object> props = new HashMap<>();
-        props.put(WINDOW_SIZE_PROP_NAME, 9);
-        try {
-            WireTestUtil.updateWireComponentConfiguration(configurationService,
-                    this.activeWirePid, props).get(30,
-                            TimeUnit.SECONDS);
-        } catch (InterruptedException | TimeoutException e) {
-            logger.error("Test error", e);
-            throw e;
-        }
-
-        Map<String, TypedValue<?>> myMap = new HashMap<>();
-
-        for (int i = 1; i < 9; i++) {
-            myMap.clear();
-            myMap.put(OPERAND_NAME_DEFAULT, TypedValues.newDoubleValue(i));
-            inEmitter.emit(new WireRecord(myMap));
-        }
-        CompletableFuture<WireEnvelope> out0Recfuture = outReceiver.nextEnvelope();
-        myMap.clear();
-        myMap.put(OPERAND_NAME_DEFAULT, TypedValues.newDoubleValue(9));
-        inEmitter.emit(new WireRecord(myMap));
-
-        try {
-            WireRecord receivedRecord = out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
-            logger.info("received {}", receivedRecord.getProperties());
-            assertTrue(((double) receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue() == 9));
-
-        } catch (TimeoutException e) {
-            fail("Timeout waiting for envelope");
-        }
     }
 
     @After

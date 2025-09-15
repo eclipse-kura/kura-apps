@@ -73,7 +73,6 @@ public class DifferenceComponentTest {
             .getBundleContext();
 
     String activeWirePid;
-
     double envelopeResult;
 
     @Test

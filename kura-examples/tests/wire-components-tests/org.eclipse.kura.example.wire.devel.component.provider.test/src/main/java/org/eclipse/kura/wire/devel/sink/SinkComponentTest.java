@@ -1,25 +1,10 @@
-/*******************************************************************************
- * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
- * 
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
- * 
- * Contributors:
- *  Eurotech
- *******************************************************************************/
-
-package org.eclipse.kura.example.wire.math.singleport.maximum.test;
+package org.eclipse.kura.wire.devel.sink;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -33,7 +18,6 @@ import org.eclipse.kura.type.TypedValues;
 import org.eclipse.kura.util.wire.test.GraphBuilder;
 import org.eclipse.kura.util.wire.test.TestEmitterReceiver;
 import org.eclipse.kura.util.wire.test.WireTestUtil;
-import org.eclipse.kura.wire.WireEnvelope;
 import org.eclipse.kura.wire.WireRecord;
 import org.eclipse.kura.wire.graph.WireGraphConfiguration;
 import org.eclipse.kura.wire.graph.WireGraphService;
@@ -46,33 +30,22 @@ import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MaximumComponentTest {
+public class SinkComponentTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(MaximumComponentTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SinkComponentTest.class);
 
-    private static final String FACTORY_PID = "org.eclipse.kura.example.wire.math.singleport.maximum.MaximumComponent";
+    private static final String FACTORY_PID = "org.eclipse.kura.wire.devel.sink.Sink";
     private static final String TEST_EMITTER_PID = "test.emitter.pid";
-    private static final String TEST_RECEIVER_PID = "test.receiver.pid";
 
     // in ports
     private static final int IN_PORT = 0;
 
-    // out ports
-    private static final int OUT_PORT = 0;
-
     private static TestEmitterReceiver inEmitter;
-    private static TestEmitterReceiver outReceiver;
 
     // configuration properties of component under test
-    private static final String OPERAND_NAME_PROP_NAME = "operand.name";
-    private static final String RESULT_NAME_PROP_NAME = "result.name";
-    private static final String EMIT_RECEIVED_PROPERTIES = "emit.received.properties";
-    private static final String WINDOW_SIZE_PROP_NAME = "window.size";
+    private static final String MEASURE_TIMINGS_NAME_PROP_NAME = "measure.timings";
 
-    private static final String OPERAND_NAME_DEFAULT = "operand";
-    private static final String RESULT_NAME_DEFAULT = "result";
-    private static final boolean EMIT_RECEIVED_PROPERTIES_DEFAULT = false;
-    private static final int WINDOW_SIZE_DEFAULT = 10;
+    private static final Boolean MEASURE_TIMINGS_NAME_DEFAULT = true;
 
     private static WireGraphService wireGraphService;
     private static ConfigurationService configurationService;
@@ -81,7 +54,7 @@ public class MaximumComponentTest {
 
     private final GraphBuilder builder = new GraphBuilder();
     private WireGraphConfiguration wireGraphConfiguration;
-    private final BundleContext bundleContext = FrameworkUtil.getBundle(MaximumComponentTest.class)
+    private final BundleContext bundleContext = FrameworkUtil.getBundle(SinkComponentTest.class)
             .getBundleContext();
 
     String activeWirePid;
@@ -104,26 +77,22 @@ public class MaximumComponentTest {
 
         this.activeWirePid = "underTestPid";
 
-        builder.addWireComponent(this.activeWirePid, FACTORY_PID, 1, 1) //
+        builder.addWireComponent(this.activeWirePid, FACTORY_PID, 1, 0) //
                 .addTestEmitterReceiver(TEST_EMITTER_PID) //
-                .addTestEmitterReceiver(TEST_RECEIVER_PID) //
-                .addWire(TEST_EMITTER_PID, 0, this.activeWirePid, IN_PORT) //
-                .addWire(this.activeWirePid, OUT_PORT, TEST_RECEIVER_PID, 0);
+                .addWire(TEST_EMITTER_PID, 0, this.activeWirePid, IN_PORT);
 
         try {
             builder.replaceExistingGraph(bundleContext, wireGraphService).get(30, TimeUnit.SECONDS);
 
             inEmitter = builder.getTrackedWireComponent(TEST_EMITTER_PID);
-            outReceiver = builder.getTrackedWireComponent(TEST_RECEIVER_PID);
         } catch (KuraException | ExecutionException e) {
             logger.error("Test error", e);
             throw e;
         }
-
     }
 
     @Test
-    public void maximumWireComponentExists() throws KuraException {
+    public void sinkWireComponentExists() throws KuraException {
         WireGraphConfiguration wgc;
         try {
             wgc = wireGraphService.get();
@@ -137,7 +106,7 @@ public class MaximumComponentTest {
     }
 
     @Test
-    public void maximumWireComponentHasDefaultProperties() throws KuraException {
+    public void sinkWireComponentHasDefaultProperties() throws KuraException {
         WireGraphConfiguration wgc;
         try {
             wgc = wireGraphService.get();
@@ -153,48 +122,35 @@ public class MaximumComponentTest {
     private boolean matchesDefaultConfiguration(ComponentConfiguration cc) {
         if (cc.getPid().equals(this.activeWirePid)) {
             Map<String, Object> props = cc.getConfigurationProperties();
-            return OPERAND_NAME_DEFAULT.equals(props.get(OPERAND_NAME_PROP_NAME))
-                    && EMIT_RECEIVED_PROPERTIES_DEFAULT == (boolean) props.get(EMIT_RECEIVED_PROPERTIES)
-                    && WINDOW_SIZE_DEFAULT == (int) props.get(WINDOW_SIZE_PROP_NAME)
-                    && RESULT_NAME_DEFAULT.equals(props.get(RESULT_NAME_PROP_NAME));
+            return MEASURE_TIMINGS_NAME_DEFAULT && (boolean) props.get(MEASURE_TIMINGS_NAME_PROP_NAME);
         }
         return false;
     }
 
     @Test
-    public void testMaximum() throws Exception {
-        logger.info("### TESTING MAXIMUM COMPONENT ###");
-        Map<String, Object> props = new HashMap<>();
-        props.put(WINDOW_SIZE_PROP_NAME, 9);
+    public void testSink() throws KuraException, InterruptedException {
+
+        // This tests trigger the emit method that only writes to log. So we just check
+        // that the graph still exists after the emit.
+        logger.info("### TESTING SINK COMPONENT ###");
+        Map<String, TypedValue<?>> myMap = new HashMap<>();
+
+        myMap.put("value", TypedValues.newIntegerValue(2));
+        inEmitter.emit(new WireRecord(myMap));
+        Thread.sleep(2000);
+        inEmitter.emit(new WireRecord(myMap));
+
+        WireGraphConfiguration wgc;
         try {
-            WireTestUtil.updateWireComponentConfiguration(configurationService,
-                    this.activeWirePid, props).get(30,
-                            TimeUnit.SECONDS);
-        } catch (InterruptedException | TimeoutException e) {
+            wgc = wireGraphService.get();
+        } catch (KuraException e) {
             logger.error("Test error", e);
             throw e;
         }
 
-        Map<String, TypedValue<?>> myMap = new HashMap<>();
+        assertTrue(wgc.getWireComponentConfigurations().stream()
+                .anyMatch(wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
 
-        for (int i = 1; i < 9; i++) {
-            myMap.clear();
-            myMap.put(OPERAND_NAME_DEFAULT, TypedValues.newDoubleValue(i));
-            inEmitter.emit(new WireRecord(myMap));
-        }
-        CompletableFuture<WireEnvelope> out0Recfuture = outReceiver.nextEnvelope();
-        myMap.clear();
-        myMap.put(OPERAND_NAME_DEFAULT, TypedValues.newDoubleValue(9));
-        inEmitter.emit(new WireRecord(myMap));
-
-        try {
-            WireRecord receivedRecord = out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
-            logger.info("received {}", receivedRecord.getProperties());
-            assertTrue(((double) receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue() == 9));
-
-        } catch (TimeoutException e) {
-            fail("Timeout waiting for envelope");
-        }
     }
 
     @After
