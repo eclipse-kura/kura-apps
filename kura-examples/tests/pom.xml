@@ -414,7 +414,7 @@
     </profiles>
 
     <modules>
-        <module>org.eclipse.kura.example.testutil</module>
+        <module>test-util</module>
         <module>ble-tests</module>
         <module>container-validation-tests</module>
         <module>identity-tests</module>

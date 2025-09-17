@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.example.wire.math.singleport.RunningMedian;
@@ -64,14 +64,13 @@ import org.slf4j.LoggerFactory;
         } //
 )
 @Designate(ocd = MedianComponentOCD.class, factory = true)
-public class MedianComponent
-        implements WireEmitter, WireReceiver, ConfigurableComponent, Function<TypedValue<?>, TypedValue<?>> {
+public class MedianComponent implements WireEmitter, WireReceiver, ConfigurableComponent, UnaryOperator<TypedValue<?>> {
 
     private static final Logger logger = LoggerFactory.getLogger(MedianComponent.class);
 
-    private WireHelperService wireHelperService;
-    private WireSupport wireSupport;
-    protected MedianComponentOptions options;
+    private WireHelperService wireHelper;
+    private WireSupport wireSupp;
+    protected MedianComponentOptions medianOptions;
 
     private RunningMedian<Double> runningMedian;
 
@@ -81,65 +80,65 @@ public class MedianComponent
             unbind = "unbindWireHelperService" //
     )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
-        this.wireHelperService = wireHelperService;
+        this.wireHelper = wireHelperService;
     }
 
     public void unbindWireHelperService(final WireHelperService wireHelperService) {
-        this.wireHelperService = null;
+        this.wireHelper = null;
+    }
+
+    @Deactivate
+    public void deactivate() {
+        logger.info("Deactivating median component...");
+        logger.info("Deactivating median component...Done");
     }
 
     @Activate
-    public void activate(ComponentContext componentContext, MedianComponentOCD ocd) {
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
+    public void activate(final ComponentContext componentContext, final MedianComponentOCD ocd) {
+        this.wireSupp = this.wireHelper.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(ocd);
     }
 
     @Modified
-    public void updated(MedianComponentOCD ocd) {
-        this.options = getOptions(ocd);
+    public void updated(final MedianComponentOCD ocd) {
+        this.medianOptions = getOptions(ocd);
         init();
     }
 
-    @Deactivate
-    public void deactivate() {
-        logger.info("Deactivating...");
-        logger.info("Deactivating...Done");
-    }
-
-    protected MedianComponentOptions getOptions(MedianComponentOCD ocd) {
+    protected MedianComponentOptions getOptions(final MedianComponentOCD ocd) {
         return new MedianComponentOptions(ocd);
     }
 
     @Override
-    public Object polled(Wire wire) {
-        return wireSupport.polled(wire);
+    public Object polled(final Wire wire) {
+        return wireSupp.polled(wire);
     }
 
     @Override
-    public void consumersConnected(Wire[] wires) {
-        wireSupport.consumersConnected(wires);
+    public void consumersConnected(final Wire[] wires) {
+        wireSupp.consumersConnected(wires);
     }
 
     @Override
-    public void updated(Wire wire, Object value) {
-        wireSupport.updated(wire, value);
+    public void updated(final Wire wire, final Object value) {
+        wireSupp.updated(wire, value);
     }
 
     @Override
-    public void producersConnected(Wire[] wires) {
-        wireSupport.producersConnected(wires);
+    public void producersConnected(final Wire[] wires) {
+        wireSupp.producersConnected(wires);
     }
 
     @Override
-    public void onWireReceive(WireEnvelope wireEnvelope) {
+    public void onWireReceive(final WireEnvelope wireEnvelope) {
         final List<WireRecord> records = wireEnvelope.getRecords();
         if (records.isEmpty()) {
             logger.warn("Received empty envelope");
             return;
         }
         final Map<String, TypedValue<?>> properties = records.get(0).getProperties();
-        final TypedValue<?> operand = properties.get(this.options.getOperandName());
+        final TypedValue<?> operand = properties.get(this.medianOptions.getOperandName());
         if (operand == null) {
             logger.warn("Missing operand");
             return;
@@ -149,13 +148,13 @@ public class MedianComponent
             return;
         }
         final TypedValue<?> result = this.apply(operand);
-        if (this.options.shouldEmitReceivedProperties()) {
+        if (this.medianOptions.shouldEmitReceivedProperties().booleanValue()) {
             final Map<String, TypedValue<?>> resultProperties = new HashMap<>(properties);
-            resultProperties.put(this.options.getResultName(), result);
-            this.wireSupport.emit(Collections.singletonList(new WireRecord(resultProperties)));
+            resultProperties.put(this.medianOptions.getResultName(), result);
+            this.wireSupp.emit(Collections.singletonList(new WireRecord(resultProperties)));
         } else {
-            this.wireSupport.emit(Collections
-                    .singletonList(new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
+            this.wireSupp.emit(Collections.singletonList(
+                    new WireRecord(Collections.singletonMap(this.medianOptions.getResultName(), result))));
         }
     }
 
@@ -163,9 +162,10 @@ public class MedianComponent
         this.runningMedian = null;
     }
 
-    public TypedValue<?> apply(TypedValue<?> t) {
+    @Override
+    public TypedValue<?> apply(final TypedValue<?> t) {
         if (runningMedian == null) {
-            this.runningMedian = new RunningMedian<>(this.options.getWindowSize());
+            this.runningMedian = new RunningMedian<>(this.medianOptions.getWindowSize());
         }
         final double value = ((Number) t.getValue()).doubleValue();
         this.runningMedian.add(value);

@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.example.wire.math.singleport.RunningAverage;
@@ -65,13 +65,13 @@ import org.slf4j.LoggerFactory;
 )
 @Designate(ocd = VarianceComponentOCD.class, factory = true)
 public class VarianceComponent
-        implements WireEmitter, WireReceiver, ConfigurableComponent, Function<TypedValue<?>, TypedValue<?>> {
+        implements WireEmitter, WireReceiver, ConfigurableComponent, UnaryOperator<TypedValue<?>> {
 
-    private static final Logger logger = LoggerFactory.getLogger(VarianceComponent.class);
+    private static final Logger varianceLogger = LoggerFactory.getLogger(VarianceComponent.class);
 
     private WireHelperService wireHelperService;
     private WireSupport wireSupport;
-    protected VarianceComponentOptions options;
+    protected VarianceComponentOptions varianceOptions;
 
     private RunningAverage avg;
     private RunningAverage quadAvg;
@@ -90,82 +90,83 @@ public class VarianceComponent
     }
 
     @Activate
-    public void activate(ComponentContext componentContext, VarianceComponentOCD ocd) {
+    public void activate(final ComponentContext componentContext, final VarianceComponentOCD ocd) {
         this.wireSupport = this.wireHelperService.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(ocd);
     }
 
     @Modified
-    public void updated(VarianceComponentOCD ocd) {
-        this.options = getOptions(ocd);
+    public void updated(final VarianceComponentOCD ocd) {
+        this.varianceOptions = getVarianceOptions(ocd);
         init();
     }
 
     @Deactivate
     public void deactivate() {
-        logger.info("Deactivating...");
-        logger.info("Deactivating...Done");
+        varianceLogger.info("Deactivating...");
+        varianceLogger.info("Deactivating...Done");
     }
 
-    protected VarianceComponentOptions getOptions(VarianceComponentOCD ocd) {
+    protected VarianceComponentOptions getVarianceOptions(final VarianceComponentOCD ocd) {
         return new VarianceComponentOptions(ocd);
     }
 
     @Override
-    public Object polled(Wire wire) {
-        return wireSupport.polled(wire);
-    }
-
-    @Override
-    public void consumersConnected(Wire[] wires) {
+    public void consumersConnected(final Wire[] wires) {
         wireSupport.consumersConnected(wires);
     }
 
     @Override
-    public void updated(Wire wire, Object value) {
+    public void updated(final Wire wire, final Object value) {
         wireSupport.updated(wire, value);
     }
 
     @Override
-    public void producersConnected(Wire[] wires) {
+    public void producersConnected(final Wire[] wires) {
         wireSupport.producersConnected(wires);
     }
 
     @Override
-    public void onWireReceive(WireEnvelope wireEnvelope) {
+    public Object polled(final Wire wire) {
+        return wireSupport.polled(wire);
+    }
+
+    @Override
+    public void onWireReceive(final WireEnvelope wireEnvelope) {
         final List<WireRecord> records = wireEnvelope.getRecords();
         if (records.isEmpty()) {
-            logger.warn("Received empty envelope");
+            varianceLogger.warn("Received empty envelope");
             return;
         }
         final Map<String, TypedValue<?>> properties = records.get(0).getProperties();
-        final TypedValue<?> operand = properties.get(this.options.getOperandName());
+        final TypedValue<?> operand = properties.get(this.varianceOptions.getOperandName());
         if (operand == null) {
-            logger.warn("Missing operand");
+            varianceLogger.warn("Missing operand");
             return;
         }
         if (!(operand.getValue() instanceof Number)) {
-            logger.warn("Not a number: {}", operand);
+            varianceLogger.warn("Not a number: {}", operand);
             return;
         }
         final TypedValue<?> result = this.apply(operand);
-        if (this.options.shouldEmitReceivedProperties()) {
+        if (this.varianceOptions.shouldEmitReceivedProperties().booleanValue()) {
             final Map<String, TypedValue<?>> resultProperties = new HashMap<>(properties);
-            resultProperties.put(this.options.getResultName(), result);
+            resultProperties.put(this.varianceOptions.getResultName(), result);
             this.wireSupport.emit(Collections.singletonList(new WireRecord(resultProperties)));
         } else {
-            this.wireSupport.emit(Collections
-                    .singletonList(new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
+            this.wireSupport.emit(Collections.singletonList(
+                    new WireRecord(Collections.singletonMap(this.varianceOptions.getResultName(), result))));
         }
     }
 
     protected void init() {
-        this.avg = new RunningAverage(this.options.getWindowSize());
-        this.quadAvg = new RunningAverage(this.options.getWindowSize());
+        this.avg = new RunningAverage(this.varianceOptions.getWindowSize());
+        this.quadAvg = new RunningAverage(this.varianceOptions.getWindowSize());
     }
 
-    public TypedValue<?> apply(TypedValue<?> t) {
+    @Override
+    public TypedValue<?> apply(final TypedValue<?> t) {
         if (avg == null) {
             init();
         }
@@ -173,7 +174,7 @@ public class VarianceComponent
         return TypedValues.newDoubleValue(getNext(value));
     }
 
-    private double getNext(double value) {
+    private double getNext(final double value) {
         final double newAvg = this.avg.updateAndGet(value);
         final double newQuadAvg = this.quadAvg.updateAndGet(value * value);
         final int n = this.avg.getActualWindowSize();

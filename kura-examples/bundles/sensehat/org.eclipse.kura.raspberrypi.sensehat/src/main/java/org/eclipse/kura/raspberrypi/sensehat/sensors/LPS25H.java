@@ -73,7 +73,8 @@ public class LPS25H {
         if ((read(WHO_AM_I) & 0x000000FF) == WHO_AM_I_ID) {
             result = true;
 
-            // Set control register : PD = 1 (active mode); ODR = 011 (25 Hz pressure & temperature output data rate)
+            // Set control register : PD = 1 (active mode); ODR = 011 (25 Hz pressure &
+            // temperature output data rate)
             byte[] value = { (byte) 0xC0 };
             write(CTRL_REG1, value);
         }
@@ -118,6 +119,7 @@ public class LPS25H {
             s_logger.error("Unable to read to I2C device", e);
         } catch (InterruptedException e1) {
             s_logger.error(e1.toString());
+            Thread.currentThread().interrupt(); // Restore interrupted status
         }
 
         return result;

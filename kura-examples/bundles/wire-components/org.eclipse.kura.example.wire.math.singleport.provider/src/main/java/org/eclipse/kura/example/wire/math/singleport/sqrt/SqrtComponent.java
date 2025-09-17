@@ -17,11 +17,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.eclipse.kura.configuration.ConfigurableComponent;
-import org.eclipse.kura.example.wire.math.singleport.maximum.MaximumComponentOCD;
-import org.eclipse.kura.example.wire.math.singleport.maximum.MaximumComponentOptions;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
 import org.eclipse.kura.wire.WireComponent;
@@ -65,14 +63,13 @@ import org.slf4j.LoggerFactory;
         } //
 )
 @Designate(ocd = SqrtComponentOCD.class, factory = true)
-public class SqrtComponent
-        implements WireEmitter, WireReceiver, ConfigurableComponent, Function<TypedValue<?>, TypedValue<?>> {
+public class SqrtComponent implements WireEmitter, WireReceiver, ConfigurableComponent, UnaryOperator<TypedValue<?>> {
 
     private static final Logger logger = LoggerFactory.getLogger(SqrtComponent.class);
 
-    private WireHelperService wireHelperService;
-    private WireSupport wireSupport;
-    protected MaximumComponentOptions options;
+    private WireHelperService kuraWireHelperService;
+    private WireSupport kuraWireSupport;
+    protected SqrtComponentOptions options;
 
     @Reference(name = "WireHelperService", //
             policy = ReferencePolicy.STATIC, //
@@ -80,22 +77,26 @@ public class SqrtComponent
             unbind = "unbindWireHelperService" //
     )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
-        this.wireHelperService = wireHelperService;
+        this.kuraWireHelperService = wireHelperService;
     }
 
     public void unbindWireHelperService(final WireHelperService wireHelperService) {
-        this.wireHelperService = null;
+        this.kuraWireHelperService = null;
+    }
+
+    protected SqrtComponentOptions getOptions(final SqrtComponentOCD ocd) {
+        return new SqrtComponentOptions(ocd);
     }
 
     @Activate
-    public void activate(ComponentContext componentContext, MaximumComponentOCD ocd) {
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
+    public void activate(final ComponentContext componentContext, final SqrtComponentOCD ocd) {
+        this.kuraWireSupport = this.kuraWireHelperService.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(ocd);
     }
 
     @Modified
-    public void updated(MaximumComponentOCD ocd) {
+    public void updated(final SqrtComponentOCD ocd) {
         this.options = getOptions(ocd);
     }
 
@@ -105,39 +106,35 @@ public class SqrtComponent
         logger.info("Deactivating...Done");
     }
 
-    protected MaximumComponentOptions getOptions(MaximumComponentOCD ocd) {
-        return new MaximumComponentOptions(ocd);
+    @Override
+    public void consumersConnected(final Wire[] wires) {
+        kuraWireSupport.consumersConnected(wires);
     }
 
     @Override
-    public Object polled(Wire wire) {
-        return wireSupport.polled(wire);
+    public void updated(final Wire wire, final Object value) {
+        kuraWireSupport.updated(wire, value);
     }
 
     @Override
-    public void consumersConnected(Wire[] wires) {
-        wireSupport.consumersConnected(wires);
+    public Object polled(final Wire wire) {
+        return kuraWireSupport.polled(wire);
     }
 
     @Override
-    public void updated(Wire wire, Object value) {
-        wireSupport.updated(wire, value);
+    public void producersConnected(final Wire[] wires) {
+        kuraWireSupport.producersConnected(wires);
     }
 
     @Override
-    public void producersConnected(Wire[] wires) {
-        wireSupport.producersConnected(wires);
-    }
-
-    @Override
-    public void onWireReceive(WireEnvelope wireEnvelope) {
+    public void onWireReceive(final WireEnvelope wireEnvelope) {
         final List<WireRecord> records = wireEnvelope.getRecords();
         if (records.isEmpty()) {
             logger.warn("Received empty envelope");
             return;
         }
-        final Map<String, TypedValue<?>> properties = records.get(0).getProperties();
-        final TypedValue<?> operand = properties.get(this.options.getOperandName());
+        final Map<String, TypedValue<?>> componentProperties = records.get(0).getProperties();
+        final TypedValue<?> operand = componentProperties.get(this.options.getOperandName());
         if (operand == null) {
             logger.warn("Missing operand");
             return;
@@ -148,18 +145,18 @@ public class SqrtComponent
         }
         final TypedValue<?> result = this.apply(operand);
         if (this.options.shouldEmitReceivedProperties().booleanValue()) {
-            final Map<String, TypedValue<?>> resultProperties = new HashMap<>(properties);
+            final Map<String, TypedValue<?>> resultProperties = new HashMap<>(componentProperties);
             resultProperties.put(this.options.getResultName(), result);
-            this.wireSupport.emit(Collections.singletonList(new WireRecord(resultProperties)));
+            this.kuraWireSupport.emit(Collections.singletonList(new WireRecord(resultProperties)));
         } else {
-            this.wireSupport.emit(Collections
+            this.kuraWireSupport.emit(Collections
                     .singletonList(new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
         }
     }
 
-    public TypedValue<?> apply(TypedValue<?> t) {
-        Double value = Double.parseDouble(t.getValue().toString());
-        return TypedValues.newDoubleValue(Math.sqrt(value.doubleValue()));
+    @Override
+    public TypedValue<?> apply(final TypedValue<?> t) {
+        return TypedValues.newDoubleValue(Math.sqrt(Double.parseDouble(t.getValue().toString())));
     }
 
 }

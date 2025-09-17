@@ -21,13 +21,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.raspberrypi.sensehat.SenseHat;
+import org.eclipse.kura.raspberrypi.sensehat.joystick.Joystick;
+import org.eclipse.kura.raspberrypi.sensehat.joystick.JoystickEvent;
 import org.eclipse.kura.raspberrypi.sensehat.ledmatrix.Colors;
 import org.eclipse.kura.raspberrypi.sensehat.ledmatrix.FrameBuffer;
 import org.eclipse.kura.raspberrypi.sensehat.sensors.HTS221;
 import org.eclipse.kura.raspberrypi.sensehat.sensors.LPS25H;
 import org.eclipse.kura.raspberrypi.sensehat.sensors.LSM9DS1;
-import org.eclipse.kura.raspsberrypi.sensehat.joystick.Joystick;
-import org.eclipse.kura.raspsberrypi.sensehat.joystick.JoystickEvent;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;

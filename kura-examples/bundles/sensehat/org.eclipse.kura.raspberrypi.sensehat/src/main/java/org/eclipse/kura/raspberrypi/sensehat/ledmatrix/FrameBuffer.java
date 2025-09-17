@@ -30,10 +30,12 @@ public class FrameBuffer {
     private static final Logger s_logger = LoggerFactory.getLogger(FrameBuffer.class);
 
     private static final String SENSE_HAT_FB_NAME = "RPi-Sense FB";
+    private static final String ERROR_MESSAGE = "Image is a 8x8 matrix of RGB pixels.";
+    private static final String GRAPHICS_FOLDER = "/sys/class/graphics";
 
     private static FrameBuffer frameBuffer = new FrameBuffer();
 
-    private static File graphicsFolder = new File("/sys/class/graphics/");
+    private static File graphicsFolder = new File(GRAPHICS_FOLDER);
     private static File frameBufferFile = null;
     private static RandomAccessFile raf = null;
 
@@ -51,32 +53,9 @@ public class FrameBuffer {
         alphabet = new Alphabet(
                 ctx.getBundleContext().getBundle().getResource("src/main/resources/sense_hat_text.pbm"));
 
-        BufferedReader br = null;
-        String currentLine;
         for (final File fbFolder : graphicsFolder.listFiles()) {
             if (fbFolder.getName().contains("fb")) {
-
-                try {
-                    br = new BufferedReader(new FileReader(fbFolder + "/name"));
-                    currentLine = br.readLine();
-                    if (null != currentLine && currentLine.equals(SENSE_HAT_FB_NAME)) {
-                        String eventFolderPath = fbFolder.getAbsolutePath();
-                        frameBufferFile = new File("/dev/fb" + eventFolderPath.substring(eventFolderPath.length() - 1));
-                        br.close();
-                        break;
-                    }
-                } catch (IOException e) {
-                    s_logger.error("Error in opening file.", e);
-                } finally {
-                    if (br != null) {
-                        try {
-                            br.close();
-                        } catch (IOException e) {
-                            s_logger.error("Error in closing file.", e);
-                        }
-                    }
-                }
-
+                readFrameBuffer(fbFolder);
             }
         }
 
@@ -87,6 +66,20 @@ public class FrameBuffer {
         }
 
         return frameBuffer;
+    }
+
+    private static void readFrameBuffer(File fbFolder) {
+        String currentLine;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fbFolder + "/name"))) {
+            currentLine = br.readLine();
+            if (null != currentLine && currentLine.equals(SENSE_HAT_FB_NAME)) {
+                String eventFolderPath = fbFolder.getAbsolutePath();
+                frameBufferFile = new File("/dev/fb" + eventFolderPath.substring(eventFolderPath.length() - 1));
+            }
+        } catch (IOException e) {
+            s_logger.error("Error in opening file.", e);
+        }
     }
 
     public static void setRotation(int rotate) {
@@ -100,7 +93,7 @@ public class FrameBuffer {
     public void flipVertical(short[][][] image) {
 
         if (image.length != 8 || image[0].length != 8 || image[0][0].length != 3) {
-            s_logger.error("Image is a 8x8 matrix of RGB pixels.");
+            s_logger.error(ERROR_MESSAGE);
             return;
         }
 
@@ -123,7 +116,7 @@ public class FrameBuffer {
     public void flipHorizontal(short[][][] image) {
 
         if (image.length != 8 || image[0].length != 8 || image[0][0].length != 3) {
-            s_logger.error("Image is a 8x8 matrix of RGB pixels.");
+            s_logger.error(ERROR_MESSAGE);
             return;
         }
 
@@ -146,7 +139,7 @@ public class FrameBuffer {
     public void setPixels(short[][][] image) {
 
         if (image.length != 8 || image[0].length != 8 || image[0][0].length != 3) {
-            s_logger.error("Image is a 8x8 matrix of RGB pixels.");
+            s_logger.error(ERROR_MESSAGE);
             return;
         }
 
@@ -177,7 +170,7 @@ public class FrameBuffer {
 
         byte[] packedPixel = packPixel(pixel);
         try {
-            raf.seek(2 * (x * 8 + y));
+            raf.seek(2L * (x * 8 + y));
             raf.write(packedPixel[0]);
             raf.write(packedPixel[1]);
         } catch (IOException e) {
@@ -207,12 +200,12 @@ public class FrameBuffer {
         int y = coordinates[1];
         if (x < 0 || x > 7 || y < 0 || y > 7) {
             s_logger.error("Invalid pixel position.");
-            return null;
+            return new short[] {};
         }
 
         byte[] pixel = new byte[2];
         try {
-            raf.seek(2 * (x * 8 + y));
+            raf.seek(2L * (x * 8 + y));
             raf.read(pixel);
         } catch (IOException e) {
             s_logger.error("Error in writing on framebuffer.");
@@ -223,11 +216,11 @@ public class FrameBuffer {
     }
 
     public void loadImage() {
-
+        // nothing to do
     }
 
     public void getCharPixels() {
-
+        // nothing to do
     }
 
     public void showMessage(String text, short[] textColor, short[] backColor) {
@@ -235,34 +228,42 @@ public class FrameBuffer {
         short[][][] message = new short[(text.length() + 2) * 8][8][3];
         System.arraycopy(alphabet.getLetter(" "), 0, message, 0, 8);
         for (int i = 0; i < text.length(); i++) {
-            if (!alphabet.isAvailable(String.valueOf(text.charAt(i)))) {
-                s_logger.warn("Letter not available");
-                clearFrameBuffer();
-                return;
-            }
-            System.arraycopy(alphabet.getLetter(String.valueOf(text.charAt(i))), 0, message, (i + 1) * 8, 8);
+            parseMessage(text, i, message);
         }
         System.arraycopy(alphabet.getLetter(" "), 0, message, message.length - 8, 8);
 
-        short[][][] currentFrame = new short[8][8][3];
         for (int i = 0; i < message.length - 8; i++) {
-            for (int x = 0; x < 8; x++) {
-                for (int y = 0; y < 8; y++) {
-                    currentFrame[x][y][0] = message[x + i][y][0] == 0 ? backColor[0] : textColor[0];
-                    currentFrame[x][y][1] = message[x + i][y][1] == 0 ? backColor[1] : textColor[1];
-                    currentFrame[x][y][2] = message[x + i][y][2] == 0 ? backColor[2] : textColor[2];
-                }
-            }
-
-            frameBuffer.setPixels(currentFrame);
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                s_logger.error(e.toString());
-            }
-
+            parseFrame(message, textColor, backColor, i);
         }
 
+    }
+
+    private void parseFrame(short[][][] message, short[] textColor, short[] backColor, int i) {
+        short[][][] currentFrame = new short[8][8][3];
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                currentFrame[x][y][0] = message[x + i][y][0] == 0 ? backColor[0] : textColor[0];
+                currentFrame[x][y][1] = message[x + i][y][1] == 0 ? backColor[1] : textColor[1];
+                currentFrame[x][y][2] = message[x + i][y][2] == 0 ? backColor[2] : textColor[2];
+            }
+        }
+
+        frameBuffer.setPixels(currentFrame);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            s_logger.error(e.toString());
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private void parseMessage(String text, int i, short[][][] message) {
+        if (!alphabet.isAvailable(String.valueOf(text.charAt(i)))) {
+            s_logger.warn("Letter not available");
+            clearFrameBuffer();
+            return;
+        }
+        System.arraycopy(alphabet.getLetter(String.valueOf(text.charAt(i))), 0, message, (i + 1) * 8, 8);
     }
 
     public void showLetter(String letter, short[] textColor, short[] backColor) {
@@ -273,8 +274,10 @@ public class FrameBuffer {
             return;
         }
 
-        short[][][] letterPixel = new short[8][8][3];
-        letterPixel = alphabet.getLetter(letter);
+        short[][][] letterPixel = alphabet.getLetter(letter);
+        if (letterPixel == null) {
+            letterPixel = new short[8][8][3];
+        }
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 letterPixel[x][y][0] = letterPixel[x][y][0] == 0 ? backColor[0] : textColor[0];
@@ -320,8 +323,8 @@ public class FrameBuffer {
         pixelByte[1] = (byte) (pixel[1] >> 2 & 0x3F);
         pixelByte[2] = (byte) (pixel[2] >> 3 & 0x1F);
 
-        outPixel[0] = (byte) ((pixelByte[1] << 5) + pixelByte[0]);
-        outPixel[1] = (byte) ((pixelByte[2] << 3) + (pixelByte[1] >> 3));
+        outPixel[0] = (byte) (((pixelByte[1] & 0xFF) << 5) + (pixelByte[0] & 0xFF));
+        outPixel[1] = (byte) (((pixelByte[2] & 0xFF) << 3) + ((pixelByte[1] & 0xFF) >> 3));
 
         return outPixel;
     }

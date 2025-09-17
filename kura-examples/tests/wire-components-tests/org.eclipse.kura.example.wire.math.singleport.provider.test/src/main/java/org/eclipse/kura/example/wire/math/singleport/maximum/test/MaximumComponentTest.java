@@ -18,14 +18,15 @@ import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
+import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.configuration.ConfigurationService;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
@@ -37,23 +38,19 @@ import org.eclipse.kura.wire.WireRecord;
 import org.eclipse.kura.wire.graph.WireGraphConfiguration;
 import org.eclipse.kura.wire.graph.WireGraphService;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.service.component.ComponentContext;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MaximumComponentTest {
 
-    // See:
-    // http://stackoverflow.com/questions/7161338/using-osgi-declarative-services-in-the-context-of-a-junit-test
+    private static final Logger logger = LoggerFactory.getLogger(MaximumComponentTest.class);
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(MaximumComponentTest.class);
-
-    private static final String UNDER_TEST_PID = "under.test";
+    private static final String FACTORY_PID = "org.eclipse.kura.example.wire.math.singleport.maximum.MaximumComponent";
     private static final String TEST_EMITTER_PID = "test.emitter.pid";
     private static final String TEST_RECEIVER_PID = "test.receiver.pid";
 
@@ -62,6 +59,9 @@ public class MaximumComponentTest {
 
     // out ports
     private static final int OUT_PORT = 0;
+
+    private static TestEmitterReceiver inEmitter;
+    private static TestEmitterReceiver outReceiver;
 
     // configuration properties of component under test
     private static final String OPERAND_NAME_PROP_NAME = "operand.name";
@@ -76,72 +76,39 @@ public class MaximumComponentTest {
 
     private static WireGraphService wireGraphService;
     private static ConfigurationService configurationService;
-    private static CountDownLatch dependencyLatch = new CountDownLatch(3); // initialize with number of dependencies
 
-    private static TestEmitterReceiver outReceiver;
-    private static TestEmitterReceiver inEmitter;
+    private ConfigurableComponent configurableComponent;
 
-    public MaximumComponentTest() {
-        super();
-        logger.info("{} created", System.identityHashCode(this));
-    }
+    private final GraphBuilder builder = new GraphBuilder();
+    private WireGraphConfiguration wireGraphConfiguration;
+    private final BundleContext bundleContext = FrameworkUtil.getBundle(MaximumComponentTest.class)
+            .getBundleContext();
 
-    //
-    // OSGi activation methods. These methods are called only once.
-    // There is only a single instance of this class created by the OSGi framework.
-    protected void activate(ComponentContext componentContext) {
-        logger.info("{} activated", System.identityHashCode(this));
-        dependencyLatch.countDown();
-    }
+    String activeWirePid;
 
-    protected void deactivate(ComponentContext componentContext) {
-        logger.info("{} deactivated", System.identityHashCode(this));
-    }
-
-    public void bindWireGraphService(WireGraphService wireGraphService) {
-        logger.info("{} bound", System.identityHashCode(this));
-        MaximumComponentTest.wireGraphService = wireGraphService;
-        dependencyLatch.countDown();
-    }
-
-    public void bindConfigurationService(ConfigurationService configurationService) {
-        logger.info("{} bound", System.identityHashCode(this));
-        MaximumComponentTest.configurationService = configurationService;
-        dependencyLatch.countDown();
-    }
-
-    //
-    // JUnit 4 stuff
     @BeforeClass
     public static void setUpOnce() throws InterruptedException {
-        // Wait for OSGi dependencies
-        logger.info("waiting for dependencies...");
-
-        if (!dependencyLatch.await(5, TimeUnit.SECONDS)) {
-            throw new IllegalStateException("timeout waiting for dependencies");
-        } else {
-            logger.info("waiting for dependencies... done");
+        try {
+            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
+                    TimeUnit.SECONDS);
+            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty()).get(30,
+                    TimeUnit.SECONDS);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to setup WireGraphService", e);
         }
-
     }
 
     @Before
     public void setUp() throws KuraException, InterruptedException, TimeoutException, ExecutionException {
         logger.info("{} setup", System.identityHashCode(this));
 
-        inEmitter = null;
-        outReceiver = null;
+        this.activeWirePid = "underTestPid";
 
-        final GraphBuilder builder = new GraphBuilder();
-
-        final BundleContext bundleContext = FrameworkUtil.getBundle(MaximumComponentTest.class).getBundleContext();
-
-        builder.addWireComponent(UNDER_TEST_PID,
-                "org.eclipse.kura.example.wire.math.singleport.maximum.MaximumComponent", 1, 1) //
+        builder.addWireComponent(this.activeWirePid, FACTORY_PID, 1, 1) //
                 .addTestEmitterReceiver(TEST_EMITTER_PID) //
                 .addTestEmitterReceiver(TEST_RECEIVER_PID) //
-                .addWire(TEST_EMITTER_PID, 0, UNDER_TEST_PID, IN_PORT) //
-                .addWire(UNDER_TEST_PID, OUT_PORT, TEST_RECEIVER_PID, 0);
+                .addWire(TEST_EMITTER_PID, 0, this.activeWirePid, IN_PORT) //
+                .addWire(this.activeWirePid, OUT_PORT, TEST_RECEIVER_PID, 0);
 
         try {
             builder.replaceExistingGraph(bundleContext, wireGraphService).get(30, TimeUnit.SECONDS);
@@ -166,7 +133,7 @@ public class MaximumComponentTest {
         }
 
         assertTrue(wgc.getWireComponentConfigurations().stream()
-                .anyMatch(wcc -> UNDER_TEST_PID.equals(wcc.getConfiguration().getPid())));
+                .anyMatch(wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
     }
 
     @Test
@@ -184,7 +151,7 @@ public class MaximumComponentTest {
     }
 
     private boolean matchesDefaultConfiguration(ComponentConfiguration cc) {
-        if (cc.getPid().equals(UNDER_TEST_PID)) {
+        if (cc.getPid().equals(this.activeWirePid)) {
             Map<String, Object> props = cc.getConfigurationProperties();
             return OPERAND_NAME_DEFAULT.equals(props.get(OPERAND_NAME_PROP_NAME))
                     && EMIT_RECEIVED_PROPERTIES_DEFAULT == (boolean) props.get(EMIT_RECEIVED_PROPERTIES)
@@ -200,8 +167,9 @@ public class MaximumComponentTest {
         Map<String, Object> props = new HashMap<>();
         props.put(WINDOW_SIZE_PROP_NAME, 9);
         try {
-            WireTestUtil.updateWireComponentConfiguration(configurationService, UNDER_TEST_PID, props).get(30,
-                    TimeUnit.SECONDS);
+            WireTestUtil.updateWireComponentConfiguration(configurationService,
+                    this.activeWirePid, props).get(30,
+                            TimeUnit.SECONDS);
         } catch (InterruptedException | TimeoutException e) {
             logger.error("Test error", e);
             throw e;
@@ -237,10 +205,5 @@ public class MaximumComponentTest {
             logger.error("Test error", e);
             throw e;
         }
-    }
-
-    @AfterClass
-    public static void tearDownOnce() {
-        logger.info("tear down once");
     }
 }

@@ -17,7 +17,6 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class GainOffsetEntry {
 
@@ -56,8 +55,13 @@ public class GainOffsetEntry {
         try {
             clear(tempArray);
 
-            FIELD_DELIMITER.splitAsStream(entryString).map(String::trim).filter(s -> !s.isEmpty())
-                    .toArray(i -> tempArray);
+            String[] tempStringArray = FIELD_DELIMITER.splitAsStream(entryString).map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .toArray(String[]::new);
+
+            for (int i = 0; i < tempStringArray.length && i < tempArray.length; i++) {
+                tempArray[i] = tempStringArray[i];
+            }
 
             requireNonNull(tempArray[0]);
             final double gain = Double.parseDouble(tempArray[1]);
@@ -72,6 +76,6 @@ public class GainOffsetEntry {
     public static List<GainOffsetEntry> parseAll(String configuration) {
         final String[] tempArray = new String[3];
         return ENTRY_DELIMITER.splitAsStream(configuration).map(String::trim).filter(s -> !s.isEmpty())
-                .map(entryString -> parse(entryString, tempArray)).collect(Collectors.toList());
+                .map(entryString -> parse(entryString, tempArray)).toList();
     }
 }

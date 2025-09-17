@@ -18,8 +18,8 @@ import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -37,24 +37,18 @@ import org.eclipse.kura.wire.WireRecord;
 import org.eclipse.kura.wire.graph.WireGraphConfiguration;
 import org.eclipse.kura.wire.graph.WireGraphService;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TrigonometricComponentTest {
 
-    // See:
-    // http://stackoverflow.com/questions/7161338/using-osgi-declarative-services-in-the-context-of-a-junit-test
-
     private static final Logger logger = LoggerFactory.getLogger(TrigonometricComponentTest.class);
 
-    private static final String UNDER_TEST_PID = "under.test";
     private static final String TEST_EMITTER_PID = "test.emitter.pid";
     private static final String TEST_RECEIVER_PID = "test.receiver.pid";
 
@@ -66,18 +60,24 @@ public class TrigonometricComponentTest {
 
     // configuration properties of component under test
     private static final String PARAMETER_NAME_PROP_NAME = "parameter.name";
+    private static final String TRIGONOMETRIC_OPERATION_PROP_NAME = "trigonometric.function";
     private static final String RESULT_NAME_PROP_NAME = "result.name";
     private static final String EMIT_RECEIVED_PROPERTIES = "emit.received.properties";
-    private static final String TRIGONOMETRIC_OPERATION = "trigonometric.function";
 
     private static final String PARAMETER_NAME_DEFAULT = "parameter";
+    private static final String TRIGONOMETRIC_OPERATION_DEFAULT = "SIN";
     private static final String RESULT_NAME_DEFAULT = "result";
     private static final boolean EMIT_RECEIVED_PROPERTIES_DEFAULT = false;
-    private static final String TRIGONOMETRIC_OPERATION_DEFAULT = "SIN";
 
     private static WireGraphService wireGraphService;
     private static ConfigurationService configurationService;
-    private static CountDownLatch dependencyLatch = new CountDownLatch(3); // initialize with number of dependencies
+
+    private final GraphBuilder builder = new GraphBuilder();
+    private WireGraphConfiguration wireGraphConfiguration;
+    private final BundleContext bundleContext = FrameworkUtil.getBundle(TrigonometricComponentTest.class)
+            .getBundleContext();
+
+    String activeWirePid;
 
     private static TestEmitterReceiver outReceiver;
     private static TestEmitterReceiver inEmitter;
@@ -91,46 +91,18 @@ public class TrigonometricComponentTest {
     private static Map<String, TypedValue<?>> mapWithTwoPi = new HashMap<>();
     private static Map<String, TypedValue<?>> mapWithThreeHalvesPi = new HashMap<>();
 
-    public TrigonometricComponentTest() {
-        super();
-        logger.info("{} created", System.identityHashCode(this));
-    }
-
-    //
-    // OSGi activation methods. These methods are called only once.
-    // There is only a single instance of this class created by the OSGi framework.
-    protected void activate(ComponentContext componentContext) {
-        logger.info("{} activated", System.identityHashCode(this));
-        dependencyLatch.countDown();
-    }
-
-    protected void deactivate(ComponentContext componentContext) {
-        logger.info("{} deactivated", System.identityHashCode(this));
-    }
-
-    public void bindWireGraphService(WireGraphService wireGraphService) {
-        logger.info("{} bound", System.identityHashCode(this));
-        TrigonometricComponentTest.wireGraphService = wireGraphService;
-        dependencyLatch.countDown();
-    }
-
-    public void bindConfigurationService(ConfigurationService configurationService) {
-        logger.info("{} bound", System.identityHashCode(this));
-        TrigonometricComponentTest.configurationService = configurationService;
-        dependencyLatch.countDown();
-    }
-
-    //
-    // JUnit 4 stuff
     @BeforeClass
     public static void setUpOnce() throws InterruptedException {
         // Wait for OSGi dependencies
         logger.info("waiting for dependencies...");
 
-        if (!dependencyLatch.await(5, TimeUnit.SECONDS)) {
-            throw new IllegalStateException("timeout waiting for dependencies");
-        } else {
-            logger.info("waiting for dependencies... done");
+        try {
+            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
+                    TimeUnit.SECONDS);
+            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty()).get(30,
+                    TimeUnit.SECONDS);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to setup WireGraphService", e);
         }
 
     }
@@ -139,19 +111,14 @@ public class TrigonometricComponentTest {
     public void setUp() throws KuraException, InterruptedException, TimeoutException, ExecutionException {
         logger.info("{} setup", System.identityHashCode(this));
 
-        inEmitter = null;
-        outReceiver = null;
+        this.activeWirePid = "underTestPid";
 
-        final GraphBuilder builder = new GraphBuilder();
-
-        final BundleContext bundleContext = FrameworkUtil.getBundle(TrigonometricComponentTest.class)
-                .getBundleContext();
-
-        builder.addWireComponent(UNDER_TEST_PID, "org.eclipse.kura.example.wire.math.trig.TrigonometricComponent", 1, 1) //
+        builder.addWireComponent(this.activeWirePid, "org.eclipse.kura.example.wire.math.trig.TrigonometricComponent",
+                1, 1) //
                 .addTestEmitterReceiver(TEST_EMITTER_PID) //
                 .addTestEmitterReceiver(TEST_RECEIVER_PID) //
-                .addWire(TEST_EMITTER_PID, 0, UNDER_TEST_PID, IN_PORT) //
-                .addWire(UNDER_TEST_PID, OUT_PORT, TEST_RECEIVER_PID, 0);
+                .addWire(TEST_EMITTER_PID, 0, this.activeWirePid, IN_PORT) //
+                .addWire(this.activeWirePid, OUT_PORT, TEST_RECEIVER_PID, 0);
 
         try {
             builder.replaceExistingGraph(bundleContext, wireGraphService).get(30, TimeUnit.SECONDS);
@@ -185,7 +152,7 @@ public class TrigonometricComponentTest {
         }
 
         assertTrue(wgc.getWireComponentConfigurations().stream()
-                .anyMatch(wcc -> UNDER_TEST_PID.equals(wcc.getConfiguration().getPid())));
+                .anyMatch(wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
     }
 
     @Test
@@ -203,12 +170,12 @@ public class TrigonometricComponentTest {
     }
 
     private boolean matchesDefaultConfiguration(ComponentConfiguration cc) {
-        if (cc.getPid().equals(UNDER_TEST_PID)) {
+        if (cc.getPid().equals(this.activeWirePid)) {
             Map<String, Object> props = cc.getConfigurationProperties();
             return PARAMETER_NAME_DEFAULT.equals(props.get(PARAMETER_NAME_PROP_NAME))
                     && RESULT_NAME_DEFAULT.equals(props.get(RESULT_NAME_PROP_NAME))
                     && EMIT_RECEIVED_PROPERTIES_DEFAULT == (boolean) props.get(EMIT_RECEIVED_PROPERTIES)
-                    && TRIGONOMETRIC_OPERATION_DEFAULT.equals(props.get(TRIGONOMETRIC_OPERATION));
+                    && TRIGONOMETRIC_OPERATION_DEFAULT.equals(props.get(TRIGONOMETRIC_OPERATION_PROP_NAME));
         }
         return false;
     }
@@ -323,8 +290,8 @@ public class TrigonometricComponentTest {
             throws InterruptedException, ExecutionException, TimeoutException {
 
         Map<String, Object> props = new HashMap<>();
-        props.put(TRIGONOMETRIC_OPERATION, operation);
-        WireTestUtil.updateWireComponentConfiguration(configurationService, UNDER_TEST_PID, props).get(30,
+        props.put(TRIGONOMETRIC_OPERATION_PROP_NAME, operation);
+        WireTestUtil.updateWireComponentConfiguration(configurationService, this.activeWirePid, props).get(30,
                 TimeUnit.SECONDS);
     }
 
@@ -337,10 +304,4 @@ public class TrigonometricComponentTest {
             throw e;
         }
     }
-
-    @AfterClass
-    public static void tearDownOnce() {
-        logger.info("tear down once");
-    }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,7 @@
 package org.eclipse.kura.wire.devel.driver.dummy;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -41,10 +42,10 @@ public class ConnectionManager {
 
             this.connectionAttempt = this.executor.submit(() -> {
                 if (isShuttingDown.get()) {
-                    return (Void) null;
+                    return null;
                 }
                 this.connectInternal();
-                return (Void) null;
+                return null;
             });
             return this.connectionAttempt;
         }
@@ -71,7 +72,8 @@ public class ConnectionManager {
     public void connectSync() throws ConnectionException {
         try {
             connectAsync().get();
-        } catch (final Exception e) {
+        } catch (final InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
             throw new ConnectionException(e);
         }
     }
@@ -79,7 +81,8 @@ public class ConnectionManager {
     public void disconnectSync() throws ConnectionException {
         try {
             this.disconnectAsync().get();
-        } catch (final Exception e) {
+        } catch (final InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
             throw new ConnectionException(e);
         }
     }
@@ -102,7 +105,7 @@ public class ConnectionManager {
 
         if (connectionDelay > 0) {
             try {
-                Thread.sleep(connectionDelay * 1000);
+                Thread.sleep(connectionDelay * 1000L);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -150,7 +153,8 @@ public class ConnectionManager {
         isShuttingDown.set(true);
         try {
             this.executor.submit(this::disconnectInternal).get();
-        } catch (Exception e) {
+        } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
             logger.warn("disconnection failed", e);
         }
         this.executor.shutdown();

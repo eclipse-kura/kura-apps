@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.example.wire.math.singleport.RunningAverage;
@@ -65,13 +65,13 @@ import org.slf4j.LoggerFactory;
 )
 @Designate(ocd = AverageComponentOCD.class, factory = true)
 public class AverageComponent
-        implements WireEmitter, WireReceiver, ConfigurableComponent, Function<TypedValue<?>, TypedValue<?>> {
+        implements WireEmitter, WireReceiver, ConfigurableComponent, UnaryOperator<TypedValue<?>> {
 
     private static final Logger logger = LoggerFactory.getLogger(AverageComponent.class);
 
     private WireHelperService wireHelperService;
     private WireSupport wireSupport;
-    protected AverageComponentOptions options;
+    protected AverageComponentOptions avrgOptions;
 
     private RunningAverage runningAverage;
 
@@ -89,57 +89,57 @@ public class AverageComponent
     }
 
     @Activate
-    public void activate(ComponentContext componentContext, AverageComponentOCD ocd) {
+    public void activate(final ComponentContext componentContext, final AverageComponentOCD ocd) {
         this.wireSupport = this.wireHelperService.newWireSupport(this,
                 (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(ocd);
     }
 
     @Modified
-    public void updated(AverageComponentOCD ocd) {
-        this.options = getOptions(ocd);
+    public void updated(final AverageComponentOCD ocd) {
+        this.avrgOptions = getAverageOptions(ocd);
         init();
     }
 
     @Deactivate
     public void deactivate() {
-        logger.info("Deactivating...");
-        logger.info("Deactivating...Done");
+        logger.info("Deactivating average component...");
+        logger.info("Deactivating average component...Done");
     }
 
-    protected AverageComponentOptions getOptions(AverageComponentOCD ocd) {
+    protected AverageComponentOptions getAverageOptions(final AverageComponentOCD ocd) {
         return new AverageComponentOptions(ocd);
     }
 
     @Override
-    public Object polled(Wire wire) {
+    public Object polled(final Wire wire) {
         return wireSupport.polled(wire);
     }
 
     @Override
-    public void consumersConnected(Wire[] wires) {
+    public void consumersConnected(final Wire[] wires) {
         wireSupport.consumersConnected(wires);
     }
 
     @Override
-    public void updated(Wire wire, Object value) {
+    public void updated(final Wire wire, final Object value) {
         wireSupport.updated(wire, value);
     }
 
     @Override
-    public void producersConnected(Wire[] wires) {
+    public void producersConnected(final Wire[] wires) {
         wireSupport.producersConnected(wires);
     }
 
     @Override
-    public void onWireReceive(WireEnvelope wireEnvelope) {
+    public void onWireReceive(final WireEnvelope wireEnvelope) {
         final List<WireRecord> records = wireEnvelope.getRecords();
         if (records.isEmpty()) {
             logger.warn("Received empty envelope");
             return;
         }
         final Map<String, TypedValue<?>> properties = records.get(0).getProperties();
-        final TypedValue<?> operand = properties.get(this.options.getOperandName());
+        final TypedValue<?> operand = properties.get(this.avrgOptions.getOperandName());
         if (operand == null) {
             logger.warn("Missing operand");
             return;
@@ -149,13 +149,13 @@ public class AverageComponent
             return;
         }
         final TypedValue<?> result = this.apply(operand);
-        if (this.options.shouldEmitReceivedProperties()) {
+        if (this.avrgOptions.shouldEmitReceivedProperties()) {
             final Map<String, TypedValue<?>> resultProperties = new HashMap<>(properties);
-            resultProperties.put(this.options.getResultName(), result);
+            resultProperties.put(this.avrgOptions.getResultName(), result);
             this.wireSupport.emit(Collections.singletonList(new WireRecord(resultProperties)));
         } else {
             this.wireSupport.emit(Collections
-                    .singletonList(new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
+                    .singletonList(new WireRecord(Collections.singletonMap(this.avrgOptions.getResultName(), result))));
         }
     }
 
@@ -163,9 +163,10 @@ public class AverageComponent
         this.runningAverage = null;
     }
 
-    public TypedValue<?> apply(TypedValue<?> t) {
+    @Override
+    public TypedValue<?> apply(final TypedValue<?> t) {
         if (runningAverage == null) {
-            this.runningAverage = new RunningAverage(this.options.getWindowSize());
+            this.runningAverage = new RunningAverage(this.avrgOptions.getWindowSize());
         }
         final double value = ((Number) t.getValue()).doubleValue();
         return TypedValues.newDoubleValue(this.runningAverage.updateAndGet(value));

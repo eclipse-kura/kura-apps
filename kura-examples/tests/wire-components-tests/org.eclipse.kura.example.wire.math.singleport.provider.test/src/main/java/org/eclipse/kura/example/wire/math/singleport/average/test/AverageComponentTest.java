@@ -26,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
+import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.configuration.ConfigurationService;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
@@ -63,6 +64,9 @@ public class AverageComponentTest {
     // out ports
     private static final int OUT_PORT = 0;
 
+    private static TestEmitterReceiver inEmitter;
+    private static TestEmitterReceiver outReceiver;
+
     // configuration properties of component under test
     private static final String OPERAND_NAME_PROP_NAME = "operand.name";
     private static final String RESULT_NAME_PROP_NAME = "result.name";
@@ -77,13 +81,14 @@ public class AverageComponentTest {
     private static WireGraphService wireGraphService;
     private static ConfigurationService configurationService;
 
+    private ConfigurableComponent configurableComponent;
+
     private final GraphBuilder builder = new GraphBuilder();
-    private final BundleContext bundleContext = FrameworkUtil.getBundle(AverageComponentTest.class).getBundleContext();
+    private WireGraphConfiguration wireGraphConfiguration;
+    private final BundleContext bundleContext = FrameworkUtil.getBundle(AverageComponentTest.class)
+            .getBundleContext();
 
     String activeWirePid;
-
-    private static TestEmitterReceiver outReceiver;
-    private static TestEmitterReceiver inEmitter;
 
     public AverageComponentTest() {
         super();
