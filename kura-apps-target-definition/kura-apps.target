@@ -74,7 +74,7 @@
 			    </repository>
 			    <repository>
 				    <id>kura-addons</id>
-				    <url>https://raw.github.com/eurotech/kura_addons/mvn-repo/</url>
+				    <url>https://raw.githubusercontent.com/eurotech/kura_addons/mvn-repo</url>
 			    </repository>
 			    <repository>
 				    <id>kura-releases</id>
