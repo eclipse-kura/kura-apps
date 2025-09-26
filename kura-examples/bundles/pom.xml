@@ -19,9 +19,13 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.eclipse.kura</groupId>
+    <parent>
+        <groupId>org.eclipse.kura</groupId>
+        <artifactId>kura-examples</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
+    </parent>
+
     <artifactId>kura-examples.parent</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Parent POM for kura-examples</name>
@@ -311,7 +315,7 @@
                 </property>
             </activation>
             <modules>
-                <module>org.eclipse.kura.example.can</module>
+                <module>can</module>
             </modules>
         </profile>
     </profiles>
@@ -357,31 +361,16 @@
     </distributionManagement>
 
     <modules>
-        <module>org.eclipse.kura.demo.heater</module>
-        <module>org.eclipse.kura.demo.modbus</module>
-        <module>org.eclipse.kura.example.ble.tisensortag.dbus</module>
-        <module>org.eclipse.kura.example.camel.aggregation</module>
-        <module>org.eclipse.kura.example.camel.publisher</module>
-        <module>org.eclipse.kura.example.camel.quickstart</module>
-        <module>org.eclipse.kura.example.container.signature.validation</module>
-        <module>org.eclipse.kura.example.driver.sensehat</module>
-        <module>org.eclipse.kura.example.eddystone.advertiser</module>
-        <module>org.eclipse.kura.example.eddystone.scanner</module>
-        <module>org.eclipse.kura.example.gpio</module>
-        <module>org.eclipse.kura.example.gpio.led</module>
-        <module>org.eclipse.kura.example.ibeacon.advertiser</module>
-        <module>org.eclipse.kura.example.ibeacon.scanner</module>
-        <module>org.eclipse.kura.example.identity.configuration.extension</module>
-        <module>org.eclipse.kura.example.publisher</module>
-        <module>org.eclipse.kura.example.rest.authentication.provider</module>
-        <module>org.eclipse.kura.example.serial.publisher</module>
-        <module>org.eclipse.kura.example.tamper.detection</module>
-        <module>org.eclipse.kura.example.wire.logic.multiport.provider</module>
-        <module>org.eclipse.kura.example.wire.math.multiport.provider</module>
-        <module>org.eclipse.kura.example.wire.math.singleport.provider</module>
-        <module>org.eclipse.kura.example.wire.math.trig</module>
-        <module>org.eclipse.kura.raspberrypi.sensehat</module>
-        <module>org.eclipse.kura.raspberrypi.sensehat.example</module>
-        <module>org.eclipse.kura.wire.devel.component.provider</module>
+        <module>ble</module>
+        <module>camel</module>
+        <module>container-validation</module>
+        <module>gpio</module>
+        <module>heater</module>
+        <module>identity</module>
+        <module>modbus</module>
+        <module>publishers</module>
+        <module>security</module>
+        <module>sensehat</module>
+        <module>wire-components</module>
     </modules>
 </project>
