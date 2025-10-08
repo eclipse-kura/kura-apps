@@ -308,12 +308,6 @@
         </profile>
         <profile>
             <id>can</id>
-            <activation>
-                <property>
-                    <name>enable.can.example</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <modules>
                 <module>can</module>
             </modules>
