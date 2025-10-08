@@ -230,14 +230,9 @@
                 <package.revision>1</package.revision>
             </properties>
         </profile>
+        <!-- CAN profile - includes CAN module when activated -->
         <profile>
             <id>can</id>
-            <activation>
-                <property>
-                    <name>enable.can.example</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <modules>
                 <module>can</module>
             </modules>

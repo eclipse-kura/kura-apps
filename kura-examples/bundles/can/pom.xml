@@ -30,14 +30,8 @@
 
     <name>Parent POM for kura-can-examples</name>
 
-
-    <profiles>
-        <profile>
-            <id>build-can</id>
-            <modules>
-                <module>org.eclipse.kura.example.can</module>
-            </modules>
-        </profile>
-    </profiles>
+    <modules>
+        <module>org.eclipse.kura.example.can</module>
+    </modules>
 
 </project>
