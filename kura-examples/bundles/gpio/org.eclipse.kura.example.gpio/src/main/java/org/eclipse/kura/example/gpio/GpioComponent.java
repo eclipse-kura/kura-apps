@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2026 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -229,7 +229,7 @@ public class GpioComponent implements ConfigurableComponent {
             } catch (IOException e) {
                 logger.error("I/O Error occurred!", e);
             } catch (Exception e) {
-                logger.error("got errror", e);
+                logger.error("got error", e);
             }
         }
     }
@@ -237,13 +237,24 @@ public class GpioComponent implements ConfigurableComponent {
     private KuraGPIOPin getPin(String resource, KuraGPIODirection pinDirection, KuraGPIOMode pinMode,
             KuraGPIOTrigger pinTrigger) {
         KuraGPIOPin pin = null;
+        // Resource can be terminal number, pin name or in the format gpiochip,line.
+        // i.e.  "1024" or "GPIO1_24" or "1,24"
+        String[] parts = resource.split(",");
         try {
-            int terminal = Integer.parseInt(resource);
-            if (terminal > 0 && terminal < 100000) {
-                pin = this.gpioService.getPinByTerminal(Integer.parseInt(resource), pinDirection, pinMode, pinTrigger);
+            if (parts.length == 2) {
+                int gpiochip = Integer.parseInt(parts[0].trim());
+                int line = Integer.parseInt(parts[1].trim());
+                pin = this.gpioService.getPinByGpiochipAndLine(gpiochip, line, pinDirection, pinMode, pinTrigger);
+            } else {
+                int terminal = Integer.parseInt(resource);
+                if (terminal > 0 && terminal < 100000) {
+                    pin = this.gpioService.getPinByTerminal(Integer.parseInt(resource), pinDirection, pinMode, pinTrigger);
+                }
             }
         } catch (NumberFormatException e) {
             pin = this.gpioService.getPinByName(resource, pinDirection, pinMode, pinTrigger);
+        } catch (IllegalArgumentException e1) {
+            logger.error("Invalid GPIO pin parameters!", e1);
         }
         return pin;
     }

@@ -45,7 +45,7 @@ public @interface GpioComponentOCD {
     String gpio_input_read_mode() default "PIN_STATUS_LISTENER";
 
     @AttributeDefinition(name = "Gpio Pins", //
-            description = "List of GPIO pins expressed as pin number or pin name (i.e. DOUT1, DIN1, ...).", //
+            description = "List of GPIO pins expressed as pin number (i.e. 1022), pin name (i.e. DOUT1, DIN1, ...) or gpiochip, line (i.e. 0,24).", //
             required = false, //
             cardinality = 5 //
     )
