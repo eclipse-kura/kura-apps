@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
         service = { ConfigurableComponent.class }, //
         enabled = true //
 )
-@Designate(ocd = CanSocketExampleOCD.class, factory = false)
+@Designate(ocd = CanSocketExampleOCD.class, factory = true)
 public class CanSocketExample implements ConfigurableComponent {
 
     private static final Logger logger = LoggerFactory.getLogger(CanSocketExample.class);
