@@ -18,8 +18,7 @@ import static java.util.Objects.nonNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -29,6 +28,7 @@ import java.util.stream.Stream;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.gpio.GPIOService;
 import org.eclipse.kura.gpio.KuraClosedDeviceException;
+import org.eclipse.kura.gpio.KuraGPIODescription;
 import org.eclipse.kura.gpio.KuraGPIODirection;
 import org.eclipse.kura.gpio.KuraGPIOMode;
 import org.eclipse.kura.gpio.KuraGPIOPin;
@@ -62,8 +62,10 @@ import org.slf4j.LoggerFactory;
 public class GpioComponent implements ConfigurableComponent {
 
     /**
-     * Inner class defined to track the CloudServices as they get added, modified or removed.
-     * Specific methods can refresh the cloudService definition and setup again the Cloud Client.
+     * Inner class defined to track the CloudServices as they get added, modified or
+     * removed.
+     * Specific methods can refresh the cloudService definition and setup again the
+     * Cloud Client.
      *
      */
     private final class GPIOServiceTrackerCustomizer implements ServiceTrackerCustomizer<GPIOService, GPIOService> {
@@ -193,9 +195,14 @@ public class GpioComponent implements ConfigurableComponent {
         if (this.gpioService != null) {
             logger.info("______________________________");
             logger.info("Available GPIOs on the system:");
-            Map<Integer, String> gpios = this.gpioService.getAvailablePins();
-            for (Entry<Integer, String> e : gpios.entrySet()) {
-                logger.info("#{} - [{}]", e.getKey(), e.getValue());
+            List<KuraGPIODescription> gpioDescriptions = this.gpioService.getAvailablePinDescriptions();
+            for (KuraGPIODescription desc : gpioDescriptions) {
+                Optional<String> name = desc.getName();
+                if (name.isPresent()) {
+                    logger.info("#{}:{} - [{}]", desc.getController(), desc.getLine(), name.get());
+                } else {
+                    logger.info("#{}:{} - [UNKNOWN]", desc.getController(), desc.getLine());
+                }
             }
             logger.info("______________________________");
             getPins();
@@ -237,22 +244,27 @@ public class GpioComponent implements ConfigurableComponent {
     private KuraGPIOPin getPin(String resource, KuraGPIODirection pinDirection, KuraGPIOMode pinMode,
             KuraGPIOTrigger pinTrigger) {
         KuraGPIOPin pin = null;
-        // Resource can be terminal number, pin name or in the format gpiochip,line.
-        // i.e.  "1024" or "GPIO1_24" or "1,24"
-        String[] parts = resource.split(",");
+        // Resource can be terminal number, pin name or in the format controller:line.
+        // i.e. "1024" or "GPIO1_24" or "1:24"
+        String[] parts = resource.split(":");
         try {
             if (parts.length == 2) {
-                int gpiochip = Integer.parseInt(parts[0].trim());
+                int controller = Integer.parseInt(parts[0].trim());
                 int line = Integer.parseInt(parts[1].trim());
-                pin = this.gpioService.getPinByGpiochipAndLine(gpiochip, line, pinDirection, pinMode, pinTrigger);
+                pin = this.gpioService.getPin(controller, line, pinDirection, pinMode, pinTrigger);
             } else {
                 int terminal = Integer.parseInt(resource);
                 if (terminal > 0 && terminal < 100000) {
-                    pin = this.gpioService.getPinByTerminal(Integer.parseInt(resource), pinDirection, pinMode, pinTrigger);
+                    pin = this.gpioService.getPinByTerminal(Integer.parseInt(resource), pinDirection, pinMode,
+                            pinTrigger);
                 }
             }
         } catch (NumberFormatException e) {
-            pin = this.gpioService.getPinByName(resource, pinDirection, pinMode, pinTrigger);
+            List<KuraGPIOPin> pinsByName = this.gpioService.getPins(resource, pinDirection, pinMode,
+                    pinTrigger);
+            if (!pinsByName.isEmpty()) {
+                pin = pinsByName.get(0);
+            }
         } catch (IllegalArgumentException e1) {
             logger.error("Invalid GPIO pin parameters!", e1);
         }
@@ -331,42 +343,42 @@ public class GpioComponent implements ConfigurableComponent {
 
     private KuraGPIODirection getPinDirection(int direction) {
         switch (direction) {
-        case 0, 2:
-            return KuraGPIODirection.INPUT;
-        case 1, 3:
-            return KuraGPIODirection.OUTPUT;
-        default:
-            return KuraGPIODirection.OUTPUT;
+            case 0, 2:
+                return KuraGPIODirection.INPUT;
+            case 1, 3:
+                return KuraGPIODirection.OUTPUT;
+            default:
+                return KuraGPIODirection.OUTPUT;
         }
     }
 
     private KuraGPIOMode getPinMode(int mode) {
         switch (mode) {
-        case 2:
-            return KuraGPIOMode.INPUT_PULL_DOWN;
-        case 1:
-            return KuraGPIOMode.INPUT_PULL_UP;
-        case 8:
-            return KuraGPIOMode.OUTPUT_OPEN_DRAIN;
-        case 4:
-            return KuraGPIOMode.OUTPUT_PUSH_PULL;
-        default:
-            return KuraGPIOMode.OUTPUT_OPEN_DRAIN;
+            case 2:
+                return KuraGPIOMode.INPUT_PULL_DOWN;
+            case 1:
+                return KuraGPIOMode.INPUT_PULL_UP;
+            case 8:
+                return KuraGPIOMode.OUTPUT_OPEN_DRAIN;
+            case 4:
+                return KuraGPIOMode.OUTPUT_PUSH_PULL;
+            default:
+                return KuraGPIOMode.OUTPUT_OPEN_DRAIN;
         }
     }
 
     private KuraGPIOTrigger getPinTrigger(int trigger) {
         switch (trigger) {
-        case 0:
-            return KuraGPIOTrigger.NONE;
-        case 2:
-            return KuraGPIOTrigger.RAISING_EDGE;
-        case 3:
-            return KuraGPIOTrigger.BOTH_EDGES;
-        case 1:
-            return KuraGPIOTrigger.FALLING_EDGE;
-        default:
-            return KuraGPIOTrigger.NONE;
+            case 0:
+                return KuraGPIOTrigger.NONE;
+            case 2:
+                return KuraGPIOTrigger.RAISING_EDGE;
+            case 3:
+                return KuraGPIOTrigger.BOTH_EDGES;
+            case 1:
+                return KuraGPIOTrigger.FALLING_EDGE;
+            default:
+                return KuraGPIOTrigger.NONE;
         }
     }
 
