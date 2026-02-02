@@ -17,8 +17,9 @@ import static java.util.Objects.nonNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -29,6 +30,7 @@ import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.gpio.GPIOService;
 import org.eclipse.kura.gpio.KuraClosedDeviceException;
 import org.eclipse.kura.gpio.KuraGPIODescription;
+import org.eclipse.kura.gpio.KuraGPIODeviceException;
 import org.eclipse.kura.gpio.KuraGPIODirection;
 import org.eclipse.kura.gpio.KuraGPIOMode;
 import org.eclipse.kura.gpio.KuraGPIOPin;
@@ -197,12 +199,8 @@ public class GpioComponent implements ConfigurableComponent {
             logger.info("Available GPIOs on the system:");
             List<KuraGPIODescription> gpioDescriptions = this.gpioService.getAvailablePinDescriptions();
             for (KuraGPIODescription desc : gpioDescriptions) {
-                Optional<String> name = desc.getName();
-                if (name.isPresent()) {
-                    logger.info("#{}:{} - [{}]", desc.getController(), desc.getLine(), name.get());
-                } else {
-                    logger.info("#{}:{} - [UNKNOWN]", desc.getController(), desc.getLine());
-                }
+                logger.info("GPIO Pin Description: {}", desc.getDisplayName());
+                logger.debug("GPIO Extended Pin Description: {}", desc.getProperties());
             }
             logger.info("______________________________");
             getPins();
@@ -216,57 +214,81 @@ public class GpioComponent implements ConfigurableComponent {
         int[] triggers = this.gpioComponentOptions.getTriggers();
         for (int i = 0; i < pins.length; i++) {
             try {
-                logger.info("Acquiring GPIO pin {} with params:", pins[i]);
+                String pin = pins[i];
+                logger.info("Acquiring GPIO pin {} with params:", pin);
                 logger.info("   Direction....: {}", directions[i]);
                 logger.info("   Mode.........: {}", modes[i]);
                 logger.info("   Trigger......: {}", triggers[i]);
-                KuraGPIOPin p = getPin(pins[i], getPinDirection(directions[i]), getPinMode(modes[i]),
+                List<KuraGPIOPin> acquiredPins = getPins(pin, getPinDirection(directions[i]), getPinMode(modes[i]),
                         getPinTrigger(triggers[i]));
-                if (p != null) {
-                    p.open();
-                    logger.info("GPIO pin {} acquired", pins[i]);
-                    if (p.getDirection() == KuraGPIODirection.OUTPUT) {
-                        acquiredOutputPins.add(p);
-                    } else {
-                        acquiredInputPins.add(p);
+                acquiredPins.forEach(p -> {
+                    try {
+                        p.open();
+                        logger.info("GPIO pin {} acquired", pin);
+                        if (p.getDirection() == KuraGPIODirection.OUTPUT) {
+                            acquiredOutputPins.add(p);
+                        } else {
+                            acquiredInputPins.add(p);
+                        }
+                    } catch (IOException | KuraGPIODeviceException | KuraUnavailableDeviceException e) {
+                        logger.error("I/O Error occurred!", e);
                     }
-                } else {
-                    logger.info("GPIO pin {} not found", pins[i]);
-                }
-            } catch (IOException e) {
-                logger.error("I/O Error occurred!", e);
+                });
             } catch (Exception e) {
                 logger.error("got error", e);
             }
         }
     }
 
-    private KuraGPIOPin getPin(String resource, KuraGPIODirection pinDirection, KuraGPIOMode pinMode,
+    private List<KuraGPIOPin> getPins(String resource, KuraGPIODirection pinDirection, KuraGPIOMode pinMode,
             KuraGPIOTrigger pinTrigger) {
-        KuraGPIOPin pin = null;
-        // Resource can be terminal number, pin name or in the format controller:line.
-        // i.e. "1024" or "GPIO1_24" or "1:24"
+        List<KuraGPIOPin> pins = new ArrayList<>();
+        // Resource can be terminal number, pin name or in the format
+        // pinName:controller:line.
+        // i.e. "1024" or "GPIO1_24" or "PIN:1:24"
+        // In the latter case, omitting a field or setting to * means all, i.e. ":1:24"
+        // or "PIN:*:24" or "PIN:1:"
         String[] parts = resource.split(":");
         try {
-            if (parts.length == 2) {
-                int controller = Integer.parseInt(parts[0].trim());
-                int line = Integer.parseInt(parts[1].trim());
-                pin = this.gpioService.getPin(controller, line, pinDirection, pinMode, pinTrigger);
-            } else {
-                int terminal = Integer.parseInt(resource);
-                if (terminal > 0 && terminal < 100000) {
-                    pin = this.gpioService.getPinByTerminal(Integer.parseInt(resource), pinDirection, pinMode,
+            switch (parts.length) {
+                case 1:
+                    KuraGPIOPin pin = getPinByNameOrTerminal(parts, pinDirection, pinMode, pinTrigger);
+                    if (pin != null) {
+                        pins.add(pin);
+                    }
+                    break;
+                case 3:
+                    Map<String, String> pinDescription = new HashMap<>();
+                    if (!parts[0].trim().isEmpty() && !parts[0].trim().equals("*")) {
+                        pinDescription.put("name", parts[0].trim());
+                    }
+                    if (!parts[1].trim().isEmpty() && !parts[1].trim().equals("*")) {
+                        pinDescription.put("controller", parts[1].trim());
+                    }
+                    if (!parts[2].trim().isEmpty() && !parts[2].trim().equals("*")) {
+                        pinDescription.put("line", parts[2].trim());
+                    }
+                    pins = this.gpioService.getPins(pinDescription, pinDirection, pinMode,
                             pinTrigger);
-                }
+                    break;
+                default:
+                    logger.error("Invalid GPIO pin resource format: {}", resource);
+                    break;
             }
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid GPIO pin parameters!", e);
+        }
+        return pins;
+    }
+
+    private KuraGPIOPin getPinByNameOrTerminal(String[] parts, KuraGPIODirection pinDirection, KuraGPIOMode pinMode,
+            KuraGPIOTrigger pinTrigger) {
+        KuraGPIOPin pin = null;
+        try {
+            int terminal = Integer.parseInt(parts[0].trim());
+            pin = this.gpioService.getPinByTerminal(terminal, pinDirection, pinMode, pinTrigger);
         } catch (NumberFormatException e) {
-            List<KuraGPIOPin> pinsByName = this.gpioService.getPins(resource, pinDirection, pinMode,
-                    pinTrigger);
-            if (!pinsByName.isEmpty()) {
-                pin = pinsByName.get(0);
-            }
-        } catch (IllegalArgumentException e1) {
-            logger.error("Invalid GPIO pin parameters!", e1);
+            pin = this.gpioService.getPinByName(parts[0].trim(), pinDirection, pinMode, pinTrigger);
         }
         return pin;
     }
