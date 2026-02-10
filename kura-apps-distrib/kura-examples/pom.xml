@@ -42,7 +42,7 @@
         <module>modbus</module>
         <module>publishers</module>
         <module>security</module>
-        <module>sensehat</module>
+        <!--<module>sensehat</module>-->
         <module>wire-components</module>
     </modules>
 
