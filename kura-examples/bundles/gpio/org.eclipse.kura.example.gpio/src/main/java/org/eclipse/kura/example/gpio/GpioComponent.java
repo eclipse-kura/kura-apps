@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2011, 2026 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -17,9 +17,9 @@ import static java.util.Objects.nonNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -29,6 +29,8 @@ import java.util.stream.Stream;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.gpio.GPIOService;
 import org.eclipse.kura.gpio.KuraClosedDeviceException;
+import org.eclipse.kura.gpio.KuraGPIODescription;
+import org.eclipse.kura.gpio.KuraGPIODeviceException;
 import org.eclipse.kura.gpio.KuraGPIODirection;
 import org.eclipse.kura.gpio.KuraGPIOMode;
 import org.eclipse.kura.gpio.KuraGPIOPin;
@@ -62,8 +64,10 @@ import org.slf4j.LoggerFactory;
 public class GpioComponent implements ConfigurableComponent {
 
     /**
-     * Inner class defined to track the CloudServices as they get added, modified or removed.
-     * Specific methods can refresh the cloudService definition and setup again the Cloud Client.
+     * Inner class defined to track the CloudServices as they get added, modified or
+     * removed.
+     * Specific methods can refresh the cloudService definition and setup again the
+     * Cloud Client.
      *
      */
     private final class GPIOServiceTrackerCustomizer implements ServiceTrackerCustomizer<GPIOService, GPIOService> {
@@ -193,9 +197,10 @@ public class GpioComponent implements ConfigurableComponent {
         if (this.gpioService != null) {
             logger.info("______________________________");
             logger.info("Available GPIOs on the system:");
-            Map<Integer, String> gpios = this.gpioService.getAvailablePins();
-            for (Entry<Integer, String> e : gpios.entrySet()) {
-                logger.info("#{} - [{}]", e.getKey(), e.getValue());
+            List<KuraGPIODescription> gpioDescriptions = this.gpioService.getAvailablePinDescriptions();
+            for (KuraGPIODescription desc : gpioDescriptions) {
+                logger.info("GPIO Pin Description: {}", desc.getDisplayName());
+                logger.debug("GPIO Extended Pin Description: {}", desc.getProperties());
             }
             logger.info("______________________________");
             getPins();
@@ -209,41 +214,81 @@ public class GpioComponent implements ConfigurableComponent {
         int[] triggers = this.gpioComponentOptions.getTriggers();
         for (int i = 0; i < pins.length; i++) {
             try {
-                logger.info("Acquiring GPIO pin {} with params:", pins[i]);
+                String pin = pins[i];
+                logger.info("Acquiring GPIO pin {} with params:", pin);
                 logger.info("   Direction....: {}", directions[i]);
                 logger.info("   Mode.........: {}", modes[i]);
                 logger.info("   Trigger......: {}", triggers[i]);
-                KuraGPIOPin p = getPin(pins[i], getPinDirection(directions[i]), getPinMode(modes[i]),
+                List<KuraGPIOPin> acquiredPins = getPins(pin, getPinDirection(directions[i]), getPinMode(modes[i]),
                         getPinTrigger(triggers[i]));
-                if (p != null) {
-                    p.open();
-                    logger.info("GPIO pin {} acquired", pins[i]);
-                    if (p.getDirection() == KuraGPIODirection.OUTPUT) {
-                        acquiredOutputPins.add(p);
-                    } else {
-                        acquiredInputPins.add(p);
+                acquiredPins.forEach(p -> {
+                    try {
+                        p.open();
+                        logger.info("GPIO pin {} acquired", pin);
+                        if (p.getDirection() == KuraGPIODirection.OUTPUT) {
+                            acquiredOutputPins.add(p);
+                        } else {
+                            acquiredInputPins.add(p);
+                        }
+                    } catch (IOException | KuraGPIODeviceException | KuraUnavailableDeviceException e) {
+                        logger.error("I/O Error occurred!", e);
                     }
-                } else {
-                    logger.info("GPIO pin {} not found", pins[i]);
-                }
-            } catch (IOException e) {
-                logger.error("I/O Error occurred!", e);
+                });
             } catch (Exception e) {
-                logger.error("got errror", e);
+                logger.error("got error", e);
             }
         }
     }
 
-    private KuraGPIOPin getPin(String resource, KuraGPIODirection pinDirection, KuraGPIOMode pinMode,
+    private List<KuraGPIOPin> getPins(String resource, KuraGPIODirection pinDirection, KuraGPIOMode pinMode,
+            KuraGPIOTrigger pinTrigger) {
+        List<KuraGPIOPin> pins = new ArrayList<>();
+        // Resource can be terminal number, pin name or in the format
+        // pinName:controller:line.
+        // i.e. "1024" or "GPIO1_24" or "PIN:1:24"
+        // In the latter case, omitting a field or setting to * means all, i.e. ":1:24"
+        // or "PIN:*:24" or "PIN:1:"
+        String[] parts = resource.split(":");
+        try {
+            switch (parts.length) {
+                case 1:
+                    KuraGPIOPin pin = getPinByNameOrTerminal(parts, pinDirection, pinMode, pinTrigger);
+                    if (pin != null) {
+                        pins.add(pin);
+                    }
+                    break;
+                case 3:
+                    Map<String, String> pinDescription = new HashMap<>();
+                    if (!parts[0].trim().isEmpty() && !parts[0].trim().equals("*")) {
+                        pinDescription.put("name", parts[0].trim());
+                    }
+                    if (!parts[1].trim().isEmpty() && !parts[1].trim().equals("*")) {
+                        pinDescription.put("controller", parts[1].trim());
+                    }
+                    if (!parts[2].trim().isEmpty() && !parts[2].trim().equals("*")) {
+                        pinDescription.put("line", parts[2].trim());
+                    }
+                    pins = this.gpioService.getPins(pinDescription, pinDirection, pinMode,
+                            pinTrigger);
+                    break;
+                default:
+                    logger.error("Invalid GPIO pin resource format: {}", resource);
+                    break;
+            }
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid GPIO pin parameters!", e);
+        }
+        return pins;
+    }
+
+    private KuraGPIOPin getPinByNameOrTerminal(String[] parts, KuraGPIODirection pinDirection, KuraGPIOMode pinMode,
             KuraGPIOTrigger pinTrigger) {
         KuraGPIOPin pin = null;
         try {
-            int terminal = Integer.parseInt(resource);
-            if (terminal > 0 && terminal < 1255) {
-                pin = this.gpioService.getPinByTerminal(Integer.parseInt(resource), pinDirection, pinMode, pinTrigger);
-            }
+            int terminal = Integer.parseInt(parts[0].trim());
+            pin = this.gpioService.getPinByTerminal(terminal, pinDirection, pinMode, pinTrigger);
         } catch (NumberFormatException e) {
-            pin = this.gpioService.getPinByName(resource, pinDirection, pinMode, pinTrigger);
+            pin = this.gpioService.getPinByName(parts[0].trim(), pinDirection, pinMode, pinTrigger);
         }
         return pin;
     }
@@ -320,42 +365,42 @@ public class GpioComponent implements ConfigurableComponent {
 
     private KuraGPIODirection getPinDirection(int direction) {
         switch (direction) {
-        case 0, 2:
-            return KuraGPIODirection.INPUT;
-        case 1, 3:
-            return KuraGPIODirection.OUTPUT;
-        default:
-            return KuraGPIODirection.OUTPUT;
+            case 0, 2:
+                return KuraGPIODirection.INPUT;
+            case 1, 3:
+                return KuraGPIODirection.OUTPUT;
+            default:
+                return KuraGPIODirection.OUTPUT;
         }
     }
 
     private KuraGPIOMode getPinMode(int mode) {
         switch (mode) {
-        case 2:
-            return KuraGPIOMode.INPUT_PULL_DOWN;
-        case 1:
-            return KuraGPIOMode.INPUT_PULL_UP;
-        case 8:
-            return KuraGPIOMode.OUTPUT_OPEN_DRAIN;
-        case 4:
-            return KuraGPIOMode.OUTPUT_PUSH_PULL;
-        default:
-            return KuraGPIOMode.OUTPUT_OPEN_DRAIN;
+            case 2:
+                return KuraGPIOMode.INPUT_PULL_DOWN;
+            case 1:
+                return KuraGPIOMode.INPUT_PULL_UP;
+            case 8:
+                return KuraGPIOMode.OUTPUT_OPEN_DRAIN;
+            case 4:
+                return KuraGPIOMode.OUTPUT_PUSH_PULL;
+            default:
+                return KuraGPIOMode.OUTPUT_OPEN_DRAIN;
         }
     }
 
     private KuraGPIOTrigger getPinTrigger(int trigger) {
         switch (trigger) {
-        case 0:
-            return KuraGPIOTrigger.NONE;
-        case 2:
-            return KuraGPIOTrigger.RAISING_EDGE;
-        case 3:
-            return KuraGPIOTrigger.BOTH_EDGES;
-        case 1:
-            return KuraGPIOTrigger.FALLING_EDGE;
-        default:
-            return KuraGPIOTrigger.NONE;
+            case 0:
+                return KuraGPIOTrigger.NONE;
+            case 2:
+                return KuraGPIOTrigger.RAISING_EDGE;
+            case 3:
+                return KuraGPIOTrigger.BOTH_EDGES;
+            case 1:
+                return KuraGPIOTrigger.FALLING_EDGE;
+            default:
+                return KuraGPIOTrigger.NONE;
         }
     }
 
