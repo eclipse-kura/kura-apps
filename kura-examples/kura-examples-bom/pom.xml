@@ -81,11 +81,11 @@
                 <artifactId>org.eclipse.kura.example.container.signature.validation</artifactId>
                 <version>${kura.examples.version}</version>
             </dependency>
-            <dependency>
+            <!--<dependency>
                 <groupId>org.eclipse.kura</groupId>
                 <artifactId>org.eclipse.kura.example.driver.sensehat</artifactId>
                 <version>${kura.examples.version}</version>
-            </dependency>
+            </dependency>-->
             <dependency>
                 <groupId>org.eclipse.kura</groupId>
                 <artifactId>org.eclipse.kura.example.eddystone.advertiser</artifactId>
@@ -163,7 +163,7 @@
             </dependency>
 
             <!-- Raspberry Pi SenseHat bundles -->
-            <dependency>
+            <!--<dependency>
                 <groupId>org.eclipse.kura</groupId>
                 <artifactId>org.eclipse.kura.raspberrypi.sensehat</artifactId>
                 <version>${kura.examples.version}</version>
@@ -172,7 +172,7 @@
                 <groupId>org.eclipse.kura</groupId>
                 <artifactId>org.eclipse.kura.raspberrypi.sensehat.example</artifactId>
                 <version>${kura.examples.version}</version>
-            </dependency>
+            </dependency>-->
 
             <!-- Wire development component -->
             <dependency>
@@ -215,10 +215,10 @@
             <groupId>org.eclipse.kura</groupId>
             <artifactId>org.eclipse.kura.example.container.signature.validation</artifactId>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.eclipse.kura</groupId>
             <artifactId>org.eclipse.kura.example.driver.sensehat</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.eclipse.kura</groupId>
             <artifactId>org.eclipse.kura.example.eddystone.advertiser</artifactId>
@@ -281,14 +281,14 @@
         </dependency>
 
         <!-- Raspberry Pi SenseHat bundles -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.eclipse.kura</groupId>
             <artifactId>org.eclipse.kura.raspberrypi.sensehat</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kura</groupId>
             <artifactId>org.eclipse.kura.raspberrypi.sensehat.example</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!-- Wire development component -->
         <dependency>
