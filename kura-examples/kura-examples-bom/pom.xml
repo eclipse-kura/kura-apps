@@ -19,10 +19,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.eclipse.kura</groupId>
-    <artifactId>kura-examples-bom</artifactId>
+    <artifactId>kura-examples-pde-deps</artifactId>
     <version>6.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Eclipse Kura Examples BOM</name>
+    <name>Eclipse Kura Examples PDE Deps</name>
 
     <distributionManagement>
         <repository>

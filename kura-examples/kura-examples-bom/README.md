@@ -1,14 +1,14 @@
-# Eclipse Kura™ Apps BOM (Bill of Materials)
+# Eclipse Kura™ Apps PDE Deps
 
-The **Eclipse Kura™ Apps BOM** is a Bill of Materials that provides centralized version management for all Eclipse Kura example and prototype bundles.
+The **Eclipse Kura™ Apps PDE Deps** is a centralized dependency version management file for all Eclipse Kura example and prototype bundles. It allows you to manage and align the versions of the dependencies used by the various bundles in a single place, simplifying configuration and ensuring consistency across projects.
 
 ## Purpose
 
-This BOM simplifies dependency management for projects using Eclipse Kura™ Examples and Eclipse Kura™ Addon Prototypes bundles, ensuring version consistency and reducing configuration duplication.
+This PDE Deps simplifies dependency management for projects using Eclipse Kura™ Examples and Eclipse Kura™ Addon Prototypes bundles, ensuring version consistency and reducing configuration duplication.
 
 ## Included Bundles
 
-The BOM includes **26 bundles** organized in the following categories:
+The PDE Deps includes **26 bundles** organized in the following categories:
 
 ### Demo Bundles (2)
 - `org.eclipse.kura.demo.heater` - Heating simulator
@@ -31,16 +31,16 @@ The BOM includes **26 bundles** organized in the following categories:
 
 ## Usage
 
-### Importing the BOM
+### Importing the PDE Deps
 
-To use the BOM in your project, add the following configuration in the `<dependencyManagement>` section:
+To use the PDE Deps in your project, add the following configuration in the `<dependencyManagement>` section:
 
 ```xml
 <dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.eclipse.kura</groupId>
-            <artifactId>kura-apps-bom</artifactId>
+            <artifactId>kura-apps-pde-deps</artifactId>
             <version>6.0.0-SNAPSHOT</version>
             <type>pom</type>
             <scope>import</scope>
@@ -51,7 +51,7 @@ To use the BOM in your project, add the following configuration in the `<depende
 
 ### Using bundles
 
-After importing the BOM, you can use bundles without specifying versions:
+After importing the PDE Deps, you can use bundles without specifying versions:
 
 ```xml
 <dependencies>
@@ -89,7 +89,7 @@ After importing the BOM, you can use bundles without specifying versions:
         <dependencies>
             <dependency>
                 <groupId>org.eclipse.kura</groupId>
-                <artifactId>kura-apps-bom</artifactId>
+                <artifactId>kura-apps-pde-deps</artifactId>
                 <version>6.0.0-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -112,10 +112,10 @@ After importing the BOM, you can use bundles without specifying versions:
 
 ## Managed Versions
 
-The BOM manages the following versions:
+The PDE Deps manages the following versions:
 
 - **Example Bundles**: `3.0.0-SNAPSHOT`
-- **BOM Version**: `6.0.0-SNAPSHOT`
+- **PDE Deps Version**: `6.0.0-SNAPSHOT`
 
 ## Benefits
 
@@ -131,7 +131,7 @@ The BOM manages the following versions:
 
 ## Repository
 
-The BOM is published to Eclipse Kura repositories:
+The PDE Deps is published to Eclipse Kura repositories:
 
 - **Releases**: https://repo.eclipse.org/content/repositories/kura-releases/
 - **Snapshots**: https://repo.eclipse.org/content/repositories/kura-snapshots/

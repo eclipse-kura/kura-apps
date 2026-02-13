@@ -29,7 +29,7 @@
     <packaging>pom</packaging>
 
     <dependencies>
-        <!-- Import specific bundles from kura-apps-bom for addon prototypes -->
+        <!-- Import specific bundles from kura-apps-pde-deps for addon prototypes -->
         <dependency>
             <groupId>org.eclipse.kura</groupId>
             <artifactId>org.eclipse.kura.example.driver.bundle</artifactId>
@@ -258,7 +258,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <distributionManagement>
         <repository>
             <id>repo.eclipse.org</id>
@@ -271,5 +271,5 @@
             <url>https://repo.eclipse.org/content/repositories/kura-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-    
+
 </project>

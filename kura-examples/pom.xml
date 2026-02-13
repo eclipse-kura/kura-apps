@@ -43,6 +43,6 @@
     <modules>
         <module>bundles</module>
         <module>tests</module>
-        <module>kura-examples-bom</module>
+        <module>kura-examples-pde-deps</module>
     </modules>
 </project>
