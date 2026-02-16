@@ -4,7 +4,7 @@ The **Eclipse Kura™ Apps PDE Deps** is a centralized dependency version manage
 
 ## Purpose
 
-This PDE Deps simplifies dependency management for projects using Eclipse Kura™ Examples and Eclipse Kura™ Addon Prototypes bundles, ensuring version consistency and reducing configuration duplication.
+This PDE Dependency file simplifies dependency management for projects using Eclipse Kura™ Examples and Eclipse Kura™ Addon Prototypes bundles, ensuring version consistency and reducing configuration duplication.
 
 ## Included Bundles
 
