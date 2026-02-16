@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2025 Eurotech and/or its affiliates and others
+    Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
 
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -19,10 +19,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.eclipse.kura</groupId>
-    <artifactId>kura-examples-bom</artifactId>
+    <artifactId>kura-examples-pde-deps</artifactId>
     <version>6.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Eclipse Kura Examples BOM</name>
+    <name>Eclipse Kura Examples PDE Deps</name>
 
     <distributionManagement>
         <repository>
