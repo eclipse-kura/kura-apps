@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.kura.example.driver.bundle;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Kura
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=17))"
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=21))"
 Import-Package: org.eclipse.kura;version="[1.4,2.0)",
  org.eclipse.kura.channel;version="[1.4,2.0)",
  org.eclipse.kura.channel.listener;version="[1.0,2.0)",
