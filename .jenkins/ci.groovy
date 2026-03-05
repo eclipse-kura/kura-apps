@@ -1,4 +1,4 @@
-@Library('add-ons-shared-libs@develop') _
+@Library('add-ons-shared-libs@plugin/apps') _
 
 node {
     continuousIntegrationPipeline(
