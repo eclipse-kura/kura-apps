@@ -175,7 +175,6 @@
                             -Dkura.snapshots=${kura.workdir}/user/snapshots
                             -Dorg.eclipse.equinox.http.jetty.customizer.class=org.eclipse.kura.jetty.customizer.KuraJettyCustomizer
                             -Dlog4j.configurationFile=file:${kura.workdir}/log4j/log4j.xml
-                            -Djava.security.manager=allow
                         </argLine>
                         <!--
                         uncomment for gogo shell, usage: telnet localhost 5002
