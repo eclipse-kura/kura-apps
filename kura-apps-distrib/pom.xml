@@ -40,6 +40,17 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <!-- Properties shared between all distrib poms in submodules -->
+    <properties>
+        <!-- properties used for artifact upload on artifactory repository -->
+        <kura.repo.distribution>kura-6</kura.repo.distribution>
+        <kura.repo.module>base</kura.repo.module>
+
+        <deb.architecture>all</deb.architecture>
+
+        <addon.installation.dir>/opt/eclipse/kura/plugins/6s</addon.installation.dir>
+    </properties>
+
     <modules>
         <module>kura-examples</module>
         <module>kura-addon-prototypes</module>

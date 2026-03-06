@@ -36,12 +36,8 @@
     </dependencies>
 
     <properties>
-        <addon.installation.dir>/opt/eclipse/kura/plugins/6s</addon.installation.dir>
         <jar.name>kura-heater-example.bundle-${project.version}.jar</jar.name>
-        <deb.architecture>all</deb.architecture>
         <package.name>kura-heater-example</package.name>
-        <kura.repo.distribution>kura-6</kura.repo.distribution>
-        <kura.repo.module>base</kura.repo.module>
         <summary>Eclipse Kura Addon for Heater</summary>
         <long.description>Examples of Heater addons for the Eclipse Kura Framework.</long.description>
     </properties>
