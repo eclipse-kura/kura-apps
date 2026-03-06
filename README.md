@@ -21,8 +21,8 @@ For the complete guide to setup the development environment, please refer to the
 
 In order to be able to build the applications for Eclipse Kura™ on your development machine, you need to have the following programs installed in your system:
 
-* JDK 17
-* Maven 3.9.x
+* JDK 21
+* Maven 3.9.9 or higher
 
 <details>
 <summary>
@@ -31,7 +31,7 @@ In order to be able to build the applications for Eclipse Kura™ on your develo
 
 </summary>
 
-To install Java 17, download the JDK tar archive from the [Adoptium Project Repository](https://adoptium.net/en-GB/temurin/releases/?variant=openjdk8&jvmVariant=hotspot&version=17).
+To install Java 21, download the JDK tar archive from the [Adoptium Project Repository](https://adoptium.net/en-GB/temurin/releases/?variant=openjdk8&jvmVariant=hotspot&version=21).
 
 Once downloaded, copy the tar archive in `/Library/Java/JavaVirtualMachines/` and cd into it. Unpack the archive with the following command:
 
@@ -71,11 +71,11 @@ export PATH="/usr/local/opt/maven@3.9/bin:$PATH"
 
 For Java
 ```bash
-sudo apt install openjdk-17-jdk
+sudo apt install openjdk-21-jdk
 ```
 For Maven   
 
-You can follow the tutorial from the official [Maven](http://maven.apache.org/install.html) site. Remember that you need to install the 3.9.x version.
+You can follow the tutorial from the official [Maven](http://maven.apache.org/install.html) site. Remember that you need to install the 3.9.9 or higher version.
 
 </details>
 
