@@ -7,7 +7,7 @@ node {
             enable: true,
             projectKey: "eclipse-kura_kura-apps",
             tokenId: "sonarcloud-token-kura-apps",
-            exclusions: "kura-examples/tests/**/*,kura-addon-prototypes/tests/**/***/*.xml,**/*.yml",
+            exclusions: "**/*",
             testExclusions: "**/*"
         ],
     )
