@@ -40,6 +40,7 @@
         <maven.jarsigner.plugin.version>1.4</maven.jarsigner.plugin.version>
         <skip.artifact.signing>true</skip.artifact.signing>
         <keystore.type>JKS</keystore.type>
+        <maven.compiler.release>21</maven.compiler.release>
     </properties>
 
     <build>
@@ -50,8 +51,7 @@
                     <artifactId>tycho-compiler-plugin</artifactId>
                     <version>${tycho-version}</version>
                     <configuration>
-                        <source>21</source>
-                        <target>21</target>
+                        <release>${maven.compiler.release}</release>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
                         <requireJREPackageImports>true</requireJREPackageImports>
