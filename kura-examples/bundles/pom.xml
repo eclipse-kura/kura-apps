@@ -357,6 +357,7 @@
     <modules>
         <module>ble</module>
         <module>camel</module>
+        <module>container-identity</module>
         <module>container-validation</module>
         <module>gpio</module>
         <module>heater</module>

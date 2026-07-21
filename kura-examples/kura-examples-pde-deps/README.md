@@ -8,15 +8,16 @@ This PDE Dependency file simplifies dependency management for projects using Ecl
 
 ## Included Bundles
 
-The PDE Deps includes **26 bundles** organized in the following categories:
+The PDE Deps includes **27 bundles** organized in the following categories:
 
 ### Demo Bundles (2)
 - `org.eclipse.kura.demo.heater` - Heating simulator
 - `org.eclipse.kura.demo.modbus` - Modbus communication example
 
-### Example Bundles (21)
+### Example Bundles (22)
 - `org.eclipse.kura.example.ble.tisensortag.dbus` - Bluetooth Low Energy TI SensorTag example
 - `org.eclipse.kura.example.camel.*` - Apache Camel integration examples
+- `org.eclipse.kura.example.container.identity.token` - Reading container identity credentials from the tmpfs token file
 - `org.eclipse.kura.example.gpio.*` - GPIO control
 - `org.eclipse.kura.example.wire.*` - Wire Framework components
 - `org.eclipse.kura.example.publisher` - MQTT publisher

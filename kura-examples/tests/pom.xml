@@ -413,6 +413,7 @@
     <modules>
         <module>test-util</module>
         <module>ble-tests</module>
+        <module>container-identity-tests</module>
         <module>container-validation-tests</module>
         <module>identity-tests</module>
         <module>wire-components-tests</module>
