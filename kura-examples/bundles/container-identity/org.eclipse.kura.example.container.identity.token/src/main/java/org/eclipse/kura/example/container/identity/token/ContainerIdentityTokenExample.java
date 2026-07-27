@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * This example only demonstrates how to <em>obtain</em> the credentials securely and never logs the password itself.
  * The subsequent step - performing an authenticated call to Kura's REST APIs - is intentionally omitted; see the
- * "Container Identity Credentials Migration Guide" in the Kura documentation for full request examples.
+ * "Container Identity Integration" section of the Kura documentation for full request examples.
  * <p>
  * Note: like the other {@code kura-examples} projects this is packaged as an OSGi bundle so that it builds within the
  * examples reactor. The {@code KURA_TOKEN_FILE} environment variable only exists inside the container launched by
@@ -100,7 +100,7 @@ public class ContainerIdentityTokenExample implements ConfigurableComponent {
         try {
             // The password is now available in the 'password' array. A real application would use it, together with
             // 'identityName', to perform Basic-authenticated calls to Kura's REST APIs (KURA_REST_BASE_URL). That step
-            // is intentionally omitted from this example; see the Container Identity Credentials Migration Guide.
+            // is intentionally omitted from this example; see the "Container Identity Integration" documentation.
             logger.info("Obtained credentials for identity '{}' from token file {} ({} chars). "
                     + "REST invocation is intentionally omitted from this example.", identityName, tokenFilePath,
                     password.length);
