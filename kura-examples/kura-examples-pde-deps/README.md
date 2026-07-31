@@ -16,7 +16,6 @@ The PDE Deps includes **26 bundles** organized in the following categories:
 
 ### Example Bundles (21)
 - `org.eclipse.kura.example.ble.tisensortag.dbus` - Bluetooth Low Energy TI SensorTag example
-- `org.eclipse.kura.example.camel.*` - Apache Camel integration examples
 - `org.eclipse.kura.example.gpio.*` - GPIO control
 - `org.eclipse.kura.example.wire.*` - Wire Framework components
 - `org.eclipse.kura.example.publisher` - MQTT publisher
