@@ -165,6 +165,13 @@
                 <artifactId>org.eclipse.kura.wire.devel.component.provider</artifactId>
                 <version>${kura.examples.version}</version>
             </dependency>
+
+            <!-- Misc bundles -->
+            <dependency>
+                <groupId>org.eclipse.kura</groupId>
+                <artifactId>org.eclipse.kura.misc.cloudcat</artifactId>
+                <version>${kura.examples.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -267,6 +274,12 @@
         <dependency>
             <groupId>org.eclipse.kura</groupId>
             <artifactId>org.eclipse.kura.wire.devel.component.provider</artifactId>
+        </dependency>
+
+        <!-- Misc bundles -->
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.misc.cloudcat</artifactId>
         </dependency>
     </dependencies>
 
