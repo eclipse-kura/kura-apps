@@ -8,7 +8,7 @@ This PDE Dependency file simplifies dependency management for projects using Ecl
 
 ## Included Bundles
 
-The PDE Deps includes **26 bundles** organized in the following categories:
+The PDE Deps includes **27 bundles** organized in the following categories:
 
 ### Demo Bundles (2)
 - `org.eclipse.kura.demo.heater` - Heating simulator
@@ -27,6 +27,9 @@ The PDE Deps includes **26 bundles** organized in the following categories:
 
 ### Wire Development (1)
 - `org.eclipse.kura.wire.devel.component.provider` - Wire development components
+
+### Misc Bundles (1)
+- `org.eclipse.kura.misc.cloudcat` - CloudService relay that republishes messages across cloud stacks
 
 ## Usage
 

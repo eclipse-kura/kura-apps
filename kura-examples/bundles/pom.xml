@@ -356,6 +356,7 @@
 
     <modules>
         <module>ble</module>
+        <module>cloudcat</module>
         <module>container-validation</module>
         <module>gpio</module>
         <module>heater</module>
