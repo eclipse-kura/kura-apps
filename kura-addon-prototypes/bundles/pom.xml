@@ -41,6 +41,8 @@
         <skip.artifact.signing>true</skip.artifact.signing>
         <keystore.type>JKS</keystore.type>
         <maven.compiler.release>21</maven.compiler.release>
+        <spotless-maven-plugin.version>3.10.2</spotless-maven-plugin.version>
+        <palantir-java-format.version>2.98.0</palantir-java-format.version>
     </properties>
 
     <build>
@@ -260,6 +262,42 @@
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>${spotless-maven-plugin.version}</version>
+                    <configuration>
+                        <java>
+                            <!-- The order of the formatters matters: palantirJavaFormat also
+                                rewrites the import order, so it has to come first. Kura keeps
+                            the import order palantir produces, hence no importOrder step. -->
+                            <palantirJavaFormat>
+                                <version>${palantir-java-format.version}</version>
+                            </palantirJavaFormat>
+                            <removeUnusedImports />
+                            <forbidWildcardImports />
+                            <excludes>
+                                <exclude>**/generated-sources/**/*.java</exclude>
+                            </excludes>
+                        </java>
+                        <pom>
+                            <sortPom>
+                                <expandEmptyElements>false</expandEmptyElements>
+                                <nrOfIndentSpace>4</nrOfIndentSpace>
+                                <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
+                                <quiet>true</quiet>
+                            </sortPom>
+                        </pom>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <phase>process-sources</phase>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -291,6 +329,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jarsigner-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
