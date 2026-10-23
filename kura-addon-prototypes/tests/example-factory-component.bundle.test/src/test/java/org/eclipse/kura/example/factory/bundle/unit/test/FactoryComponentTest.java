@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-
 import org.eclipse.kura.example.factory.component.FactoryComponentExample;
 import org.eclipse.kura.example.factory.component.FactoryComponentExampleOCD;
 import org.eclipse.kura.example.factory.component.FactoryComponentExampleOptions;
@@ -25,7 +24,6 @@ public class FactoryComponentTest {
         whenUpdated();
 
         thenOptionsAreEqualsToCreatedOcd();
-
     }
 
     private void givenComponent() {

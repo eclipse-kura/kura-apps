@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.kura.example.wire.component.WireComponentExample;
 import org.eclipse.kura.example.wire.component.WireComponentExampleOCD;
 import org.eclipse.kura.example.wire.component.WireComponentExampleOptions;
@@ -71,7 +70,9 @@ public class WireComponentExampleTest {
         when(ocd.channel_filter_name()).thenReturn(expectedChannelOption);
         WireComponentExampleOptions options = new WireComponentExampleOptions(ocd);
 
-        assertEquals(options.getChannelFilterName(), this.exampleComponent.getOptions().getChannelFilterName());
+        assertEquals(
+                options.getChannelFilterName(),
+                this.exampleComponent.getOptions().getChannelFilterName());
     }
 
     @Test
@@ -146,8 +147,8 @@ public class WireComponentExampleTest {
     }
 
     private void thenResultCorrect(String channelNameTemplate, String channelValueTemplate) {
-        assertEquals(String.format(this.onWireResultTemplate, channelNameTemplate, channelValueTemplate),
-                this.onWireResult);
+        assertEquals(
+                String.format(this.onWireResultTemplate, channelNameTemplate, channelValueTemplate), this.onWireResult);
     }
 
     private class MockWireSupport implements WireSupport {
@@ -177,9 +178,8 @@ public class WireComponentExampleTest {
 
         @Override
         public void emit(List<WireRecord> wireRecords) {
-            onWireResult = (String) wireRecords.get(0).getProperties().get("Emitted Value").getValue();
+            onWireResult = (String)
+                    wireRecords.get(0).getProperties().get("Emitted Value").getValue();
         }
-
     }
-
 }

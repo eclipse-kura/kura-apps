@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2018, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -18,7 +18,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.eclipse.kura.driver.Driver.ConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

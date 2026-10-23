@@ -1,23 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2018, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.singleport.gainoffset;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
@@ -45,22 +43,29 @@ import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
-                WireReceiver.class, WireEmitter.class }, //
+        service = {
+            ConfigurableComponent.class,
+            WireComponent.class,
+            Producer.class,
+            Consumer.class,
+            WireReceiver.class,
+            WireEmitter.class
+        }, //
         enabled = true, //
         name = "org.eclipse.kura.example.wire.math.singleport.gainoffset.GainOffsetComponent", //
         property = { //
-                "input.cardinality.minimum:Integer=1", //
-                "input.cardinality.maximum:Integer=1", //
-                "input.cardinality.default:Integer=1", //
-                "output.cardinality.minimum:Integer=1", //
-                "output.cardinality.maximum:Integer=1", //
-                "output.cardinality.default:Integer=1", //
-                "kura.ui.service.hide:Boolean=true" //
+            "input.cardinality.minimum:Integer=1", //
+            "input.cardinality.maximum:Integer=1", //
+            "input.cardinality.default:Integer=1", //
+            "output.cardinality.minimum:Integer=1", //
+            "output.cardinality.maximum:Integer=1", //
+            "output.cardinality.default:Integer=1", //
+            "kura.ui.service.hide:Boolean=true" //
         } //
-)
+        )
 @Designate(ocd = GainOffsetComponentOCD.class, factory = true)
 public class GainOffsetComponent implements WireEmitter, WireReceiver, ConfigurableComponent {
 
@@ -71,11 +76,12 @@ public class GainOffsetComponent implements WireEmitter, WireReceiver, Configura
 
     private GainOffsetComponentOptions gainOpts;
 
-    @Reference(name = "WireHelperService", //
+    @Reference(
+            name = "WireHelperService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unbindWireHelperService" //
-    )
+            )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.wireHelperService = wireHelperService;
     }
@@ -88,8 +94,8 @@ public class GainOffsetComponent implements WireEmitter, WireReceiver, Configura
 
     @Activate
     public void activate(final ComponentContext componentContext, final GainOffsetComponentOCD ocd) {
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(ocd);
     }
 
@@ -159,7 +165,8 @@ public class GainOffsetComponent implements WireEmitter, WireReceiver, Configura
                 logger.warn("Invalid property value: {}={}", propertyName, typedValue);
                 continue;
             }
-            outProperties.put(propertyName,
+            outProperties.put(
+                    propertyName,
                     TypedValues.newDoubleValue(((Number) value).doubleValue() * e.getGain() + e.getOffset()));
         }
         return new WireRecord(outProperties);

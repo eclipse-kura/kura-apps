@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -45,15 +45,12 @@ public class FactoryComponentExampleOptions {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         FactoryComponentExampleOptions other = (FactoryComponentExampleOptions) obj;
         return Objects.equals(availableMessages, other.availableMessages)
-                && caseSensitiveEnabled == other.caseSensitiveEnabled && tcpPort == other.tcpPort;
+                && caseSensitiveEnabled == other.caseSensitiveEnabled
+                && tcpPort == other.tcpPort;
     }
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 Eurotech and/or its affiliates and others
+ * Copyright (c) 2024, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -22,7 +22,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-
 import org.eclipse.kura.configuration.ComponentConfiguration;
 import org.eclipse.kura.configuration.ConfigurationService;
 import org.eclipse.kura.configuration.metatype.AD;
@@ -35,7 +34,8 @@ import org.junit.Test;
 
 public class ExampleIdentityConfigurationExtensionTest {
 
-    private static final String FACTORY_PID = "org.eclipse.kura.example.identity.configuration.extension.ExampleIdentityConfigurationExtension";
+    private static final String FACTORY_PID =
+            "org.eclipse.kura.example.identity.configuration.extension.ExampleIdentityConfigurationExtension";
     private static final String TEST_EXTENSION_PID = "testExtension";
 
     private final ConfigurationService configurationService;
@@ -75,7 +75,6 @@ public class ExampleIdentityConfigurationExtensionTest {
         thenAttributeDefinitionComponentIs("test.integer", AD::getDefault, "0");
         thenAttributeDefinitionComponentIs("test.integer", AD::isRequired, true);
         thenAttributeDefinitionComponentIs("test.integer", AD::getType, Scalar.INTEGER);
-
     }
 
     @Test
@@ -90,13 +89,12 @@ public class ExampleIdentityConfigurationExtensionTest {
         thenNoExceptionIsThrown();
         thenReceivedConfigurationPropertyIs("test.string", "baz");
         thenReceivedConfigurationPropertyIs("test.integer", 5);
-
     }
 
     public ExampleIdentityConfigurationExtensionTest() {
         try {
-            this.configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
+            this.configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
         } catch (final Exception e) {
             fail("failed to track ConfigurationService");
             throw new IllegalStateException("unreachable");
@@ -139,8 +137,12 @@ public class ExampleIdentityConfigurationExtensionTest {
 
     private void givenExampleIdentityConfigurationExtension() {
         try {
-            this.extension = WireTestUtil.createFactoryConfiguration(this.configurationService,
-                    IdentityConfigurationExtension.class, TEST_EXTENSION_PID, FACTORY_PID, Collections.emptyMap())
+            this.extension = WireTestUtil.createFactoryConfiguration(
+                            this.configurationService,
+                            IdentityConfigurationExtension.class,
+                            TEST_EXTENSION_PID,
+                            FACTORY_PID,
+                            Collections.emptyMap())
                     .get(30, TimeUnit.SECONDS);
         } catch (final Exception e) {
             fail("failed to create example identiy configuration extension");
@@ -154,8 +156,10 @@ public class ExampleIdentityConfigurationExtensionTest {
 
     private void whenConfigurationIsUpdated(final String name) {
         try {
-            this.extension.updateConfiguration(name, this.configurationToUpdate
-                    .orElseThrow(() -> new IllegalStateException("configuration to update is not initialized")));
+            this.extension.updateConfiguration(
+                    name,
+                    this.configurationToUpdate.orElseThrow(
+                            () -> new IllegalStateException("configuration to update is not initialized")));
             this.exception = Optional.empty();
         } catch (Exception e) {
             this.exception = Optional.of(e);
@@ -176,25 +180,31 @@ public class ExampleIdentityConfigurationExtensionTest {
     }
 
     private void thenReceivedConfigurationPropertyIs(final String key, final Object value) {
-        assertEquals(Optional.of(value), this.receivedConfiguration.map(c -> c.getConfigurationProperties().get(key)));
+        assertEquals(
+                Optional.of(value),
+                this.receivedConfiguration.map(
+                        c -> c.getConfigurationProperties().get(key)));
     }
 
-    private <T> void thenAttributeDefinitionComponentIs(final String adId, final Function<AD, T> component,
-            final T value) {
-        assertEquals(Optional.of(value), this.receivedConfiguration.flatMap(c -> c.getDefinition().getAD().stream()
-                .filter(a -> Objects.equals(adId, a.getId())).map(component).findAny()));
+    private <T> void thenAttributeDefinitionComponentIs(
+            final String adId, final Function<AD, T> component, final T value) {
+        assertEquals(
+                Optional.of(value),
+                this.receivedConfiguration.flatMap(c -> c.getDefinition().getAD().stream()
+                        .filter(a -> Objects.equals(adId, a.getId()))
+                        .map(component)
+                        .findAny()));
     }
 
     @After
     public void cleanUp() {
         try {
             if (this.extension != null) {
-                WireTestUtil.deleteFactoryConfiguration(this.configurationService, TEST_EXTENSION_PID).get(30,
-                        TimeUnit.SECONDS);
+                WireTestUtil.deleteFactoryConfiguration(this.configurationService, TEST_EXTENSION_PID)
+                        .get(30, TimeUnit.SECONDS);
             }
         } catch (Exception e) {
             fail("failed to delete configuration");
         }
-
     }
 }

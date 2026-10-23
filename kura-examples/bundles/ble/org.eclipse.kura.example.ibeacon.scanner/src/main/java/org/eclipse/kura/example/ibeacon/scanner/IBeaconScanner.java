@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.ble.ibeacon.BluetoothLeIBeacon;
 import org.eclipse.kura.ble.ibeacon.BluetoothLeIBeaconService;
@@ -43,12 +42,13 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         enabled = true, //
         name = "org.eclipse.kura.example.ibeacon.scanner.IBeaconScanner", //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class } //
-)
+        service = {ConfigurableComponent.class} //
+        )
 @Designate(ocd = IBeaconScannerOCD.class, factory = false)
 public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconListener<BluetoothLeIBeacon> {
 
@@ -67,11 +67,12 @@ public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconL
 
     private CloudPublisher cloudPublisher;
 
-    @Reference(name = "BluetoothLeService", //
+    @Reference(
+            name = "BluetoothLeService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unsetBluetoothLeService" //
-    )
+            )
     public void setBluetoothLeService(final BluetoothLeService bluetoothLeService) {
         this.bluetoothLeService = bluetoothLeService;
     }
@@ -80,11 +81,12 @@ public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconL
         this.bluetoothLeService = null;
     }
 
-    @Reference(name = "BluetoothLeIBeaconService", //
+    @Reference(
+            name = "BluetoothLeIBeaconService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unsetBluetoothLeIBeaconService" //
-    )
+            )
     public void setBluetoothLeIBeaconService(final BluetoothLeIBeaconService bluetoothLeIBeaconService) {
         this.bluetoothLeIBeaconService = bluetoothLeIBeaconService;
     }
@@ -93,11 +95,12 @@ public class IBeaconScanner implements ConfigurableComponent, BluetoothLeBeaconL
         this.bluetoothLeIBeaconService = null;
     }
 
-    @Reference(name = "CloudPublisher", //
+    @Reference(
+            name = "CloudPublisher", //
             policy = ReferencePolicy.DYNAMIC, //
             cardinality = ReferenceCardinality.OPTIONAL, //
             unbind = "unsetCloudPublisher" //
-    )
+            )
     public void setCloudPublisher(final CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
     }

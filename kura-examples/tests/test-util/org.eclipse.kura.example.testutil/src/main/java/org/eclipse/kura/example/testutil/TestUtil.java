@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2018, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -15,7 +15,6 @@ package org.eclipse.kura.example.testutil;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,9 +23,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TestUtil {
 
-    private TestUtil() {
-
-    }
+    private TestUtil() {}
 
     private static final Logger logger = LoggerFactory.getLogger(TestUtil.class);
 
@@ -175,5 +172,4 @@ public class TestUtil {
             logger.warn(e.getMessage(), e);
         }
     }
-
 }

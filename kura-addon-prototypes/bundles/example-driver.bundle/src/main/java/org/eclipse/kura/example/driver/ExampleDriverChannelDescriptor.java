@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,14 +10,12 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.driver;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.kura.configuration.metatype.Option;
 import org.eclipse.kura.core.configuration.metatype.Tad;
 import org.eclipse.kura.core.configuration.metatype.Toption;
@@ -27,7 +25,6 @@ import org.eclipse.kura.example.driver.utils.AdProperty;
 public class ExampleDriverChannelDescriptor implements ChannelDescriptor {
 
     public enum UnitMeasure {
-
         METER,
         YARD,
         INCH;
@@ -35,26 +32,28 @@ public class ExampleDriverChannelDescriptor implements ChannelDescriptor {
         @Override
         public String toString() {
             switch (this) {
-            case METER: {
-                return "meter";
-            }
-            case YARD: {
-                return "yard";
-            }
-            case INCH: {
-                return "inch";
-            }
-            default: {
-                return "";
-            }
+                case METER: {
+                    return "meter";
+                }
+                case YARD: {
+                    return "yard";
+                }
+                case INCH: {
+                    return "inch";
+                }
+                default: {
+                    return "";
+                }
             }
         }
     }
 
     private final Map<UnitMeasure, String> unitMeasureMap;
 
-    private static final String INPUT_DATA_DESCRIPTION = "Input Data to be converted. Considered only in reading operations";
-    private static final String OUTPUT_UNIT_MEASURE_DESCRIPTION = "Unit measure in which the input data will be converted";
+    private static final String INPUT_DATA_DESCRIPTION =
+            "Input Data to be converted. Considered only in reading operations";
+    private static final String OUTPUT_UNIT_MEASURE_DESCRIPTION =
+            "Unit measure in which the input data will be converted";
 
     private static final String INPUT_DATA_ID = "input.data";
     private static final String OUTPUT_UNIT_MEASURE_ID = "output.unit.measure";
@@ -62,11 +61,14 @@ public class ExampleDriverChannelDescriptor implements ChannelDescriptor {
     private static final String INPUT_DATA_NAME = "Input Data (Reading Only)";
     private static final String OUTPUT_UNIT_MEASURE_NAME = "Output Unit Measure";
 
-    private static final AdProperty<Double> INPUT_DATA_PROPERTY = AdProperty.required(INPUT_DATA_ID, INPUT_DATA_NAME,
-            INPUT_DATA_DESCRIPTION, 0.0);
+    private static final AdProperty<Double> INPUT_DATA_PROPERTY =
+            AdProperty.required(INPUT_DATA_ID, INPUT_DATA_NAME, INPUT_DATA_DESCRIPTION, 0.0);
 
-    private static final AdProperty<String> OUTPUT_UNIT_MEASURE_PROPERTY = AdProperty.required(OUTPUT_UNIT_MEASURE_ID,
-            OUTPUT_UNIT_MEASURE_NAME, OUTPUT_UNIT_MEASURE_DESCRIPTION, UnitMeasure.METER.name());
+    private static final AdProperty<String> OUTPUT_UNIT_MEASURE_PROPERTY = AdProperty.required(
+            OUTPUT_UNIT_MEASURE_ID,
+            OUTPUT_UNIT_MEASURE_NAME,
+            OUTPUT_UNIT_MEASURE_DESCRIPTION,
+            UnitMeasure.METER.name());
 
     private static final ExampleDriverChannelDescriptor INSTANCE = new ExampleDriverChannelDescriptor();
 
@@ -81,7 +83,6 @@ public class ExampleDriverChannelDescriptor implements ChannelDescriptor {
         this.ads.add(INPUT_DATA_PROPERTY.getAd());
         addUnitMeasuresType(unitMeasureMap, OUTPUT_UNIT_MEASURE_PROPERTY.getAd());
         this.ads.add(OUTPUT_UNIT_MEASURE_PROPERTY.getAd());
-
     }
 
     private static void addUnitMeasuresType(final Map<UnitMeasure, String> variants, final Tad ad) {
@@ -111,5 +112,4 @@ public class ExampleDriverChannelDescriptor implements ChannelDescriptor {
     public Object getDescriptor() {
         return this.ads;
     }
-
 }

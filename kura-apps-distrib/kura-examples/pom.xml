@@ -13,9 +13,7 @@
      Eurotech
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -32,6 +30,12 @@
     <name>Kura Apps Examples Distribution</name>
     <description>Distribution packages for Kura Apps Examples</description>
 
+    <!-- Change this if your org is different -->
+    <organization>
+        <name>Eclipse Kura</name>
+        <url>https://eclipse.dev/kura/</url>
+    </organization>
+
     <modules>
         <module>ble</module>
         <module>cloudcat</module>
@@ -46,6 +50,19 @@
         <module>wire-components</module>
     </modules>
 
+    <distributionManagement>
+        <repository>
+            <id>repo.eclipse.org</id>
+            <name>Kura Repository - Releases</name>
+            <url>https://repo.eclipse.org/content/repositories/kura-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>repo.eclipse.org</id>
+            <name>Kura Repository - Snapshots</name>
+            <url>https://repo.eclipse.org/content/repositories/kura-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -57,12 +74,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <!-- Change this if your org is different -->
-    <organization>
-        <name>Eclipse Kura</name>
-        <url>https://eclipse.dev/kura/</url>
-    </organization>
 
     <repositories>
         <repository>
@@ -109,7 +120,7 @@
                                 <name>release.version</name>
                                 <value>${project.version}</value>
                                 <regex>-SNAPSHOT</regex>
-                                <replacement></replacement>
+                                <replacement />
                                 <failIfNoMatch>false</failIfNoMatch>
                             </configuration>
                         </execution>
@@ -121,6 +132,14 @@
                     <groupId>io.github.git-commit-id</groupId>
                     <artifactId>git-commit-id-maven-plugin</artifactId>
                     <version>9.0.1</version>
+                    <configuration>
+                        <injectAllReactorProjects>true</injectAllReactorProjects>
+                        <generateGitPropertiesFile>false</generateGitPropertiesFile>
+                        <skipPoms>false</skipPoms>
+                        <includeOnlyProperties>
+                            <includeOnlyProperty>^git.commit.id.abbrev$</includeOnlyProperty>
+                        </includeOnlyProperties>
+                    </configuration>
                     <executions>
                         <execution>
                             <id>get-the-git-infos</id>
@@ -130,14 +149,6 @@
                             <phase>initialize</phase>
                         </execution>
                     </executions>
-                    <configuration>
-                        <injectAllReactorProjects>true</injectAllReactorProjects>
-                        <generateGitPropertiesFile>false</generateGitPropertiesFile>
-                        <skipPoms>false</skipPoms>
-                        <includeOnlyProperties>
-                            <includeOnlyProperty>^git.commit.id.abbrev$</includeOnlyProperty>
-                        </includeOnlyProperties>
-                    </configuration>
                 </plugin>
 
                 <!-- Responsible for copying the dependencies into a known location -->
@@ -146,10 +157,10 @@
                     <executions>
                         <execution>
                             <id>get-bundles-to-distrib</id>
-                            <phase>generate-resources</phase>
                             <goals>
                                 <goal>copy-dependencies</goal>
                             </goals>
+                            <phase>generate-resources</phase>
                             <configuration>
                                 <excludeTypes>pom</excludeTypes>
                                 <excludeClassifiers>sources</excludeClassifiers>
@@ -167,14 +178,13 @@
                     <executions>
                         <execution>
                             <id>generate-deb</id>
-                            <phase>package</phase>
                             <goals>
                                 <goal>jdeb</goal>
                             </goals>
+                            <phase>package</phase>
                             <configuration>
                                 <verbose>true</verbose>
-                                <deb>
-                                    ${basedir}/target/deb/${package.name}_${package.version}-${package.revision}_${deb.architecture}.deb</deb>
+                                <deb>${basedir}/target/deb/${package.name}_${package.version}-${package.revision}_${deb.architecture}.deb</deb>
                                 <snapshotExpand>true</snapshotExpand>
                                 <snapshotTemplate>${package.snapshot}</snapshotTemplate>
                                 <controlDir>${project.basedir}/deb/control</controlDir>
@@ -238,17 +248,4 @@
             </modules>
         </profile>
     </profiles>
-
-    <distributionManagement>
-        <repository>
-            <id>repo.eclipse.org</id>
-            <name>Kura Repository - Releases</name>
-            <url>https://repo.eclipse.org/content/repositories/kura-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>repo.eclipse.org</id>
-            <name>Kura Repository - Snapshots</name>
-            <url>https://repo.eclipse.org/content/repositories/kura-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>

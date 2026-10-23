@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,7 +10,6 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.driver.test;
 
 import static org.junit.Assert.assertEquals;
@@ -37,7 +36,6 @@ public class ExampleDriverTest {
 
     private void givenExampleDriver() {
         this.exampleDriver = new ExampleDriver();
-
     }
 
     private void whenActivatingExampleComponent() {

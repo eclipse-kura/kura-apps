@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2025 Eurotech and/or its affiliates and others
+    Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
 
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -13,9 +13,7 @@
      Eurotech
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -28,6 +26,13 @@
     <artifactId>kura-gpio-examples-distrib</artifactId>
     <packaging>pom</packaging>
 
+    <properties>
+        <jar.name>kura-gpio-example.bundle-${project.version}.jar</jar.name>
+        <package.name>kura-gpio-example</package.name>
+        <summary>Eclipse Kura Addon for GPIO</summary>
+        <long.description>Examples of GPIO addons for the Eclipse Kura Framework.</long.description>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.eclipse.kura</groupId>
@@ -38,13 +43,6 @@
             <artifactId>org.eclipse.kura.example.gpio.led</artifactId>
         </dependency>
     </dependencies>
-
-    <properties>
-        <jar.name>kura-gpio-example.bundle-${project.version}.jar</jar.name>
-        <package.name>kura-gpio-example</package.name>
-        <summary>Eclipse Kura Addon for GPIO</summary>
-        <long.description>Examples of GPIO addons for the Eclipse Kura Framework.</long.description>
-    </properties>
 
     <build>
         <plugins>

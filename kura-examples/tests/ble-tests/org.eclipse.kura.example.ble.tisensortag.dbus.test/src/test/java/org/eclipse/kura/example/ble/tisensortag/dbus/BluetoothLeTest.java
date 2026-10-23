@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2018, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
 import org.eclipse.kura.KuraBluetoothConnectionException;
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.bluetooth.le.BluetoothLeAdapter;
@@ -110,11 +109,13 @@ public class BluetoothLeTest {
         when(devMock.getAddress()).thenReturn("12:34:56:78:90:AC");
         when(devMock.isConnected()).thenReturn(false);
         doAnswer(inv -> {
-            synchronized (devMock) {
-                devMock.notifyAll(); // stop waiting after connect is called in readSensorTags
-            }
-            throw new KuraBluetoothConnectionException("test"); // for testing logging
-        }).when(devMock).connect();
+                    synchronized (devMock) {
+                        devMock.notifyAll(); // stop waiting after connect is called in readSensorTags
+                    }
+                    throw new KuraBluetoothConnectionException("test"); // for testing logging
+                })
+                .when(devMock)
+                .connect();
         devices.add(devMock);
         BluetoothLeDevice devMock2 = mock(BluetoothLeDevice.class);
         when(devMock2.getAlias()).thenReturn("CC2451 SensorTag");
@@ -196,31 +197,31 @@ public class BluetoothLeTest {
         // end for discovery
 
         // for sensor reading
-        double[] acc = { 1, 1.5, -1 };
+        double[] acc = {1, 1.5, -1};
         when(tistMock.readAcceleration()).thenReturn(acc);
-        float[] gyro = { 4, 5, 6 };
+        float[] gyro = {4, 5, 6};
         when(tistMock.readGyroscope()).thenReturn(gyro);
         Float hum = 50f;
         when(tistMock.readHumidity()).thenReturn(hum);
         Double light = 100.1;
         when(tistMock.readLight()).thenReturn(light);
-        float[] mag = { 1000, 2000, 3000 };
+        float[] mag = {1000, 2000, 3000};
         when(tistMock.readMagneticField()).thenReturn(mag);
         Double pres = 101.3;
         when(tistMock.readPressure()).thenReturn(pres);
-        double[] temp = { 20, 25 };
+        double[] temp = {20, 25};
         when(tistMock.readTemperature()).thenReturn(temp);
         // end for sensor reading
 
         TestUtil.invokePrivate(svc, "readSensorTags", ocd);
 
         verify(tistMock, times(1)).enableThermometer();
-        verify(tistMock, times(1)).enableAccelerometer(new byte[] { 1 });
+        verify(tistMock, times(1)).enableAccelerometer(new byte[] {1});
         verify(tistMock, times(1)).enableLuxometer();
         verify(tistMock, times(1)).enableHygrometer();
-        verify(tistMock, times(1)).enableMagnetometer(new byte[] { 1 });
+        verify(tistMock, times(1)).enableMagnetometer(new byte[] {1});
         verify(tistMock, times(1)).enableBarometer();
-        verify(tistMock, times(1)).enableGyroscope(new byte[] { 7 });
+        verify(tistMock, times(1)).enableGyroscope(new byte[] {7});
         verify(tistMock, times(1)).enableLuxometer();
         verify(tistMock, times(1)).enableKeysNotification(any());
         verify(tistMock, times(1)).switchOnRedLed();
@@ -248,5 +249,4 @@ public class BluetoothLeTest {
         assertEquals(gyro[2], payload.getMetric("Gyro Z"));
         assertEquals(light, payload.getMetric("Light"));
     }
-
 }

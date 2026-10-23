@@ -1,22 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2011, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
 package org.eclipse.kura.example.rest.authentication.provider;
 
+import jakarta.annotation.Priority;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.container.ContainerRequestContext;
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import org.eclipse.kura.audit.AuditConstants;
 import org.eclipse.kura.audit.AuditContext;
 import org.eclipse.kura.crypto.CryptoService;
@@ -31,16 +33,13 @@ import org.osgi.service.useradmin.UserAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.annotation.Priority;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.container.ContainerRequestContext;
-
 @Priority(50)
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         enabled = true, //
         name = "org.eclipse.kura.example.rest.authentication.provider.ExampleRestAuthenticationProvider", //
-        service = { AuthenticationProvider.class } //
-)
+        service = {AuthenticationProvider.class} //
+        )
 @Designate(ocd = ExampleRestAuthenticationProviderOCD.class, factory = false)
 public class ExampleRestAuthenticationProvider implements AuthenticationProvider {
 
@@ -54,18 +53,20 @@ public class ExampleRestAuthenticationProvider implements AuthenticationProvider
     private UserAdmin userAdmin;
     private CryptoService cryptoService;
 
-    @Reference(name = "UserAdmin", //
+    @Reference(
+            name = "UserAdmin", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY //
-    )
+            )
     public void bindUserAdmin(final UserAdmin userAdmin) {
         this.userAdmin = userAdmin;
     }
 
-    @Reference(name = "CryptoService", //
+    @Reference(
+            name = "CryptoService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY //
-    )
+            )
     public void bindCryptoService(final CryptoService cryptoService) {
         this.cryptoService = cryptoService;
     }
@@ -81,8 +82,8 @@ public class ExampleRestAuthenticationProvider implements AuthenticationProvider
     }
 
     @Override
-    public Optional<Principal> authenticate(final HttpServletRequest request,
-            final ContainerRequestContext requestContext) {
+    public Optional<Principal> authenticate(
+            final HttpServletRequest request, final ContainerRequestContext requestContext) {
 
         final AuditContext auditContext = AuditContext.currentOrInternal();
 
@@ -101,8 +102,8 @@ public class ExampleRestAuthenticationProvider implements AuthenticationProvider
             return Optional.empty();
         }
 
-        final String passwordHash = (String) user.getCredentials()
-                .get(ExampleRestAuthenticationProvider.KURA_PASSWORD_CREDENTIAL);
+        final String passwordHash =
+                (String) user.getCredentials().get(ExampleRestAuthenticationProvider.KURA_PASSWORD_CREDENTIAL);
 
         if (Objects.isNull(passwordHash)) {
             return Optional.empty();
@@ -110,17 +111,17 @@ public class ExampleRestAuthenticationProvider implements AuthenticationProvider
 
         try {
             if (cryptoService.sha256Hash(password.get()).equals(passwordHash)) {
-                ExampleRestAuthenticationProvider.auditLogger
-                        .info("{} Rest - Success - Example Password Authentication succeeded", auditContext);
+                ExampleRestAuthenticationProvider.auditLogger.info(
+                        "{} Rest - Success - Example Password Authentication succeeded", auditContext);
                 return Optional.of(username::get);
             } else {
-                ExampleRestAuthenticationProvider.auditLogger
-                        .warn("{} Rest - Failure - Example Password Authentication failed", auditContext);
+                ExampleRestAuthenticationProvider.auditLogger.warn(
+                        "{} Rest - Failure - Example Password Authentication failed", auditContext);
                 return Optional.empty();
             }
         } catch (final Exception e) {
-            ExampleRestAuthenticationProvider.auditLogger
-                    .warn("{} Rest - Failure - Example Password Authentication failed", auditContext);
+            ExampleRestAuthenticationProvider.auditLogger.warn(
+                    "{} Rest - Failure - Example Password Authentication failed", auditContext);
             return Optional.empty();
         }
     }
@@ -133,5 +134,4 @@ public class ExampleRestAuthenticationProvider implements AuthenticationProvider
 
         return Optional.ofNullable(headers.get(0));
     }
-
 }

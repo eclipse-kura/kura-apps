@@ -1,16 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2020, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.singleport.minimum.test;
 
 import static org.junit.Assert.assertTrue;
@@ -23,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
 import org.eclipse.kura.configuration.ConfigurableComponent;
@@ -78,8 +76,8 @@ public class MinimumComponentTest {
 
     private final GraphBuilder builder = new GraphBuilder();
     private WireGraphConfiguration wireGraphConfiguration;
-    private final BundleContext bundleContext = FrameworkUtil.getBundle(MinimumComponentTest.class)
-            .getBundleContext();
+    private final BundleContext bundleContext =
+            FrameworkUtil.getBundle(MinimumComponentTest.class).getBundleContext();
 
     String activeWirePid;
 
@@ -92,14 +90,13 @@ public class MinimumComponentTest {
         logger.info("waiting for dependencies...");
 
         try {
-            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
-            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
+            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
+            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
         } catch (Exception e) {
             throw new RuntimeException("Failed to setup WireGraphService", e);
         }
-
     }
 
     @Before
@@ -108,8 +105,11 @@ public class MinimumComponentTest {
 
         this.activeWirePid = "underTestPid";
 
-        builder.addWireComponent(this.activeWirePid,
-                "org.eclipse.kura.example.wire.math.singleport.minimum.MinimumComponent", 1, 1) //
+        builder.addWireComponent(
+                        this.activeWirePid,
+                        "org.eclipse.kura.example.wire.math.singleport.minimum.MinimumComponent",
+                        1,
+                        1) //
                 .addTestEmitterReceiver(TEST_EMITTER_PID) //
                 .addTestEmitterReceiver(TEST_RECEIVER_PID) //
                 .addWire(TEST_EMITTER_PID, 0, this.activeWirePid, IN_PORT) //
@@ -124,7 +124,6 @@ public class MinimumComponentTest {
             logger.error("Test error", e);
             throw e;
         }
-
     }
 
     @Test
@@ -138,7 +137,8 @@ public class MinimumComponentTest {
         }
 
         assertTrue(wgc.getWireComponentConfigurations().stream()
-                .anyMatch(wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
+                .anyMatch(
+                        wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
     }
 
     @Test
@@ -172,8 +172,8 @@ public class MinimumComponentTest {
         Map<String, Object> props = new HashMap<>();
         props.put(WINDOW_SIZE_PROP_NAME, 9);
         try {
-            WireTestUtil.updateWireComponentConfiguration(configurationService, this.activeWirePid, props).get(30,
-                    TimeUnit.SECONDS);
+            WireTestUtil.updateWireComponentConfiguration(configurationService, this.activeWirePid, props)
+                    .get(30, TimeUnit.SECONDS);
         } catch (InterruptedException | TimeoutException e) {
             logger.error("Test error", e);
             throw e;
@@ -192,9 +192,14 @@ public class MinimumComponentTest {
         inEmitter.emit(new WireRecord(myMap));
 
         try {
-            WireRecord receivedRecord = out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
+            WireRecord receivedRecord =
+                    out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
             logger.info("received {}", receivedRecord.getProperties());
-            assertTrue(((double) receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue() == 1));
+            assertTrue(((double) receivedRecord
+                            .getProperties()
+                            .get(RESULT_NAME_DEFAULT)
+                            .getValue()
+                    == 1));
 
         } catch (TimeoutException e) {
             fail("Timeout waiting for envelope");

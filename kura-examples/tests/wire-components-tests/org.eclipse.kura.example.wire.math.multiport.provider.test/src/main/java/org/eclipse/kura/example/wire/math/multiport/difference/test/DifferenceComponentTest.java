@@ -9,7 +9,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
 import org.eclipse.kura.configuration.ConfigurableComponent;
@@ -36,7 +35,8 @@ public class DifferenceComponentTest {
 
     private static final Logger logger = LoggerFactory.getLogger(DifferenceComponentTest.class);
 
-    private static final String FACTORY_PID = "org.eclipse.kura.example.wire.math.multiport.difference.DifferenceComponent";
+    private static final String FACTORY_PID =
+            "org.eclipse.kura.example.wire.math.multiport.difference.DifferenceComponent";
     private static final String TEST_FIRST_EMITTER_PID = "test.first.emitter.pid";
     private static final String TEST_SECOND_EMITTER_PID = "test.second.emitter.pid";
     private static final String TEST_RECEIVER_PID = "test.receiver.pid";
@@ -69,8 +69,8 @@ public class DifferenceComponentTest {
 
     private final GraphBuilder builder = new GraphBuilder();
     private WireGraphConfiguration wireGraphConfiguration;
-    private final BundleContext bundleContext = FrameworkUtil.getBundle(DifferenceComponentTest.class)
-            .getBundleContext();
+    private final BundleContext bundleContext =
+            FrameworkUtil.getBundle(DifferenceComponentTest.class).getBundleContext();
 
     String activeWirePid;
     double envelopeResult;
@@ -87,7 +87,6 @@ public class DifferenceComponentTest {
         givenWireGraphConfiguration();
 
         thenWireGraphExistsWithPid(this.activeWirePid);
-
     }
 
     @Test
@@ -95,7 +94,6 @@ public class DifferenceComponentTest {
         givenWireGraphConfiguration();
 
         thenWireGraphConfigurationIsDefaultOne();
-
     }
 
     @Test
@@ -109,10 +107,10 @@ public class DifferenceComponentTest {
     public static void setupConfigurationService()
             throws InterruptedException, ExecutionException, TimeoutException, KuraException {
         try {
-            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
-            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
+            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
+            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
         } catch (Exception e) {
             throw new RuntimeException("Failed to setup WireGraphService", e);
         }
@@ -166,9 +164,10 @@ public class DifferenceComponentTest {
         in0emitter.emit(new WireRecord(Map.of(OPERAND_NAME_DEFAULT, TypedValues.newIntegerValue(firstOperand))));
         CompletableFuture<WireEnvelope> out0Recfuture = outReceiver.nextEnvelope();
         in1emitter.emit(new WireRecord(Map.of(OPERAND_NAME_DEFAULT, TypedValues.newIntegerValue(secondOperand))));
-        WireRecord receivedRecord = out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
-        this.envelopeResult = (double) receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue();
-
+        WireRecord receivedRecord =
+                out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
+        this.envelopeResult =
+                (double) receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue();
     }
 
     private void thenWireComponentIsNotNull() {

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -16,9 +16,7 @@ import java.util.UUID;
 
 public class TiSensorTagGatt {
 
-    private TiSensorTagGatt() {
-
-    }
+    private TiSensorTagGatt() {}
 
     // These values are for TI CC2541 and TI CC2650
     // Refer to http://processors.wiki.ti.com/images/archive/a/a8/20130111154127!BLE_SensorTag_GATT_Server.pdf for the
@@ -91,5 +89,4 @@ public class TiSensorTagGatt {
     public static final UUID UUID_IO_SENSOR_SERVICE = UUID.fromString("f000aa64-0451-4000-b000-000000000000");
     public static final UUID UUID_IO_SENSOR_VALUE = UUID.fromString("f000aa65-0451-4000-b000-000000000000");
     public static final UUID UUID_IO_SENSOR_ENABLE = UUID.fromString("f000aa66-0451-4000-b000-000000000000");
-
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -48,10 +48,10 @@ public class EddystoneAdvertiserOptions {
         }
 
         this.iname = ocd.bluetooth_interface_name();
-        this.uidNamespace = setInPropertyLimit(ocd.eddystone_uid_namespace(),
-                EddystoneAdvertiserOptions.PROPERTY_NAMESPACE_DEFAULT, 20);
-        this.uidInstance = setInPropertyLimit(ocd.eddystone_uid_instance(),
-                EddystoneAdvertiserOptions.PROPERTY_INSTANCE_DEFAULT, 12);
+        this.uidNamespace = setInPropertyLimit(
+                ocd.eddystone_uid_namespace(), EddystoneAdvertiserOptions.PROPERTY_NAMESPACE_DEFAULT, 20);
+        this.uidInstance = setInPropertyLimit(
+                ocd.eddystone_uid_instance(), EddystoneAdvertiserOptions.PROPERTY_INSTANCE_DEFAULT, 12);
     }
 
     public boolean isEnabled() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -15,10 +15,11 @@ package org.eclipse.kura.example.identity.configuration.extension;
 import org.osgi.service.component.annotations.ComponentPropertyType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-@ObjectClassDefinition(name = "Example Identity Configuration Extension", //
+@ObjectClassDefinition(
+        name = "Example Identity Configuration Extension", //
         description = "An example identity configuration extension", //
         id = "org.eclipse.kura.example.identity.configuration.extension.ExampleIdentityConfigurationExtension" //
-)
+        )
 @ComponentPropertyType
 public @interface ExampleIdentityConfigurationExtensionOCD {
 

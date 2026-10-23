@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -15,7 +15,6 @@ package org.eclipse.kura.internal.misc.cloudcat;
 import static org.eclipse.kura.configuration.ConfigurationService.KURA_SERVICE_PID;
 
 import java.util.Map;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.cloud.CloudClient;
 import org.eclipse.kura.cloud.CloudService;
@@ -110,14 +109,19 @@ public class CloudCat implements ConfigurableComponent {
 
         // Start trackers
         try {
-            Filter filter = this.componentContext.getBundleContext()
+            Filter filter = this.componentContext
+                    .getBundleContext()
                     .createFilter("(" + KURA_SERVICE_PID + "=" + this.options.getFirstCloudServicePid() + ")");
-            this.firstCloudServiceTracker = new ServiceTracker<>(this.componentContext.getBundleContext(), filter,
+            this.firstCloudServiceTracker = new ServiceTracker<>(
+                    this.componentContext.getBundleContext(),
+                    filter,
                     new ServiceTrackerCustomizer<CloudService, CloudService>() {
 
                         @Override
                         public CloudService addingService(ServiceReference<CloudService> reference) {
-                            CloudService cloudService = CloudCat.this.componentContext.getBundleContext()
+                            CloudService cloudService = CloudCat.this
+                                    .componentContext
+                                    .getBundleContext()
                                     .getService(reference);
                             bindFirstCloudService(cloudService);
                             return cloudService;
@@ -132,7 +136,6 @@ public class CloudCat implements ConfigurableComponent {
                         public void removedService(ServiceReference<CloudService> reference, CloudService service) {
                             unbindFirstCloudService(service);
                         }
-
                     });
             this.firstCloudServiceTracker.open();
         } catch (InvalidSyntaxException e) {
@@ -141,14 +144,19 @@ public class CloudCat implements ConfigurableComponent {
         }
 
         try {
-            Filter filter = this.componentContext.getBundleContext()
+            Filter filter = this.componentContext
+                    .getBundleContext()
                     .createFilter("(" + KURA_SERVICE_PID + "=" + this.options.getSecondCloudServicePid() + ")");
-            this.secondCloudServiceTracker = new ServiceTracker<>(this.componentContext.getBundleContext(), filter,
+            this.secondCloudServiceTracker = new ServiceTracker<>(
+                    this.componentContext.getBundleContext(),
+                    filter,
                     new ServiceTrackerCustomizer<CloudService, CloudService>() {
 
                         @Override
                         public CloudService addingService(ServiceReference<CloudService> reference) {
-                            CloudService cloudService = CloudCat.this.componentContext.getBundleContext()
+                            CloudService cloudService = CloudCat.this
+                                    .componentContext
+                                    .getBundleContext()
                                     .getService(reference);
                             bindSecondCloudService(cloudService);
                             return cloudService;
@@ -163,7 +171,6 @@ public class CloudCat implements ConfigurableComponent {
                         public void removedService(ServiceReference<CloudService> reference, CloudService service) {
                             unbindSecondCloudService(service);
                         }
-
                     });
             this.secondCloudServiceTracker.open();
         } catch (InvalidSyntaxException e) {
@@ -173,15 +180,21 @@ public class CloudCat implements ConfigurableComponent {
     }
 
     private void initClients() {
-        if (this.firstCloudClient != null && this.secondCloudClient != null && this.firstCloudClientRelay == null
+        if (this.firstCloudClient != null
+                && this.secondCloudClient != null
+                && this.firstCloudClientRelay == null
                 && this.secondCloudClientRelay == null) {
             logger.info("Initializing relay");
 
-            this.firstCloudClientRelay = new CloudClientRelay(this.firstCloudClient, this.secondCloudClient,
+            this.firstCloudClientRelay = new CloudClientRelay(
+                    this.firstCloudClient,
+                    this.secondCloudClient,
                     this.options.getFirstCloudClientDataSubscriptions(),
                     this.options.getFirstCloudClientControlSubscriptions());
 
-            this.secondCloudClientRelay = new CloudClientRelay(this.secondCloudClient, this.firstCloudClient,
+            this.secondCloudClientRelay = new CloudClientRelay(
+                    this.secondCloudClient,
+                    this.firstCloudClient,
                     this.options.getSecondCloudClientDataSubscriptions(),
                     this.options.getSecondCloudClientControlSubscriptions());
 

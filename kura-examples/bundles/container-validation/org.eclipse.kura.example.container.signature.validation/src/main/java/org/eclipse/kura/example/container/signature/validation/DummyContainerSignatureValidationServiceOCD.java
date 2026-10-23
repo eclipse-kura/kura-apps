@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2024, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -20,14 +20,16 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 @ObjectClassDefinition( //
         id = "org.eclipse.kura.example.container.signature.validation.DummyContainerSignatureValidationService", //
         name = "Dummy Container Signature Validation Service", //
-        description = "This is an example implementation of a service implementing a Container Signature Validation Service. The main purpose of this service is testing and serving as reference for future implementations." //
-)
+        description =
+                "This is an example implementation of a service implementing a Container Signature Validation Service. The main purpose of this service is testing and serving as reference for future implementations." //
+        )
 @ComponentPropertyType
 public @interface DummyContainerSignatureValidationServiceOCD {
 
     @AttributeDefinition( //
             name = "Set signature validation outcome", //
-            description = "Set the outcome for container signature validations performed by this service. Supported format: imageName:imageTag@digest. Example: hello-world:latest@sha256:e2fc4e...|TextArea", //
+            description =
+                    "Set the outcome for container signature validations performed by this service. Supported format: imageName:imageTag@digest. Example: hello-world:latest@sha256:e2fc4e...|TextArea", //
             defaultValue = "")
     String set_signature_validation_outcome();
 }

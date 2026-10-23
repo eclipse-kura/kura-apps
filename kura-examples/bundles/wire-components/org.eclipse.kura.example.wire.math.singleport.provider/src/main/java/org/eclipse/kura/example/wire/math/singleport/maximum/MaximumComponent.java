@@ -1,16 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2020, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.singleport.maximum;
 
 import java.util.Collections;
@@ -18,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.example.wire.math.singleport.RunningExtremum;
 import org.eclipse.kura.type.TypedValue;
@@ -47,22 +45,29 @@ import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
-                WireReceiver.class, WireEmitter.class }, //
+        service = {
+            ConfigurableComponent.class,
+            WireComponent.class,
+            Producer.class,
+            Consumer.class,
+            WireReceiver.class,
+            WireEmitter.class
+        }, //
         enabled = true, //
         name = "org.eclipse.kura.example.wire.math.singleport.maximum.MaximumComponent", //
         property = { //
-                "input.cardinality.minimum:Integer=1", //
-                "input.cardinality.maximum:Integer=1", //
-                "input.cardinality.default:Integer=1", //
-                "output.cardinality.minimum:Integer=1", //
-                "output.cardinality.maximum:Integer=1", //
-                "output.cardinality.default:Integer=1", //
-                "kura.ui.service.hide:Boolean=true" //
+            "input.cardinality.minimum:Integer=1", //
+            "input.cardinality.maximum:Integer=1", //
+            "input.cardinality.default:Integer=1", //
+            "output.cardinality.minimum:Integer=1", //
+            "output.cardinality.maximum:Integer=1", //
+            "output.cardinality.default:Integer=1", //
+            "kura.ui.service.hide:Boolean=true" //
         } //
-)
+        )
 @Designate(ocd = MaximumComponentOCD.class, factory = true)
 public class MaximumComponent
         implements WireEmitter, WireReceiver, ConfigurableComponent, UnaryOperator<TypedValue<?>> {
@@ -75,11 +80,12 @@ public class MaximumComponent
 
     private RunningExtremum<Double> runningExtremum;
 
-    @Reference(name = "WireHelperService", //
+    @Reference(
+            name = "WireHelperService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unbindWireHelperService" //
-    )
+            )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.wireHelperServiceBind = wireHelperService;
     }
@@ -92,8 +98,8 @@ public class MaximumComponent
 
     @Activate
     public void activate(final ComponentContext componentContext, final MaximumComponentOCD ocd) {
-        this.wireSup = this.wireHelperServiceBind.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSup = this.wireHelperServiceBind.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(ocd);
     }
 
@@ -156,8 +162,8 @@ public class MaximumComponent
             resultProperties.put(this.options.getResultName(), result);
             this.wireSup.emit(Collections.singletonList(new WireRecord(resultProperties)));
         } else {
-            this.wireSup.emit(Collections
-                    .singletonList(new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
+            this.wireSup.emit(Collections.singletonList(
+                    new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
         }
     }
 
@@ -174,5 +180,4 @@ public class MaximumComponent
         this.runningExtremum.add(value);
         return TypedValues.newDoubleValue(this.runningExtremum.max());
     }
-
 }

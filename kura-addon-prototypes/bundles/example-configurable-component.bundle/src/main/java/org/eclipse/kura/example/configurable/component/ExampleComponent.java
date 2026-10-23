@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,7 +13,6 @@
 package org.eclipse.kura.example.configurable.component;
 
 import java.util.Map;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -25,10 +24,11 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        property = { "kura.service.pid=org.eclipse.kura.example.configurable.component.ExampleComponent" } //
-)
+        property = {"kura.service.pid=org.eclipse.kura.example.configurable.component.ExampleComponent"} //
+        )
 @Designate(ocd = ExampleComponentOCD.class, factory = false)
 public class ExampleComponent implements ConfigurableComponent {
 
@@ -49,9 +49,9 @@ public class ExampleComponent implements ConfigurableComponent {
      * the ComponentContext and the ExampleComponentOCD as parameters.
      * All parameters in activate, modified, deactivate are optional and can be
      * removed if not needed
-     * 
+     *
      * Examples:
-     * 
+     *
      * public void activate()
      * public void activate(ExampleComponentOCD configuration)
      * public void activate(ComponentContext componentContext, final Map<String,
@@ -88,5 +88,4 @@ public class ExampleComponent implements ConfigurableComponent {
     public ExampleComponentOptions getOptions() {
         return this.options;
     }
-
 }

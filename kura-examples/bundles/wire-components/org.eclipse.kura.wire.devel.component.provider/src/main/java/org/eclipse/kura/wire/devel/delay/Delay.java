@@ -1,19 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2018, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
 package org.eclipse.kura.wire.devel.delay;
 
 import java.security.SecureRandom;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.wire.WireComponent;
 import org.eclipse.kura.wire.WireEmitter;
@@ -38,13 +37,20 @@ import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
-                WireReceiver.class, WireEmitter.class }, //
+        service = {
+            ConfigurableComponent.class,
+            WireComponent.class,
+            Producer.class,
+            Consumer.class,
+            WireReceiver.class,
+            WireEmitter.class
+        }, //
         enabled = true, //
         name = "org.eclipse.kura.wire.devel.delay.Delay" //
-)
+        )
 @Designate(ocd = DelayOCD.class, factory = true)
 public class Delay implements WireEmitter, WireReceiver, ConfigurableComponent {
 
@@ -57,11 +63,12 @@ public class Delay implements WireEmitter, WireReceiver, ConfigurableComponent {
     private int delayAverage;
     private int delayStdDev;
 
-    @Reference(name = "WireHelperService", //
+    @Reference(
+            name = "WireHelperService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unbindWireHelperService" //
-    )
+            )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.wireHelperService = wireHelperService;
     }
@@ -75,8 +82,8 @@ public class Delay implements WireEmitter, WireReceiver, ConfigurableComponent {
     public void activate(final ComponentContext context, final DelayOCD ocd) {
         logger.info("acitvating..");
 
-        wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) context.getServiceReference());
+        wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) context.getServiceReference());
 
         updated(ocd);
 

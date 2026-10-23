@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,7 +10,6 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.factory.component.test;
 
 import static org.junit.Assert.assertEquals;
@@ -21,7 +20,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.configuration.ConfigurationService;
@@ -83,13 +81,14 @@ public class FactoryComponentItTest {
     @BeforeClass
     public static void setupConfigurationService()
             throws InterruptedException, ExecutionException, TimeoutException, KuraException, InvalidSyntaxException {
-        configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                TimeUnit.SECONDS);
+        configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty())
+                .get(30, TimeUnit.SECONDS);
     }
 
     @After
     public void cleanFramework() throws InterruptedException, ExecutionException, TimeoutException {
-        WireTestUtil.deleteFactoryConfiguration(configurationService, this.activePid).get(30, TimeUnit.SECONDS);
+        WireTestUtil.deleteFactoryConfiguration(configurationService, this.activePid)
+                .get(30, TimeUnit.SECONDS);
     }
 
     private void givenComponent() throws InterruptedException, ExecutionException, TimeoutException {
@@ -97,8 +96,13 @@ public class FactoryComponentItTest {
         this.activePid = "ExampleFactoryComponent";
         this.properties.clear();
 
-        WireTestUtil.createFactoryConfiguration(configurationService, ConfigurableComponent.class, activePid,
-                FACTORY_PID, new HashMap<String, Object>()).get(30, TimeUnit.SECONDS);
+        WireTestUtil.createFactoryConfiguration(
+                        configurationService,
+                        ConfigurableComponent.class,
+                        activePid,
+                        FACTORY_PID,
+                        new HashMap<String, Object>())
+                .get(30, TimeUnit.SECONDS);
     }
 
     private void givenProperty(String key, Object value) {

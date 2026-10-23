@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.channel.ChannelFlag;
 import org.eclipse.kura.channel.ChannelRecord;
@@ -60,25 +59,25 @@ public class ExampleDriverItTest {
         thenDriverIsNotNull();
         thenChannelIsSuccessful("Channel-1");
         thenChannelValueIsCorrect("Channel-1", DataType.DOUBLE, 413.38457999999997);
-
     }
 
     @BeforeClass
     public static void setupConfigurationService()
             throws InterruptedException, ExecutionException, TimeoutException, KuraException, InvalidSyntaxException {
-        configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                TimeUnit.SECONDS);
+        configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty())
+                .get(30, TimeUnit.SECONDS);
     }
 
     private void givenDriver() throws InterruptedException, ExecutionException, TimeoutException {
         this.activePid = "ExampleDriver";
 
-        this.driver = WireTestUtil.createFactoryConfiguration(configurationService, Driver.class, activePid,
-                FACTORY_PID, new HashMap<String, Object>()).get(30, TimeUnit.SECONDS);
+        this.driver = WireTestUtil.createFactoryConfiguration(
+                        configurationService, Driver.class, activePid, FACTORY_PID, new HashMap<String, Object>())
+                .get(30, TimeUnit.SECONDS);
     }
 
-    private void givenChannelWithConfig(String channelName, DataType dataType, UnitMeasure unitMeasure,
-            Double inputData) {
+    private void givenChannelWithConfig(
+            String channelName, DataType dataType, UnitMeasure unitMeasure, Double inputData) {
 
         ChannelRecord chRecord = ChannelRecord.createReadRecord(channelName, dataType);
 
@@ -104,18 +103,27 @@ public class ExampleDriverItTest {
     }
 
     private void thenChannelIsSuccessful(String channelName) {
-        this.channelList.stream().filter(channel -> channel.getChannelName().equals(channelName)).findFirst()
-                .ifPresentOrElse(channel -> {
-                    assertEquals(ChannelFlag.SUCCESS, channel.getChannelStatus().getChannelFlag());
-                }, Assert::fail);
+        this.channelList.stream()
+                .filter(channel -> channel.getChannelName().equals(channelName))
+                .findFirst()
+                .ifPresentOrElse(
+                        channel -> {
+                            assertEquals(
+                                    ChannelFlag.SUCCESS,
+                                    channel.getChannelStatus().getChannelFlag());
+                        },
+                        Assert::fail);
     }
 
     private void thenChannelValueIsCorrect(String channelName, DataType expectedType, Object expectedValue) {
-        this.channelList.stream().filter(channel -> channel.getChannelName().equals(channelName)).findFirst()
-                .ifPresentOrElse(channel -> {
-                    assertEquals(expectedType, channel.getValueType());
-                    assertEquals(expectedValue, channel.getValue().getValue());
-                }, Assert::fail);
-
+        this.channelList.stream()
+                .filter(channel -> channel.getChannelName().equals(channelName))
+                .findFirst()
+                .ifPresentOrElse(
+                        channel -> {
+                            assertEquals(expectedType, channel.getValueType());
+                            assertEquals(expectedValue, channel.getValue().getValue());
+                        },
+                        Assert::fail);
     }
 }

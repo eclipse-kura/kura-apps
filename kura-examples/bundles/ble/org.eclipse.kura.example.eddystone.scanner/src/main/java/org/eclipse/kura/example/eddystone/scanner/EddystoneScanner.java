@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.ble.eddystone.BluetoothLeEddystone;
 import org.eclipse.kura.ble.eddystone.BluetoothLeEddystoneService;
@@ -40,12 +39,13 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         enabled = true, //
         name = "org.eclipse.kura.example.eddystone.scanner.EddystoneScanner", //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class } //
-)
+        service = {ConfigurableComponent.class} //
+        )
 @Designate(ocd = EddystoneScannerOCD.class, factory = false)
 public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaconListener<BluetoothLeEddystone> {
 
@@ -64,11 +64,12 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
 
     private CloudPublisher cloudPublisher;
 
-    @Reference(name = "BluetoothLeService", //
+    @Reference(
+            name = "BluetoothLeService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unsetBluetoothLeService" //
-    )
+            )
     public void setBluetoothLeService(final BluetoothLeService bluetoothLeService) {
         this.bluetoothLeService = bluetoothLeService;
     }
@@ -77,11 +78,12 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
         this.bluetoothLeService = null;
     }
 
-    @Reference(name = "BluetoothLeEddystoneService", //
+    @Reference(
+            name = "BluetoothLeEddystoneService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unsetBluetoothLeEddystoneService" //
-    )
+            )
     public void setBluetoothLeEddystoneService(final BluetoothLeEddystoneService bluetoothLeEddystoneService) {
         this.bluetoothLeEddystoneService = bluetoothLeEddystoneService;
     }
@@ -90,11 +92,12 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
         this.bluetoothLeEddystoneService = null;
     }
 
-    @Reference(name = "CloudPublisher", //
+    @Reference(
+            name = "CloudPublisher", //
             policy = ReferencePolicy.DYNAMIC, //
             cardinality = ReferenceCardinality.OPTIONAL, //
             unbind = "unsetCloudPublisher" //
-    )
+            )
     public void setCloudPublisher(final CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
     }
@@ -193,10 +196,10 @@ public class EddystoneScanner implements ConfigurableComponent, BluetoothLeBeaco
     public void onBeaconsReceived(final BluetoothLeEddystone eddystone) {
         EddystoneScanner.logger.info("Eddystone {} received from {}", eddystone.getFrameType(), eddystone.getAddress());
         if ("UID".equals(eddystone.getFrameType())) {
-            EddystoneScanner.logger.info("Namespace : {}",
-                    EddystoneScanner.bytesArrayToHexString(eddystone.getNamespace()));
-            EddystoneScanner.logger.info("Instance : {}",
-                    EddystoneScanner.bytesArrayToHexString(eddystone.getInstance()));
+            EddystoneScanner.logger.info(
+                    "Namespace : {}", EddystoneScanner.bytesArrayToHexString(eddystone.getNamespace()));
+            EddystoneScanner.logger.info(
+                    "Instance : {}", EddystoneScanner.bytesArrayToHexString(eddystone.getInstance()));
         } else if ("URL".equals(eddystone.getFrameType())) {
             EddystoneScanner.logger.info("URL : {}", eddystone.getUrlScheme() + eddystone.getUrl());
         }

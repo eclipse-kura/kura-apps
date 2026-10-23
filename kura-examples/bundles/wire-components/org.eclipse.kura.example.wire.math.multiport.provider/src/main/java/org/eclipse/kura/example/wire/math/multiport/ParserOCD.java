@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,12 +10,10 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.multiport;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.kura.example.wire.math.multiport.difference.DifferenceComponentOCD;
 import org.eclipse.kura.example.wire.math.multiport.division.DivisionComponentOCD;
 import org.eclipse.kura.example.wire.math.multiport.multiplication.MultiplicationComponentOCD;
@@ -69,5 +67,4 @@ public class ParserOCD {
         properties.put(BARRIER_MODALITY_PROPERTY_KEY, this.useBarrier);
         return properties;
     }
-
 }

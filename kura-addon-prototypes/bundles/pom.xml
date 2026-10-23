@@ -13,9 +13,7 @@
      Eurotech
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -26,12 +24,25 @@
 
     <name>Parent POM for kura-addon-prototypes</name>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>cbi</id>
-            <url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>
-        </pluginRepository>
-    </pluginRepositories>
+    <modules>
+        <module>example-configurable-component.bundle</module>
+        <module>example-driver.bundle</module>
+        <module>example-wire-component.bundle</module>
+        <module>example-factory-component.bundle</module>
+    </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>repo.eclipse.org</id>
+            <name>Kura Repository - Releases</name>
+            <url>https://repo.eclipse.org/content/repositories/kura-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>repo.eclipse.org</id>
+            <name>Kura Repository - Snapshots</name>
+            <url>https://repo.eclipse.org/content/repositories/kura-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -44,6 +55,40 @@
         <spotless-maven-plugin.version>3.10.2</spotless-maven-plugin.version>
         <palantir-java-format.version>2.98.0</palantir-java-format.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>kura-releases</id>
+            <name>Eclipse Kura Repository - Releases</name>
+            <url>https://repo.eclipse.org/content/repositories/kura-releases/</url>
+        </repository>
+        <repository>
+            <id>kura-snapshots</id>
+            <name>Eclipse Kura Repository - Snapshots</name>
+            <url>https://repo.eclipse.org/content/repositories/kura-snapshots/</url>
+        </repository>
+        <repository>
+            <id>kura-addons</id>
+            <name>Kura Addons Maven Repository</name>
+            <url>https://raw.githubusercontent.com/eurotech/kura_addons/mvn-repo</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <!-- moquette-broker -->
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>cbi</id>
+            <url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
         <pluginManagement>
@@ -134,14 +179,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jarsigner-plugin</artifactId>
                     <version>${maven.jarsigner.plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>sign</id>
-                            <goals>
-                                <goal>sign</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                     <configuration>
                         <skip>${skip.artifact.signing}</skip>
                         <storetype>${keystore.type}</storetype>
@@ -157,6 +194,14 @@
                             <compress>false</compress>
                         </archiverConfig>
                     </configuration>
+                    <executions>
+                        <execution>
+                            <id>sign</id>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
 
                 <!-- enable jar signing via Eclipse Signing Server -->
@@ -167,6 +212,9 @@
                     <groupId>org.eclipse.cbi.maven.plugins</groupId>
                     <artifactId>eclipse-jarsigner-plugin</artifactId>
                     <version>1.1.5</version>
+                    <configuration>
+                        <signerUrl>http://localhost:8080/jarsigner</signerUrl>
+                    </configuration>
                     <executions>
                         <execution>
                             <id>sign</id>
@@ -176,9 +224,6 @@
                             <phase>verify</phase>
                         </execution>
                     </executions>
-                    <configuration>
-                        <signerUrl>http://localhost:8080/jarsigner</signerUrl>
-                    </configuration>
                 </plugin>
 
                 <plugin>
@@ -345,51 +390,4 @@
             </properties>
         </profile>
     </profiles>
-
-    <repositories>
-        <repository>
-            <id>kura-releases</id>
-            <name>Eclipse Kura Repository - Releases</name>
-            <url>https://repo.eclipse.org/content/repositories/kura-releases/</url>
-        </repository>
-        <repository>
-            <id>kura-snapshots</id>
-            <name>Eclipse Kura Repository - Snapshots</name>
-            <url>https://repo.eclipse.org/content/repositories/kura-snapshots/</url>
-        </repository>
-        <repository>
-            <id>kura-addons</id>
-            <name>Kura Addons Maven Repository</name>
-            <url>https://raw.githubusercontent.com/eurotech/kura_addons/mvn-repo</url>
-        </repository>
-        <repository>
-            <id>central</id>
-            <url>https://repo1.maven.org/maven2/</url>
-        </repository>
-        <repository>
-            <!-- moquette-broker -->
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <repository>
-            <id>repo.eclipse.org</id>
-            <name>Kura Repository - Releases</name>
-            <url>https://repo.eclipse.org/content/repositories/kura-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>repo.eclipse.org</id>
-            <name>Kura Repository - Snapshots</name>
-            <url>https://repo.eclipse.org/content/repositories/kura-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <modules>
-        <module>example-configurable-component.bundle</module>
-        <module>example-driver.bundle</module>
-        <module>example-wire-component.bundle</module>
-        <module>example-factory-component.bundle</module>
-    </modules>
 </project>

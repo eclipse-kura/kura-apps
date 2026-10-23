@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2018, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -37,12 +37,13 @@ import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, WireComponent.class, WireReceiver.class, Consumer.class }, //
+        service = {ConfigurableComponent.class, WireComponent.class, WireReceiver.class, Consumer.class}, //
         enabled = true, //
         name = "org.eclipse.kura.wire.devel.sink.Sink" //
-)
+        )
 @Designate(ocd = SinkOCD.class, factory = true)
 public class Sink implements WireReceiver, ConfigurableComponent {
 
@@ -62,8 +63,8 @@ public class Sink implements WireReceiver, ConfigurableComponent {
         logger.info("activating...");
 
         this.kuraServicePid = (String) context.getProperties().get(ConfigurationService.KURA_SERVICE_PID);
-        this.wireSupport = wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) context.getServiceReference());
+        this.wireSupport =
+                wireHelperService.newWireSupport(this, (ServiceReference<WireComponent>) context.getServiceReference());
         updated(ocd);
 
         logger.info("activating...done");
@@ -84,11 +85,12 @@ public class Sink implements WireReceiver, ConfigurableComponent {
         logger.info("updating...done");
     }
 
-    @Reference(name = "WireHelperService", //
+    @Reference(
+            name = "WireHelperService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unbindWireHelperService" //
-    )
+            )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         if (isNull(this.wireHelperService)) {
             this.wireHelperService = wireHelperService;

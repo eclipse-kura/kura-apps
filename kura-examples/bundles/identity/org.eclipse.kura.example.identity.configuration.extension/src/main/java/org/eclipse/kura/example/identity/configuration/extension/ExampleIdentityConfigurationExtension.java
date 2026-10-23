@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2024, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -15,7 +15,6 @@ package org.eclipse.kura.example.identity.configuration.extension;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import org.eclipse.kura.KuraErrorCode;
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
@@ -36,11 +35,11 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, IdentityConfigurationExtension.class } //
-)
-
+        service = {ConfigurableComponent.class, IdentityConfigurationExtension.class} //
+        )
 @Designate(ocd = ExampleIdentityConfigurationExtensionOCD.class, factory = true)
 public class ExampleIdentityConfigurationExtension implements IdentityConfigurationExtension, ConfigurableComponent {
 
@@ -82,8 +81,8 @@ public class ExampleIdentityConfigurationExtension implements IdentityConfigurat
     public synchronized Optional<ComponentConfiguration> getConfiguration(final String identityName)
             throws KuraException {
 
-        final IdentityConfiguration result = Optional.ofNullable(this.configurations.get(identityName))
-                .orElseGet(IdentityConfiguration::new);
+        final IdentityConfiguration result =
+                Optional.ofNullable(this.configurations.get(identityName)).orElseGet(IdentityConfiguration::new);
 
         return Optional.of(buildComponentConfiguration(result));
     }
@@ -118,7 +117,8 @@ public class ExampleIdentityConfigurationExtension implements IdentityConfigurat
         final IdentityConfiguration config = new IdentityConfiguration(configuration.getConfigurationProperties());
 
         if (!config.testStringProperty.matches("[a-zA-Z]+")) {
-            throw new KuraException(KuraErrorCode.INVALID_PARAMETER,
+            throw new KuraException(
+                    KuraErrorCode.INVALID_PARAMETER,
                     "test.string value must contain only uppercase or lowercase letters");
         }
     }
@@ -138,7 +138,6 @@ public class ExampleIdentityConfigurationExtension implements IdentityConfigurat
         }
 
         this.configurations.put(identityName, config);
-
     }
 
     private static class IdentityConfiguration {
@@ -159,9 +158,13 @@ public class ExampleIdentityConfigurationExtension implements IdentityConfigurat
 
         IdentityConfiguration(final Map<String, Object> properties) {
             this.testStringProperty = Optional.ofNullable(properties.get(TEST_STRING_PROPERTY_KEY))
-                    .filter(String.class::isInstance).map(String.class::cast).orElse(TEST_STRING_PROPERTY_DEFAULT);
+                    .filter(String.class::isInstance)
+                    .map(String.class::cast)
+                    .orElse(TEST_STRING_PROPERTY_DEFAULT);
             this.testIntProperty = Optional.ofNullable(properties.get(TEST_INTEGER_PROPERTY_KEY))
-                    .filter(Integer.class::isInstance).map(Integer.class::cast).orElse(TEST_INTEGER_PROPERTY_DEFAULT);
+                    .filter(Integer.class::isInstance)
+                    .map(Integer.class::cast)
+                    .orElse(TEST_INTEGER_PROPERTY_DEFAULT);
         }
 
         Map<String, Object> toProperties() {
@@ -206,6 +209,5 @@ public class ExampleIdentityConfigurationExtension implements IdentityConfigurat
 
             return ocd;
         }
-
     }
 }

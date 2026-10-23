@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -14,7 +14,6 @@ package org.eclipse.kura.example.factory.component;
 
 import java.io.IOException;
 import java.util.Objects;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -25,11 +24,12 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
         name = "org.eclipse.kura.example.factory.FactoryComponentExample", //
-        service = { ConfigurableComponent.class } //
-)
+        service = {ConfigurableComponent.class} //
+        )
 @Designate(ocd = FactoryComponentExampleOCD.class, factory = true)
 public class FactoryComponentExample implements ConfigurableComponent {
 
@@ -44,9 +44,9 @@ public class FactoryComponentExample implements ConfigurableComponent {
      * the ComponentContext and the ExampleComponentOCD as parameters.
      * All parameters in activate, modified, deactivate are optional and can be
      * removed if not needed
-     * 
+     *
      * Examples:
-     * 
+     *
      * public void activate()
      * public void activate(ExampleComponentOCD configuration)
      * public void activate(ComponentContext componentContext, final Map<String, Object> properties, final
@@ -84,11 +84,9 @@ public class FactoryComponentExample implements ConfigurableComponent {
             } catch (Exception ex) {
                 logger.error(ex.getMessage());
             }
-
         }
 
         logger.info("Updated");
-
     }
 
     @Deactivate
@@ -100,5 +98,4 @@ public class FactoryComponentExample implements ConfigurableComponent {
     public FactoryComponentExampleOptions getOptions() {
         return this.options;
     }
-
 }

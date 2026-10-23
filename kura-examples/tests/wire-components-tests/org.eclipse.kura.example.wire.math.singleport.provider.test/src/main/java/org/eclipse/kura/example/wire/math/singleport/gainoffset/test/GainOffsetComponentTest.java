@@ -1,16 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2020, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.singleport.gainoffset.test;
 
 import static org.junit.Assert.assertTrue;
@@ -23,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
 import org.eclipse.kura.configuration.ConfigurationService;
@@ -50,7 +48,8 @@ public class GainOffsetComponentTest {
 
     private static final Logger logger = LoggerFactory.getLogger(GainOffsetComponentTest.class);
 
-    private static final String FACTORY_PID = "org.eclipse.kura.example.wire.math.singleport.gainoffset.GainOffsetComponent";
+    private static final String FACTORY_PID =
+            "org.eclipse.kura.example.wire.math.singleport.gainoffset.GainOffsetComponent";
     private static final String UNDER_TEST_PID = "under.test";
     private static final String TEST_EMITTER_PID = "test.emitter.pid";
     private static final String TEST_RECEIVER_PID = "test.receiver.pid";
@@ -65,7 +64,8 @@ public class GainOffsetComponentTest {
     private static final String CONFIGURATION_PROP_NAME = "configuration";
     private static final String EMIT_RECEIVED_PROPERTIES = "emit.received.properties";
 
-    private static final String CONFIGURATION_PROP_NAME_DEFAULT = "toBeMultipliedByTwo | 2;toBeMultipliedBy3AndIncreasedBy1 | 3 | 1";
+    private static final String CONFIGURATION_PROP_NAME_DEFAULT =
+            "toBeMultipliedByTwo | 2;toBeMultipliedBy3AndIncreasedBy1 | 3 | 1";
     private static final boolean EMIT_RECEIVED_PROPERTIES_DEFAULT = false;
 
     private static WireGraphService wireGraphService;
@@ -75,7 +75,8 @@ public class GainOffsetComponentTest {
     private static TestEmitterReceiver inEmitter;
 
     final GraphBuilder builder = new GraphBuilder();
-    final BundleContext bundleContext = FrameworkUtil.getBundle(GainOffsetComponentTest.class).getBundleContext();
+    final BundleContext bundleContext =
+            FrameworkUtil.getBundle(GainOffsetComponentTest.class).getBundleContext();
 
     //
     // JUnit 4 stuff
@@ -85,14 +86,13 @@ public class GainOffsetComponentTest {
         logger.info("waiting for dependencies...");
 
         try {
-            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
-            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
+            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
+            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
         } catch (Exception e) {
             throw new RuntimeException("Failed to setup WireGraphService", e);
         }
-
     }
 
     @Before
@@ -116,7 +116,6 @@ public class GainOffsetComponentTest {
             logger.error("Test error", e);
             throw e;
         }
-
     }
 
     @Test
@@ -162,8 +161,8 @@ public class GainOffsetComponentTest {
         Map<String, Object> props = new HashMap<>();
 
         try {
-            WireTestUtil.updateWireComponentConfiguration(configurationService, UNDER_TEST_PID, props).get(30,
-                    TimeUnit.SECONDS);
+            WireTestUtil.updateWireComponentConfiguration(configurationService, UNDER_TEST_PID, props)
+                    .get(30, TimeUnit.SECONDS);
         } catch (InterruptedException | TimeoutException e) {
             logger.error("Test error", e);
             throw e;
@@ -177,10 +176,19 @@ public class GainOffsetComponentTest {
         inEmitter.emit(new WireRecord(myMap));
 
         try {
-            WireRecord receivedRecord = out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
+            WireRecord receivedRecord =
+                    out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
             logger.info("received {}", receivedRecord.getProperties());
-            assertTrue((double) receivedRecord.getProperties().get("toBeMultipliedByTwo").getValue() == 8);
-            assertTrue((double) receivedRecord.getProperties().get("toBeMultipliedBy3AndIncreasedBy1").getValue() == 7);
+            assertTrue((double) receivedRecord
+                            .getProperties()
+                            .get("toBeMultipliedByTwo")
+                            .getValue()
+                    == 8);
+            assertTrue((double) receivedRecord
+                            .getProperties()
+                            .get("toBeMultipliedBy3AndIncreasedBy1")
+                            .getValue()
+                    == 7);
 
         } catch (TimeoutException e) {
             fail("Timeout waiting for envelope");

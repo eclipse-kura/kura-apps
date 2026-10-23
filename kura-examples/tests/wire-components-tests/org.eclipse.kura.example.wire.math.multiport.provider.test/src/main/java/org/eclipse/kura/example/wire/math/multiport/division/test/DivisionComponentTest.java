@@ -9,7 +9,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
 import org.eclipse.kura.configuration.ConfigurableComponent;
@@ -70,8 +69,8 @@ public class DivisionComponentTest {
 
     private final GraphBuilder builder = new GraphBuilder();
     private WireGraphConfiguration wireGraphConfiguration;
-    private final BundleContext bundleContext = FrameworkUtil.getBundle(DifferenceComponentTest.class)
-            .getBundleContext();
+    private final BundleContext bundleContext =
+            FrameworkUtil.getBundle(DifferenceComponentTest.class).getBundleContext();
 
     String activeWirePid;
 
@@ -89,7 +88,6 @@ public class DivisionComponentTest {
         givenWireGraphConfiguration();
 
         thenWireGraphExistsWithPid(this.activeWirePid);
-
     }
 
     @Test
@@ -97,7 +95,6 @@ public class DivisionComponentTest {
         givenWireGraphConfiguration();
 
         thenWireGraphConfigurationIsDefaultOne();
-
     }
 
     @Test
@@ -111,10 +108,10 @@ public class DivisionComponentTest {
     public static void setupConfigurationService()
             throws InterruptedException, ExecutionException, TimeoutException, KuraException {
         try {
-            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
-            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
+            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
+            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
         } catch (Exception e) {
             throw new RuntimeException("Failed to setup WireGraphService", e);
         }
@@ -168,9 +165,10 @@ public class DivisionComponentTest {
         in0emitter.emit(new WireRecord(Map.of(OPERAND_NAME_DEFAULT, TypedValues.newIntegerValue(firstOperand))));
         CompletableFuture<WireEnvelope> out0Recfuture = outReceiver.nextEnvelope();
         in1emitter.emit(new WireRecord(Map.of(OPERAND_NAME_DEFAULT, TypedValues.newIntegerValue(secondOperand))));
-        WireRecord receivedRecord = out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
-        this.envelopeResult = (double) receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue();
-
+        WireRecord receivedRecord =
+                out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
+        this.envelopeResult =
+                (double) receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue();
     }
 
     private void thenWireComponentIsNotNull() {
