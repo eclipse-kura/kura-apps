@@ -10,7 +10,6 @@
  * Contributors:
  *  Eurotech
  ******************************************************************************/
-
 package org.eclipse.kura.example.wire.logic.multiport.provider.test;
 
 import static org.junit.Assert.assertEquals;
@@ -26,7 +25,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
 import org.eclipse.kura.configuration.ConfigurableComponent;
@@ -95,8 +93,8 @@ public class LogicalComponentItTest {
 
     private final GraphBuilder builder = new GraphBuilder();
     private WireGraphConfiguration wireGraphConfiguration;
-    private final BundleContext bundleContext = FrameworkUtil.getBundle(LogicalComponentItTest.class)
-            .getBundleContext();
+    private final BundleContext bundleContext =
+            FrameworkUtil.getBundle(LogicalComponentItTest.class).getBundleContext();
 
     String activeWirePid;
 
@@ -112,7 +110,6 @@ public class LogicalComponentItTest {
         givenWireGraphConfiguration();
 
         thenWireGraphExistsWithPid(this.activeWirePid);
-
     }
 
     @Test
@@ -120,7 +117,6 @@ public class LogicalComponentItTest {
         givenWireGraphConfiguration();
 
         thenWireGraphConfigurationIsDefaultOne();
-
     }
 
     @Test
@@ -197,7 +193,6 @@ public class LogicalComponentItTest {
         thenResultMapContainsExpectedValues("tf", true);
         thenResultMapContainsExpectedValues("ft", true);
         thenResultMapContainsExpectedValues("ff", true);
-
     }
 
     @Test
@@ -226,10 +221,10 @@ public class LogicalComponentItTest {
     public static void setupConfigurationService()
             throws InterruptedException, ExecutionException, TimeoutException, KuraException {
         try {
-            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
-            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
+            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
+            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
         } catch (Exception e) {
             throw new RuntimeException("Failed to setup WireGraphService", e);
         }
@@ -283,8 +278,8 @@ public class LogicalComponentItTest {
 
         Map<String, Object> props = new HashMap<>();
         props.put(BOOLEAN_OPERATION, operation);
-        WireTestUtil.updateWireComponentConfiguration(configurationService, this.activeWirePid, props).get(30,
-                TimeUnit.SECONDS);
+        WireTestUtil.updateWireComponentConfiguration(configurationService, this.activeWirePid, props)
+                .get(30, TimeUnit.SECONDS);
     }
 
     private void givenWireComponent() {
@@ -316,12 +311,15 @@ public class LogicalComponentItTest {
     private void thenNotOperationIsCorrect() throws InterruptedException, ExecutionException, TimeoutException {
         CompletableFuture<WireEnvelope> out0Recfuture = outReceiver.nextEnvelope();
         in0emitter.emit(new WireRecord(mapWithTrue));
-        WireRecord receivedRecord = out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
-        assertFalse((boolean) receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue());
+        WireRecord receivedRecord =
+                out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
+        assertFalse((boolean)
+                receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue());
         out0Recfuture = outReceiver.nextEnvelope();
         in0emitter.emit(new WireRecord(mapWithFalse));
         receivedRecord = out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
-        assertTrue((boolean) receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue());
+        assertTrue((boolean)
+                receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue());
     }
 
     private boolean matchesDefaultConfiguration(ComponentConfiguration cc) {
@@ -339,16 +337,16 @@ public class LogicalComponentItTest {
             throws InterruptedException, ExecutionException, TimeoutException {
 
         Optional<OperandTriple<String, Boolean, Boolean>> optTriple = operandsCombination.stream()
-                .filter(operand -> operand.getFirstArgument().equals(operationName)).findFirst();
+                .filter(operand -> operand.getFirstArgument().equals(operationName))
+                .findFirst();
 
         if (optTriple.isPresent()) {
             OperandTriple<String, Boolean, Boolean> triple = optTriple.get();
-            this.operationResultsMap.put(operationName,
-                    performBooleanOperation(triple.getSecondArgument(), triple.getThirdArgument()));
+            this.operationResultsMap.put(
+                    operationName, performBooleanOperation(triple.getSecondArgument(), triple.getThirdArgument()));
         } else {
             throw new IllegalArgumentException("Operation name not found: " + operationName);
         }
-
     }
 
     private Boolean performBooleanOperation(boolean operator1, boolean operator2)
@@ -364,8 +362,8 @@ public class LogicalComponentItTest {
         } else {
             in1emitter.emit(new WireRecord(mapWithFalse));
         }
-        WireRecord receivedRecord = out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
+        WireRecord receivedRecord =
+                out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
         return (boolean) receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue();
     }
-
 }

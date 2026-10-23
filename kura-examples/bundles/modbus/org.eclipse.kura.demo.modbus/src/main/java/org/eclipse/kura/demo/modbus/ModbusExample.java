@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2011, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *  Red Hat Inc
@@ -19,7 +19,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
 import org.eclipse.kura.cloudconnection.listener.CloudConnectionListener;
 import org.eclipse.kura.cloudconnection.listener.CloudDeliveryListener;
 import org.eclipse.kura.cloudconnection.message.KuraMessage;
@@ -37,12 +36,13 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, CloudConnectionListener.class, CloudDeliveryListener.class }, //
+        service = {ConfigurableComponent.class, CloudConnectionListener.class, CloudDeliveryListener.class}, //
         name = "org.eclipse.kura.demo.modbus.ModbusExample", //
         enabled = true //
-)
+        )
 @Designate(ocd = ModbusExampleOCD.class, factory = false)
 public class ModbusExample implements ConfigurableComponent, CloudConnectionListener, CloudDeliveryListener {
 
@@ -84,7 +84,8 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
     private CloudPublisher cloudPublisher;
     private ModbusProtocolDeviceService protocolDevice;
 
-    @Reference(name = "ModbusProtocolDeviceService", //
+    @Reference(
+            name = "ModbusProtocolDeviceService", //
             policy = org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC, //
             cardinality = org.osgi.service.component.annotations.ReferenceCardinality.MANDATORY)
     public void setModbusProtocolDeviceService(ModbusProtocolDeviceService modbusService) {
@@ -95,10 +96,11 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
         this.protocolDevice = null;
     }
 
-    @Reference(name = "CloudPublisher", //
+    @Reference(
+            name = "CloudPublisher", //
             policy = ReferencePolicy.DYNAMIC, //
             cardinality = ReferenceCardinality.OPTIONAL //
-    )
+            )
     public void setCloudPublisher(CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
         this.cloudPublisher.registerCloudConnectionListener(ModbusExample.this);
@@ -201,13 +203,17 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
 
             int pubrate = ocd.poll_interval();
             logger.info("scheduleAtFixedRate {}", pubrate);
-            this.handle = this.worker.scheduleAtFixedRate(new Runnable() {
+            this.handle = this.worker.scheduleAtFixedRate(
+                    new Runnable() {
 
-                @Override
-                public void run() {
-                    doModbusLoop();
-                }
-            }, 0, pubrate, TimeUnit.MILLISECONDS);
+                        @Override
+                        public void run() {
+                            doModbusLoop();
+                        }
+                    },
+                    0,
+                    pubrate,
+                    TimeUnit.MILLISECONDS);
 
         } catch (Throwable t) {
             logger.error("Unexpected Throwable", t);
@@ -237,7 +243,10 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
 
             if (this.inputaddr > 0) {
                 boolean[] dicreteInputs = this.protocolDevice.readDiscreteInputs(this.slaveAddr, this.inputaddr, 1);
-                StringBuilder sb = new StringBuilder().append("Input ").append(this.inputaddr).append(" = ");
+                StringBuilder sb = new StringBuilder()
+                        .append("Input ")
+                        .append(this.inputaddr)
+                        .append(" = ");
                 sb.append(dicreteInputs[0]);
                 logger.info(sb.toString());
                 payload.addMetric("input", Boolean.valueOf(dicreteInputs[0]));
@@ -245,7 +254,10 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
             if (this.registeraddr > 0) {
                 int[] analogInputs = this.protocolDevice.readInputRegisters(this.slaveAddr, this.registeraddr, 1);
                 short val = (short) analogInputs[0];
-                StringBuilder sb = new StringBuilder().append("Register ").append(this.registeraddr).append(" = ");
+                StringBuilder sb = new StringBuilder()
+                        .append("Register ")
+                        .append(this.registeraddr)
+                        .append(" = ");
                 sb.append(val);
                 logger.info(sb.toString());
                 payload.addMetric("register", Integer.valueOf(analogInputs[0]));
@@ -322,8 +334,13 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
 
             parity = ocd.serial_parity();
 
-            logger.info("Configuring Serial connection - Port: {}, Baud: {}, Data bits: {}, Stop bits: {}, Parity: {}",
-                    portName, baudRate, bitsPerWord, stopBits, parity);
+            logger.info(
+                    "Configuring Serial connection - Port: {}, Baud: {}, Data bits: {}, Stop bits: {}, Parity: {}",
+                    portName,
+                    baudRate,
+                    bitsPerWord,
+                    stopBits,
+                    parity);
 
             if (portName == null) {
                 logger.error("Serial port name is null!");
@@ -386,5 +403,4 @@ public class ModbusExample implements ConfigurableComponent, CloudConnectionList
         // TODO Auto-generated method stub
 
     }
-
 }

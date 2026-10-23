@@ -10,7 +10,6 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.trig;
 
 import org.osgi.service.component.annotations.ComponentPropertyType;
@@ -19,45 +18,48 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.osgi.service.metatype.annotations.Option;
 
 @SuppressWarnings("checkstyle:MethodName")
-@ObjectClassDefinition(id = "org.eclipse.kura.example.wire.math.trig.TrigonometricComponent", //
+@ObjectClassDefinition(
+        id = "org.eclipse.kura.example.wire.math.trig.TrigonometricComponent", //
         name = "Trigonometric Functions for Wires", //
-        description = "A component that applies a trigonometric function to a numeric property converted to double and involving rounding. The result will be emitted as a new property of type double." //
-)
+        description =
+                "A component that applies a trigonometric function to a numeric property converted to double and involving rounding. The result will be emitted as a new property of type double." //
+        )
 @ComponentPropertyType
 public @interface TrigonometricComponentOCD {
 
-    @AttributeDefinition(//
+    @AttributeDefinition( //
             name = "Parameter Name", //
             description = "Specifies the name of the parameter property in the received envelope.", //
             required = true //
-    )
+            )
     String parameter_name() default "parameter";
 
-    @AttributeDefinition(//
+    @AttributeDefinition( //
             name = "Trigonometric Function", //
             description = "Specifies the trigonometric function to be executed by the component", //
             required = true, //
             options = { //
-                    @Option(label = "SIN", value = "SIN"), //
-                    @Option(label = "COS", value = "COS"), //
-                    @Option(label = "TAN", value = "TAN"), //
-                    @Option(label = "ASIN", value = "ASIN"), //
-                    @Option(label = "ACOS", value = "ACOS"), //
-                    @Option(label = "ATAN", value = "ATAN") //
+                @Option(label = "SIN", value = "SIN"), //
+                @Option(label = "COS", value = "COS"), //
+                @Option(label = "TAN", value = "TAN"), //
+                @Option(label = "ASIN", value = "ASIN"), //
+                @Option(label = "ACOS", value = "ACOS"), //
+                @Option(label = "ATAN", value = "ATAN") //
             })
     String trigonometric_function() default "SIN";
 
-    @AttributeDefinition(//
+    @AttributeDefinition( //
             name = "Result Name", //
             description = "Specifies the name of the result property in the emitted envelope.", //
             required = true //
-    )
+            )
     String result_name() default "result";
 
-    @AttributeDefinition(//
+    @AttributeDefinition( //
             name = "Emit Received Properties", //
-            description = "Specifies whether received properties should be included in the emitted envelope or not.", //
+            description =
+                    "Specifies whether received properties should be included in the emitted envelope or not.", //
             required = true //
-    )
+            )
     boolean emit_received_properties() default false;
 }

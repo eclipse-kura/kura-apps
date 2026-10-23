@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -30,9 +30,20 @@ final class ExamplePublisherOptions {
     private static final String PUBLISH_RATE_PROP_NAME = "publish.rate";
     private static final String TEMP_INITIAL_PROP_NAME = "metric.temperature.initial";
     private static final String TEMP_INCREMENT_PROP_NAME = "metric.temperature.increment";
-    private static final String[] METRIC_PROP_NAMES = { "metric.string", "metric.string.oneof", "metric.long",
-            "metric.integer", "metric.integer.fixed", "metric.short", "metric.double", "metric.float", "metric.char",
-            "metric.byte", "metric.boolean", "metric.password" };
+    private static final String[] METRIC_PROP_NAMES = {
+        "metric.string",
+        "metric.string.oneof",
+        "metric.long",
+        "metric.integer",
+        "metric.integer.fixed",
+        "metric.short",
+        "metric.double",
+        "metric.float",
+        "metric.char",
+        "metric.byte",
+        "metric.boolean",
+        "metric.password"
+    };
     private static final String CLOUD_PUBLISHER_PROP_NAME = "CloudPublisher.target";
     private static final String CLOUD_SUBSCRIBER_PROP_NAME = "CloudSubscriber.target";
 
@@ -51,7 +62,7 @@ final class ExamplePublisherOptions {
         }
         return cloudPublisherPid;
     }
-    
+
     String getCloudSubscriberPid() {
         String cloudSubscriberPid = DEFAULT_CLOUD_SUBSCRIBER_PID;
         Object configCloudSubscriberPid = this.properties.get(CLOUD_SUBSCRIBER_PROP_NAME);

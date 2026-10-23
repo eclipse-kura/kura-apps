@@ -1,16 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.trig.test;
 
 import static org.junit.Assert.assertTrue;
@@ -23,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
 import org.eclipse.kura.configuration.ConfigurationService;
@@ -74,8 +72,8 @@ public class TrigonometricComponentTest {
 
     private final GraphBuilder builder = new GraphBuilder();
     private WireGraphConfiguration wireGraphConfiguration;
-    private final BundleContext bundleContext = FrameworkUtil.getBundle(TrigonometricComponentTest.class)
-            .getBundleContext();
+    private final BundleContext bundleContext =
+            FrameworkUtil.getBundle(TrigonometricComponentTest.class).getBundleContext();
 
     String activeWirePid;
 
@@ -97,14 +95,13 @@ public class TrigonometricComponentTest {
         logger.info("waiting for dependencies...");
 
         try {
-            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
-            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
+            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
+            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
         } catch (Exception e) {
             throw new RuntimeException("Failed to setup WireGraphService", e);
         }
-
     }
 
     @Before
@@ -113,8 +110,8 @@ public class TrigonometricComponentTest {
 
         this.activeWirePid = "underTestPid";
 
-        builder.addWireComponent(this.activeWirePid, "org.eclipse.kura.example.wire.math.trig.TrigonometricComponent",
-                1, 1) //
+        builder.addWireComponent(
+                        this.activeWirePid, "org.eclipse.kura.example.wire.math.trig.TrigonometricComponent", 1, 1) //
                 .addTestEmitterReceiver(TEST_EMITTER_PID) //
                 .addTestEmitterReceiver(TEST_RECEIVER_PID) //
                 .addWire(TEST_EMITTER_PID, 0, this.activeWirePid, IN_PORT) //
@@ -138,7 +135,6 @@ public class TrigonometricComponentTest {
         mapWithPi.put(PARAMETER_NAME_DEFAULT, TypedValues.newDoubleValue(Math.PI));
         mapWithThreeHalvesPi.put(PARAMETER_NAME_DEFAULT, TypedValues.newDoubleValue(Math.PI * 1.5));
         mapWithTwoPi.put(PARAMETER_NAME_DEFAULT, TypedValues.newDoubleValue(Math.PI * 2));
-
     }
 
     @Test
@@ -152,7 +148,8 @@ public class TrigonometricComponentTest {
         }
 
         assertTrue(wgc.getWireComponentConfigurations().stream()
-                .anyMatch(wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
+                .anyMatch(
+                        wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
     }
 
     @Test
@@ -282,7 +279,8 @@ public class TrigonometricComponentTest {
             throws InterruptedException, ExecutionException, TimeoutException {
         CompletableFuture<WireEnvelope> out0Recfuture = outReceiver.nextEnvelope();
         inEmitter.emit(new WireRecord(properties));
-        WireRecord receivedRecord = out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
+        WireRecord receivedRecord =
+                out0Recfuture.get(1, TimeUnit.SECONDS).getRecords().get(0);
         return (Double) receivedRecord.getProperties().get(RESULT_NAME_DEFAULT).getValue();
     }
 
@@ -291,8 +289,8 @@ public class TrigonometricComponentTest {
 
         Map<String, Object> props = new HashMap<>();
         props.put(TRIGONOMETRIC_OPERATION_PROP_NAME, operation);
-        WireTestUtil.updateWireComponentConfiguration(configurationService, this.activeWirePid, props).get(30,
-                TimeUnit.SECONDS);
+        WireTestUtil.updateWireComponentConfiguration(configurationService, this.activeWirePid, props)
+                .get(30, TimeUnit.SECONDS);
     }
 
     @After

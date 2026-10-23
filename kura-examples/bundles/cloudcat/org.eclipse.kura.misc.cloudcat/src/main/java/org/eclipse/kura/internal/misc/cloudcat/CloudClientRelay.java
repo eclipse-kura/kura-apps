@@ -1,19 +1,18 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
 package org.eclipse.kura.internal.misc.cloudcat;
 
 import java.util.List;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.cloud.CloudClient;
 import org.eclipse.kura.cloud.CloudClientListener;
@@ -34,8 +33,11 @@ public class CloudClientRelay implements CloudClientListener {
     private final List<CloudCatSubscription> dataSubscriptions;
     private final List<CloudCatSubscription> controlSubscriptions;
 
-    public CloudClientRelay(CloudClient thisCloudClient, CloudClient otherCloudClient,
-            List<CloudCatSubscription> dataSubscriptions, List<CloudCatSubscription> controlSubscriptions) {
+    public CloudClientRelay(
+            CloudClient thisCloudClient,
+            CloudClient otherCloudClient,
+            List<CloudCatSubscription> dataSubscriptions,
+            List<CloudCatSubscription> controlSubscriptions) {
         super();
         this.thisCloudClient = thisCloudClient;
         this.otherCloudClient = otherCloudClient;
@@ -59,8 +61,11 @@ public class CloudClientRelay implements CloudClientListener {
             msg.addMetric(FORWARDED_MESSAGE_METRIC_NAME, true);
             this.otherCloudClient.controlPublish(appTopic, msg, qos, retain, DFLT_PRIORITY);
         } catch (KuraException e) {
-            logger.warn("Failed to relay incoming control message from: {} to: {}", appTopic,
-                    this.thisCloudClient.getApplicationId(), this.otherCloudClient.getApplicationId());
+            logger.warn(
+                    "Failed to relay incoming control message from: {} to: {}",
+                    appTopic,
+                    this.thisCloudClient.getApplicationId(),
+                    this.otherCloudClient.getApplicationId());
         }
     }
 
@@ -75,8 +80,11 @@ public class CloudClientRelay implements CloudClientListener {
             msg.addMetric(FORWARDED_MESSAGE_METRIC_NAME, true);
             this.otherCloudClient.publish(appTopic, msg, qos, retain, DFLT_PRIORITY);
         } catch (KuraException e) {
-            logger.warn("Failed to relay incoming data message from: {} to: {}", appTopic,
-                    this.thisCloudClient.getApplicationId(), this.otherCloudClient.getApplicationId());
+            logger.warn(
+                    "Failed to relay incoming data message from: {} to: {}",
+                    appTopic,
+                    this.thisCloudClient.getApplicationId(),
+                    this.otherCloudClient.getApplicationId());
         }
     }
 
@@ -109,8 +117,11 @@ public class CloudClientRelay implements CloudClientListener {
             try {
                 this.thisCloudClient.subscribe(topic, qos);
             } catch (KuraException e) {
-                logger.error("Failed to subscribe client: {} to data topic: '{}'",
-                        this.thisCloudClient.getApplicationId(), topic, e);
+                logger.error(
+                        "Failed to subscribe client: {} to data topic: '{}'",
+                        this.thisCloudClient.getApplicationId(),
+                        topic,
+                        e);
             }
         }
 
@@ -121,8 +132,11 @@ public class CloudClientRelay implements CloudClientListener {
             try {
                 this.thisCloudClient.controlSubscribe(topic, qos);
             } catch (KuraException e) {
-                logger.error("Failed to subscribe client: {} to control topic: '{}'",
-                        this.thisCloudClient.getApplicationId(), topic, e);
+                logger.error(
+                        "Failed to subscribe client: {} to control topic: '{}'",
+                        this.thisCloudClient.getApplicationId(),
+                        topic,
+                        e);
             }
         }
     }
@@ -134,8 +148,11 @@ public class CloudClientRelay implements CloudClientListener {
             try {
                 this.thisCloudClient.unsubscribe(topic);
             } catch (KuraException e) {
-                logger.error("Failed to unsubscribe client: {} from data topic: '{}'",
-                        this.thisCloudClient.getApplicationId(), topic, e);
+                logger.error(
+                        "Failed to unsubscribe client: {} from data topic: '{}'",
+                        this.thisCloudClient.getApplicationId(),
+                        topic,
+                        e);
             }
         }
 
@@ -145,8 +162,11 @@ public class CloudClientRelay implements CloudClientListener {
             try {
                 this.thisCloudClient.controlUnsubscribe(topic);
             } catch (KuraException e) {
-                logger.error("Failed to unsubscribe client: {} from control topic: '{}'",
-                        this.thisCloudClient.getApplicationId(), topic, e);
+                logger.error(
+                        "Failed to unsubscribe client: {} from control topic: '{}'",
+                        this.thisCloudClient.getApplicationId(),
+                        topic,
+                        e);
             }
         }
     }

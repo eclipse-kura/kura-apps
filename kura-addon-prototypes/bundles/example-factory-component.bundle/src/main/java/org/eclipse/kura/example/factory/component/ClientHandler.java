@@ -10,7 +10,6 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.factory.component;
 
 import java.io.BufferedReader;
@@ -30,7 +29,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +65,8 @@ public class ClientHandler {
             return Collections.emptyMap();
         }
 
-        return IntStream.range(0, messages.size() / 2).boxed()
+        return IntStream.range(0, messages.size() / 2)
+                .boxed()
                 .collect(Collectors.toMap(i -> messages.get(i * 2), i -> messages.get(i * 2 + 1)));
     }
 
@@ -135,11 +134,12 @@ public class ClientHandler {
 
         this.requestAndAnswers.forEach((key, value) -> response.append("\t- " + key + "\n"));
 
-        response.append(this.isCaseSensitive ? "Be careful, requests are case sensitive."
-                : "Requests are not case sensitive, just ask something :)");
+        response.append(
+                this.isCaseSensitive
+                        ? "Be careful, requests are case sensitive."
+                        : "Requests are not case sensitive, just ask something :)");
 
         return response.toString();
-
     }
 
     public void stopSocket() throws IOException {
@@ -149,5 +149,4 @@ public class ClientHandler {
 
         this.executor.shutdown();
     }
-
 }

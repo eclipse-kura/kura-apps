@@ -1,16 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.multiport.sum;
 
 import org.eclipse.kura.configuration.ConfigurableComponent;
@@ -35,22 +34,29 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.wireadmin.Consumer;
 import org.osgi.service.wireadmin.Producer;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
-                MultiportWireReceiver.class, WireEmitter.class }, //
+        service = {
+            ConfigurableComponent.class,
+            WireComponent.class,
+            Producer.class,
+            Consumer.class,
+            MultiportWireReceiver.class,
+            WireEmitter.class
+        }, //
         enabled = true, //
         name = "org.eclipse.kura.example.wire.math.multiport.sum.SumComponent", //
         property = { //
-                "input.cardinality.minimum:Integer=2", //
-                "input.cardinality.maximum:Integer=2", //
-                "input.cardinality.default:Integer=2", //
-                "output.cardinality.minimum:Integer=1", //
-                "output.cardinality.maximum:Integer=1", //
-                "output.cardinality.default:Integer=1", //
-                "kura.ui.service.hide:Boolean=true" //
+            "input.cardinality.minimum:Integer=2", //
+            "input.cardinality.maximum:Integer=2", //
+            "input.cardinality.default:Integer=2", //
+            "output.cardinality.minimum:Integer=1", //
+            "output.cardinality.maximum:Integer=1", //
+            "output.cardinality.default:Integer=1", //
+            "kura.ui.service.hide:Boolean=true" //
         } //
-)
+        )
 @Designate(ocd = SumComponentOCD.class, factory = true)
 public class SumComponent extends AbstractDualportMathComponent {
 
@@ -59,7 +65,7 @@ public class SumComponent extends AbstractDualportMathComponent {
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unbindWireHelperService" //
-    )
+            )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.wireHelperService = wireHelperService;
     }

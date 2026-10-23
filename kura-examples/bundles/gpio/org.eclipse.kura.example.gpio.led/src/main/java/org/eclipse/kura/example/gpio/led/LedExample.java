@@ -1,21 +1,19 @@
 /*******************************************************************************
  * Copyright (c) 2019, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.gpio.led;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.gpio.GPIOService;
 import org.eclipse.kura.gpio.KuraClosedDeviceException;
@@ -33,12 +31,12 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         enabled = true, //
         name = "org.eclipse.kura.example.gpio.led.LedExample", //
-        service = { ConfigurableComponent.class } //
-)
-
+        service = {ConfigurableComponent.class} //
+        )
 @Designate(ocd = LedExampleOCD.class, factory = false)
 public class LedExample implements ConfigurableComponent {
 
@@ -53,7 +51,7 @@ public class LedExample implements ConfigurableComponent {
             policy = ReferencePolicy.STATIC, //
             name = "GPIOService", //
             unbind = "unbindGPIOService" //
-    )
+            )
     protected synchronized void bindGPIOService(final GPIOService gpioService) {
         this.myservice = gpioService;
     }
@@ -88,7 +86,6 @@ public class LedExample implements ConfigurableComponent {
         open();
 
         setValue(ocd.led_state());
-
     }
 
     private void open() {

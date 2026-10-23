@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.channel.ChannelFlag;
 import org.eclipse.kura.channel.ChannelRecord;
@@ -41,12 +40,13 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, Driver.class }, //
+        service = {ConfigurableComponent.class, Driver.class}, //
         enabled = true, //
         name = "org.eclipse.kura.wire.devel.driver.dummy.DummyDriver" //
-)
+        )
 @Designate(ocd = DummyDriverOCD.class, factory = true)
 public class DummyDriver implements Driver, ConfigurableComponent {
 
@@ -271,7 +271,6 @@ public class DummyDriver implements Driver, ConfigurableComponent {
         public List<ChannelRecord> getChannelRecords() {
             return records;
         }
-
     }
 
     static class BaseRequest {
@@ -288,8 +287,8 @@ public class DummyDriver implements Driver, ConfigurableComponent {
         public BaseRequest(final Map<String, Object> channelConfig) {
             this.channelName = (String) channelConfig.get(CHANNEL_NAME_PROPERTY_KEY);
             final DataType valueType = DataType.valueOf((String) channelConfig.get(CHANNEL_VALUE_TYPE_PROPERY_KEY));
-            this.valueFromConfig = DataTypeHelper.parseTypedValue(valueType,
-                    DummyChannelDescriptor.getValue(channelConfig));
+            this.valueFromConfig =
+                    DataTypeHelper.parseTypedValue(valueType, DummyChannelDescriptor.getValue(channelConfig));
         }
     }
 

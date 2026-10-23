@@ -15,7 +15,6 @@ package org.eclipse.kura.example.container.signature.validation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.container.orchestration.ImageInstanceDescriptor;
@@ -31,12 +30,12 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(//
+@Component( //
         immediate = true, //
-        service = { ConfigurableComponent.class, ContainerSignatureValidationService.class }, //
+        service = {ConfigurableComponent.class, ContainerSignatureValidationService.class}, //
         name = "org.eclipse.kura.example.container.signature.validation.DummyContainerSignatureValidationService", //
         configurationPolicy = ConfigurationPolicy.REQUIRE //
-)
+        )
 @Designate(ocd = DummyContainerSignatureValidationServiceOCD.class, factory = false)
 public class DummyContainerSignatureValidationService
         implements ConfigurableComponent, ContainerSignatureValidationService {
@@ -69,30 +68,43 @@ public class DummyContainerSignatureValidationService
     }
 
     @Override
-    public ValidationResult verify(String imageName, String imageReference, String trustAnchor,
-            boolean verifyInTransparencyLog) throws KuraException {
+    public ValidationResult verify(
+            String imageName, String imageReference, String trustAnchor, boolean verifyInTransparencyLog)
+            throws KuraException {
         logger.info("Validating signature for {}:{}", imageName, imageReference);
         return verify(imageName, imageReference);
     }
 
     @Override
-    public ValidationResult verify(String imageName, String imageReference, String trustAnchor,
-            boolean verifyInTransparencyLog, RegistryCredentials credentials) throws KuraException {
+    public ValidationResult verify(
+            String imageName,
+            String imageReference,
+            String trustAnchor,
+            boolean verifyInTransparencyLog,
+            RegistryCredentials credentials)
+            throws KuraException {
         logger.info("Validating signature for {}:{} using authenticated registry", imageName, imageReference);
         return verify(imageName, imageReference);
     }
 
     @Override
-    public ValidationResult verify(ImageInstanceDescriptor imageDescriptor, String trustAnchor,
-            boolean verifyInTransparencyLog) throws KuraException {
+    public ValidationResult verify(
+            ImageInstanceDescriptor imageDescriptor, String trustAnchor, boolean verifyInTransparencyLog)
+            throws KuraException {
         logger.info("Validating signature for {}:{}", imageDescriptor.getImageName(), imageDescriptor.getImageId());
         return verify(imageDescriptor.getImageName(), imageDescriptor.getImageTag());
     }
 
     @Override
-    public ValidationResult verify(ImageInstanceDescriptor imageDescriptor, String trustAnchor,
-            boolean verifyInTransparencyLog, RegistryCredentials credentials) throws KuraException {
-        logger.info("Validating signature for {}:{} using authenticated registry", imageDescriptor.getImageName(),
+    public ValidationResult verify(
+            ImageInstanceDescriptor imageDescriptor,
+            String trustAnchor,
+            boolean verifyInTransparencyLog,
+            RegistryCredentials credentials)
+            throws KuraException {
+        logger.info(
+                "Validating signature for {}:{} using authenticated registry",
+                imageDescriptor.getImageName(),
                 imageDescriptor.getImageTag());
         return verify(imageDescriptor.getImageName(), imageDescriptor.getImageTag());
     }

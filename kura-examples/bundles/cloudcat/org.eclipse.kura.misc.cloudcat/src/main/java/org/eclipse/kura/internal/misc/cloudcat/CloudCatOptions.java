@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -110,14 +110,14 @@ public class CloudCatOptions {
         options.firstCloudClientAppId = (String) options.effectiveProperties.get(FIRST_CLOUD_CLIENT_APP_ID);
         options.secondCloudClientAppId = (String) options.effectiveProperties.get(SECOND_CLOUD_CLIENT_APP_ID);
 
-        options.firstCloudClientControlSubscriptions = parseSubscriptions(
-                (String) options.effectiveProperties.get(FIRST_CLOUD_CLIENT_CONTROL_SUBSCRPTIONS));
-        options.firstCloudClientDataSubscriptions = parseSubscriptions(
-                (String) options.effectiveProperties.get(FIRST_CLOUD_CLIENT_DATA_SUBSCRPTIONS));
-        options.secondCloudClientControlSubscriptions = parseSubscriptions(
-                (String) options.effectiveProperties.get(SECOND_CLOUD_CLIENT_CONTROL_SUBSCRPTIONS));
-        options.secondCloudClientDataSubscriptions = parseSubscriptions(
-                (String) options.effectiveProperties.get(SECOND_CLOUD_CLIENT_DATA_SUBSCRPTIONS));
+        options.firstCloudClientControlSubscriptions =
+                parseSubscriptions((String) options.effectiveProperties.get(FIRST_CLOUD_CLIENT_CONTROL_SUBSCRPTIONS));
+        options.firstCloudClientDataSubscriptions =
+                parseSubscriptions((String) options.effectiveProperties.get(FIRST_CLOUD_CLIENT_DATA_SUBSCRPTIONS));
+        options.secondCloudClientControlSubscriptions =
+                parseSubscriptions((String) options.effectiveProperties.get(SECOND_CLOUD_CLIENT_CONTROL_SUBSCRPTIONS));
+        options.secondCloudClientDataSubscriptions =
+                parseSubscriptions((String) options.effectiveProperties.get(SECOND_CLOUD_CLIENT_DATA_SUBSCRPTIONS));
 
         return options;
     }

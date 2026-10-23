@@ -1,16 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.singleport.variance;
 
 import java.util.Collections;
@@ -18,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.example.wire.math.singleport.RunningAverage;
 import org.eclipse.kura.type.TypedValue;
@@ -47,22 +45,29 @@ import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
-                WireReceiver.class, WireEmitter.class }, //
+        service = {
+            ConfigurableComponent.class,
+            WireComponent.class,
+            Producer.class,
+            Consumer.class,
+            WireReceiver.class,
+            WireEmitter.class
+        }, //
         enabled = true, //
         name = "org.eclipse.kura.example.wire.math.singleport.variance.VarianceComponent", //
         property = { //
-                "input.cardinality.minimum:Integer=1", //
-                "input.cardinality.maximum:Integer=1", //
-                "input.cardinality.default:Integer=1", //
-                "output.cardinality.minimum:Integer=1", //
-                "output.cardinality.maximum:Integer=1", //
-                "output.cardinality.default:Integer=1", //
-                "kura.ui.service.hide:Boolean=true" //
+            "input.cardinality.minimum:Integer=1", //
+            "input.cardinality.maximum:Integer=1", //
+            "input.cardinality.default:Integer=1", //
+            "output.cardinality.minimum:Integer=1", //
+            "output.cardinality.maximum:Integer=1", //
+            "output.cardinality.default:Integer=1", //
+            "kura.ui.service.hide:Boolean=true" //
         } //
-)
+        )
 @Designate(ocd = VarianceComponentOCD.class, factory = true)
 public class VarianceComponent
         implements WireEmitter, WireReceiver, ConfigurableComponent, UnaryOperator<TypedValue<?>> {
@@ -76,11 +81,12 @@ public class VarianceComponent
     private RunningAverage avg;
     private RunningAverage quadAvg;
 
-    @Reference(name = "WireHelperService", //
+    @Reference(
+            name = "WireHelperService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unbindWireHelperService" //
-    )
+            )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.wireHelperService = wireHelperService;
     }
@@ -91,8 +97,8 @@ public class VarianceComponent
 
     @Activate
     public void activate(final ComponentContext componentContext, final VarianceComponentOCD ocd) {
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(ocd);
     }
 
@@ -183,5 +189,4 @@ public class VarianceComponent
         }
         return n * (newQuadAvg - newAvg * newAvg) / (n - 1);
     }
-
 }

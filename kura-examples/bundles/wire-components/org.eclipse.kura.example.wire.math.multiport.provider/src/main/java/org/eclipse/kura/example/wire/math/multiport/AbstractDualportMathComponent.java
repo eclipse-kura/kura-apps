@@ -1,23 +1,21 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.multiport;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.wire.WireComponent;
@@ -34,8 +32,8 @@ import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractDualportMathComponent implements WireEmitter, MultiportWireReceiver,
-        ConfigurableComponent, BinaryOperator<TypedValue<?>> {
+public abstract class AbstractDualportMathComponent
+        implements WireEmitter, MultiportWireReceiver, ConfigurableComponent, BinaryOperator<TypedValue<?>> {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractDualportMathComponent.class);
 
@@ -50,24 +48,24 @@ public abstract class AbstractDualportMathComponent implements WireEmitter, Mult
     protected static final String BARRIER_MODALITY_PROPERTY_KEY = "barrier";
 
     public void activate(final Map<String, Object> properties, ComponentContext context) {
-        this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) context.getServiceReference());
+        this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) context.getServiceReference());
         this.context = context.getBundleContext();
         updated(properties);
     }
 
     public void updated(final Map<String, Object> properties) {
         this.options = getOptions(properties);
-        this.options.getPortAggregatorFactory().build(this.wireSupport.getReceiverPorts())
+        this.options
+                .getPortAggregatorFactory()
+                .build(this.wireSupport.getReceiverPorts())
                 .onWireReceive(this::onWireReceive);
         init();
     }
 
-    public void deactivate() {
-    }
+    public void deactivate() {}
 
-    protected void init() {
-    }
+    protected void init() {}
 
     protected AbstractDualportMathComponentOptions getOptions(final Map<String, Object> properties) {
         return new AbstractDualportMathComponentOptions(properties, this.context);
@@ -122,8 +120,7 @@ public abstract class AbstractDualportMathComponent implements WireEmitter, Mult
             return;
         }
         final TypedValue<?> result = this.apply(firstOperand, secondOperand);
-        this.wireSupport.emit(Collections
-                .singletonList(new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
+        this.wireSupport.emit(Collections.singletonList(
+                new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
     }
-
 }

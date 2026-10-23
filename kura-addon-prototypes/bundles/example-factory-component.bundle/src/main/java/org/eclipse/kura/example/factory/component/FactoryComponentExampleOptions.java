@@ -45,15 +45,12 @@ public class FactoryComponentExampleOptions {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         FactoryComponentExampleOptions other = (FactoryComponentExampleOptions) obj;
         return Objects.equals(availableMessages, other.availableMessages)
-                && caseSensitiveEnabled == other.caseSensitiveEnabled && tcpPort == other.tcpPort;
+                && caseSensitiveEnabled == other.caseSensitiveEnabled
+                && tcpPort == other.tcpPort;
     }
-
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2021 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -21,8 +21,8 @@ public class TiSensorTagGattResources {
     private BluetoothLeGattService gattService;
     private BluetoothLeGattCharacteristic gattValueCharacteristic;
 
-    public TiSensorTagGattResources(String name, BluetoothLeGattService gattService,
-            BluetoothLeGattCharacteristic gattValueChar) {
+    public TiSensorTagGattResources(
+            String name, BluetoothLeGattService gattService, BluetoothLeGattCharacteristic gattValueChar) {
         this.name = name;
         this.gattService = gattService;
         this.gattValueCharacteristic = gattValueChar;

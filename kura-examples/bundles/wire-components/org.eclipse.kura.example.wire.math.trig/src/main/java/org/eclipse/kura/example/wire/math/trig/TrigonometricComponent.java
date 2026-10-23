@@ -1,22 +1,20 @@
 /*******************************************************************************
  * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.trig;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.type.DoubleValue;
 import org.eclipse.kura.type.TypedValue;
@@ -45,22 +43,29 @@ import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
-                WireReceiver.class, WireEmitter.class }, //
+        service = {
+            ConfigurableComponent.class,
+            WireComponent.class,
+            Producer.class,
+            Consumer.class,
+            WireReceiver.class,
+            WireEmitter.class
+        }, //
         enabled = true, //
         name = "org.eclipse.kura.example.wire.math.trig.TrigonometricComponent", //
         property = { //
-                "input.cardinality.minimum:Integer=2", //
-                "input.cardinality.maximum:Integer=2", //
-                "input.cardinality.default:Integer=2", //
-                "output.cardinality.minimum:Integer=1", //
-                "output.cardinality.maximum:Integer=1", //
-                "output.cardinality.default:Integer=1", //
-                "kura.ui.service.hide:Boolean=true" //
+            "input.cardinality.minimum:Integer=2", //
+            "input.cardinality.maximum:Integer=2", //
+            "input.cardinality.default:Integer=2", //
+            "output.cardinality.minimum:Integer=1", //
+            "output.cardinality.maximum:Integer=1", //
+            "output.cardinality.default:Integer=1", //
+            "kura.ui.service.hide:Boolean=true" //
         } //
-)
+        )
 @Designate(ocd = TrigonometricComponentOCD.class, factory = true)
 public class TrigonometricComponent implements WireEmitter, ConfigurableComponent, WireReceiver {
 
@@ -71,10 +76,11 @@ public class TrigonometricComponent implements WireEmitter, ConfigurableComponen
     protected TrigonometricComponentOptions options;
     private WireSupport wireSupport;
 
-    @Reference(name = "WireHelperService", //
+    @Reference(
+            name = "WireHelperService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY //
-    )
+            )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.wireHelperService = wireHelperService;
     }
@@ -83,8 +89,8 @@ public class TrigonometricComponent implements WireEmitter, ConfigurableComponen
     @Activate
     public void activate(ComponentContext componentContext, TrigonometricComponentOCD ocd) {
         logger.info("activating...");
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(ocd);
         logger.info("activating...done");
     }
@@ -125,8 +131,10 @@ public class TrigonometricComponent implements WireEmitter, ConfigurableComponen
 
     @Override
     public void onWireReceive(WireEnvelope wireEnvelope) {
-        final Map<String, TypedValue<?>> properties = wireEnvelope.getRecords().get(0).getProperties();
-        final Double parameter = ((Number) properties.get(this.options.getParameterName()).getValue()).doubleValue();
+        final Map<String, TypedValue<?>> properties =
+                wireEnvelope.getRecords().get(0).getProperties();
+        final Double parameter =
+                ((Number) properties.get(this.options.getParameterName()).getValue()).doubleValue();
         final Double result = this.options.getTrigonometricFunction().apply(parameter);
         if (result != null) {
             if (this.options.shouldEmitReceivedProperties()) {

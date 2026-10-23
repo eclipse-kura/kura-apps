@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2011, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *  Red Hat Inc
@@ -24,7 +24,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import org.eclipse.kura.cloudconnection.listener.CloudConnectionListener;
 import org.eclipse.kura.cloudconnection.listener.CloudDeliveryListener;
 import org.eclipse.kura.cloudconnection.message.KuraMessage;
@@ -173,13 +172,17 @@ public class ExamplePublisher
 
         // schedule a new worker based on the properties of the service
         int pubrate = this.examplePublisherOptions.getPublishRate();
-        this.handle = this.worker.scheduleAtFixedRate(new Runnable() {
+        this.handle = this.worker.scheduleAtFixedRate(
+                new Runnable() {
 
-            @Override
-            public void run() {
-                doPublish();
-            }
-        }, 0, pubrate, TimeUnit.MILLISECONDS);
+                    @Override
+                    public void run() {
+                        doPublish();
+                    }
+                },
+                0,
+                pubrate,
+                TimeUnit.MILLISECONDS);
     }
 
     /**

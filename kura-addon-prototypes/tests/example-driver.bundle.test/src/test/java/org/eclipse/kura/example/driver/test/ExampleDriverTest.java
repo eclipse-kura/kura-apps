@@ -10,7 +10,6 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.driver.test;
 
 import static org.junit.Assert.assertEquals;
@@ -37,7 +36,6 @@ public class ExampleDriverTest {
 
     private void givenExampleDriver() {
         this.exampleDriver = new ExampleDriver();
-
     }
 
     private void whenActivatingExampleComponent() {

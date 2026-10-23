@@ -25,5 +25,4 @@ public class ExampleDriverOptions {
     public UnitMeasure getInputUnitMeasure() {
         return this.inputUnitMeasure;
     }
-
 }

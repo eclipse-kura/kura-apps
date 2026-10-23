@@ -10,7 +10,6 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.driver.utils;
 
 import org.eclipse.kura.configuration.Password;
@@ -26,8 +25,8 @@ public class AdProperty<T> extends Property<T> {
         this.ad = tad;
     }
 
-    public static <T> AdProperty<T> required(final String id, final String name, final String description,
-            final T defaultValue) {
+    public static <T> AdProperty<T> required(
+            final String id, final String name, final String description, final T defaultValue) {
 
         final Tad tad = new Tad();
         tad.setId(id);
@@ -41,8 +40,8 @@ public class AdProperty<T> extends Property<T> {
         return new AdProperty<>(tad, defaultValue);
     }
 
-    public static <T> AdProperty<T> optional(final String id, final String name, final String description,
-            final T defaultValue) {
+    public static <T> AdProperty<T> optional(
+            final String id, final String name, final String description, final T defaultValue) {
 
         final Tad tad = new Tad();
         tad.setId(id);
@@ -85,5 +84,4 @@ public class AdProperty<T> extends Property<T> {
     public Tad getAd() {
         return this.ad;
     }
-
 }

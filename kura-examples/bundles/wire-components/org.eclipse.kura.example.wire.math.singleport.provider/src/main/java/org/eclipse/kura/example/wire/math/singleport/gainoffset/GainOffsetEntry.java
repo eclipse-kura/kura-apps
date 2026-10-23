@@ -1,16 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.singleport.gainoffset;
 
 import static java.util.Objects.requireNonNull;
@@ -55,7 +54,9 @@ public class GainOffsetEntry {
         try {
             clear(tempArray);
 
-            String[] tempStringArray = FIELD_DELIMITER.splitAsStream(entryString).map(String::trim)
+            String[] tempStringArray = FIELD_DELIMITER
+                    .splitAsStream(entryString)
+                    .map(String::trim)
                     .filter(s -> !s.isEmpty())
                     .toArray(String[]::new);
 
@@ -75,7 +76,11 @@ public class GainOffsetEntry {
 
     public static List<GainOffsetEntry> parseAll(String configuration) {
         final String[] tempArray = new String[3];
-        return ENTRY_DELIMITER.splitAsStream(configuration).map(String::trim).filter(s -> !s.isEmpty())
-                .map(entryString -> parse(entryString, tempArray)).toList();
+        return ENTRY_DELIMITER
+                .splitAsStream(configuration)
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(entryString -> parse(entryString, tempArray))
+                .toList();
     }
 }

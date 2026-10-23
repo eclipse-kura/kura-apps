@@ -25,5 +25,4 @@ public class ExampleDependencyServiceComponent implements ExampleDependencyServi
     public void run() {
         logger.info("Running ExampleDependencyServiceComponent");
     }
-
 }

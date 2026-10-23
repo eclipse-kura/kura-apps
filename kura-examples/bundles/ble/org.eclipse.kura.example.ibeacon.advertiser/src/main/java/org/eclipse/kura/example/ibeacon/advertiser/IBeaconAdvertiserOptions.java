@@ -1,19 +1,18 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
 package org.eclipse.kura.example.ibeacon.advertiser;
 
 import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,11 +58,13 @@ public class IBeaconAdvertiserOptions {
         this.enable = ocd.enable_advertising();
         this.minInterval = (int) (ocd.min_beacon_interval() / 0.625);
         this.maxInterval = (int) (ocd.max_beacon_interval() / 0.625);
-        this.major = setInRange(ocd.major(), IBeaconAdvertiserOptions.PROPERTY_MAJOR_MAX,
-                IBeaconAdvertiserOptions.PROPERTY_MAJOR_MIN);
-        this.minor = setInRange(ocd.minor(), IBeaconAdvertiserOptions.PROPERTY_MINOR_MAX,
-                IBeaconAdvertiserOptions.PROPERTY_MINOR_MIN);
-        this.txPower = setInRange(ocd.tx_power(), IBeaconAdvertiserOptions.PROPERTY_TX_POWER_MAX,
+        this.major = setInRange(
+                ocd.major(), IBeaconAdvertiserOptions.PROPERTY_MAJOR_MAX, IBeaconAdvertiserOptions.PROPERTY_MAJOR_MIN);
+        this.minor = setInRange(
+                ocd.minor(), IBeaconAdvertiserOptions.PROPERTY_MINOR_MAX, IBeaconAdvertiserOptions.PROPERTY_MINOR_MIN);
+        this.txPower = setInRange(
+                ocd.tx_power(),
+                IBeaconAdvertiserOptions.PROPERTY_TX_POWER_MAX,
                 IBeaconAdvertiserOptions.PROPERTY_TX_POWER_MIN);
         this.iname = ocd.iname();
         final String uuidString = ocd.uuid();

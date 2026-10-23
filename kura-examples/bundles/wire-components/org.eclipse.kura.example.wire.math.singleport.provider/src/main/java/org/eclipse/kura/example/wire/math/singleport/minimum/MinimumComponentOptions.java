@@ -10,7 +10,6 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.singleport.minimum;
 
 import org.eclipse.kura.example.wire.math.singleport.MathSingleportProviderOptions;

@@ -1,16 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.singleport.sqrt;
 
 import java.util.Collections;
@@ -18,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
@@ -46,22 +44,29 @@ import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
-                WireReceiver.class, WireEmitter.class }, //
+        service = {
+            ConfigurableComponent.class,
+            WireComponent.class,
+            Producer.class,
+            Consumer.class,
+            WireReceiver.class,
+            WireEmitter.class
+        }, //
         enabled = true, //
         name = "org.eclipse.kura.example.wire.math.singleport.sqrt.SqrtComponent", //
         property = { //
-                "input.cardinality.minimum:Integer=1", //
-                "input.cardinality.maximum:Integer=1", //
-                "input.cardinality.default:Integer=1", //
-                "output.cardinality.minimum:Integer=1", //
-                "output.cardinality.maximum:Integer=1", //
-                "output.cardinality.default:Integer=1", //
-                "kura.ui.service.hide:Boolean=true" //
+            "input.cardinality.minimum:Integer=1", //
+            "input.cardinality.maximum:Integer=1", //
+            "input.cardinality.default:Integer=1", //
+            "output.cardinality.minimum:Integer=1", //
+            "output.cardinality.maximum:Integer=1", //
+            "output.cardinality.default:Integer=1", //
+            "kura.ui.service.hide:Boolean=true" //
         } //
-)
+        )
 @Designate(ocd = SqrtComponentOCD.class, factory = true)
 public class SqrtComponent implements WireEmitter, WireReceiver, ConfigurableComponent, UnaryOperator<TypedValue<?>> {
 
@@ -71,11 +76,12 @@ public class SqrtComponent implements WireEmitter, WireReceiver, ConfigurableCom
     private WireSupport kuraWireSupport;
     protected SqrtComponentOptions options;
 
-    @Reference(name = "WireHelperService", //
+    @Reference(
+            name = "WireHelperService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unbindWireHelperService" //
-    )
+            )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.kuraWireHelperService = wireHelperService;
     }
@@ -90,8 +96,8 @@ public class SqrtComponent implements WireEmitter, WireReceiver, ConfigurableCom
 
     @Activate
     public void activate(final ComponentContext componentContext, final SqrtComponentOCD ocd) {
-        this.kuraWireSupport = this.kuraWireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.kuraWireSupport = this.kuraWireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(ocd);
     }
 
@@ -149,14 +155,14 @@ public class SqrtComponent implements WireEmitter, WireReceiver, ConfigurableCom
             resultProperties.put(this.options.getResultName(), result);
             this.kuraWireSupport.emit(Collections.singletonList(new WireRecord(resultProperties)));
         } else {
-            this.kuraWireSupport.emit(Collections
-                    .singletonList(new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
+            this.kuraWireSupport.emit(Collections.singletonList(
+                    new WireRecord(Collections.singletonMap(this.options.getResultName(), result))));
         }
     }
 
     @Override
     public TypedValue<?> apply(final TypedValue<?> t) {
-        return TypedValues.newDoubleValue(Math.sqrt(Double.parseDouble(t.getValue().toString())));
+        return TypedValues.newDoubleValue(
+                Math.sqrt(Double.parseDouble(t.getValue().toString())));
     }
-
 }

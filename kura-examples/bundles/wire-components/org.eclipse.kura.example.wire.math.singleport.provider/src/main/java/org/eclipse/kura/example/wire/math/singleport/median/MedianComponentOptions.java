@@ -10,7 +10,6 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.singleport.median;
 
 import org.eclipse.kura.example.wire.math.singleport.MathSingleportProviderOptions;

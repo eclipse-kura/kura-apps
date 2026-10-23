@@ -16,7 +16,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,10 +36,11 @@ public class ExampleComponentItTest {
     // needs to be static for being available to JUnit Runner
     private static ConfigurableComponent exampleComponent;
 
-    @Reference(cardinality = ReferenceCardinality.MANDATORY, //
+    @Reference(
+            cardinality = ReferenceCardinality.MANDATORY, //
             policy = ReferencePolicy.STATIC, //
             target = "(kura.service.pid=org.eclipse.kura.example.configurable.component.ExampleComponent)" //
-    )
+            )
     public void setExampleComponent(final ConfigurableComponent componentUnderTest) {
         exampleComponent = componentUnderTest;
         dependencies.countDown();
@@ -58,5 +58,4 @@ public class ExampleComponentItTest {
     public void shouldHaveTrackedExampleComponent() {
         assertNotNull(exampleComponent);
     }
-
 }

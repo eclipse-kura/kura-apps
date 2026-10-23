@@ -15,10 +15,11 @@ package org.eclipse.kura.example.identity.configuration.extension;
 import org.osgi.service.component.annotations.ComponentPropertyType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-@ObjectClassDefinition(name = "Example Identity Configuration Extension", //
+@ObjectClassDefinition(
+        name = "Example Identity Configuration Extension", //
         description = "An example identity configuration extension", //
         id = "org.eclipse.kura.example.identity.configuration.extension.ExampleIdentityConfigurationExtension" //
-)
+        )
 @ComponentPropertyType
 public @interface ExampleIdentityConfigurationExtensionOCD {
 

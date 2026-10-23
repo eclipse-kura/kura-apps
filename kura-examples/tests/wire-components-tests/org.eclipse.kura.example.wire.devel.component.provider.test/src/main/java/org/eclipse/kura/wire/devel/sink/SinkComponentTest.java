@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
 import org.eclipse.kura.configuration.ConfigurableComponent;
@@ -54,18 +53,18 @@ public class SinkComponentTest {
 
     private final GraphBuilder builder = new GraphBuilder();
     private WireGraphConfiguration wireGraphConfiguration;
-    private final BundleContext bundleContext = FrameworkUtil.getBundle(SinkComponentTest.class)
-            .getBundleContext();
+    private final BundleContext bundleContext =
+            FrameworkUtil.getBundle(SinkComponentTest.class).getBundleContext();
 
     String activeWirePid;
 
     @BeforeClass
     public static void setUpOnce() throws InterruptedException {
         try {
-            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
-            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
+            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
+            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
         } catch (Exception e) {
             throw new RuntimeException("Failed to setup WireGraphService", e);
         }
@@ -102,7 +101,8 @@ public class SinkComponentTest {
         }
 
         assertTrue(wgc.getWireComponentConfigurations().stream()
-                .anyMatch(wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
+                .anyMatch(
+                        wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
     }
 
     @Test
@@ -149,8 +149,8 @@ public class SinkComponentTest {
         }
 
         assertTrue(wgc.getWireComponentConfigurations().stream()
-                .anyMatch(wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
-
+                .anyMatch(
+                        wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
     }
 
     @After

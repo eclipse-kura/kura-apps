@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2021, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.configuration.ConfigurationService;
@@ -41,12 +40,13 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         enabled = true, //
         name = "org.eclipse.kura.example.tamper.detection.TamperDetectionServiceImpl", //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, TamperDetectionService.class } //
-)
+        service = {ConfigurableComponent.class, TamperDetectionService.class} //
+        )
 @Designate(ocd = TamperDetectionServiceImplOCD.class, factory = true)
 public class TamperDetectionServiceImpl implements TamperDetectionService, ConfigurableComponent {
 
@@ -61,18 +61,20 @@ public class TamperDetectionServiceImpl implements TamperDetectionService, Confi
     private Optional<Date> tamperInstant = Optional.empty();
     private String ownPid;
 
-    @Reference(name = "ConfigurationService", //
+    @Reference(
+            name = "ConfigurationService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY //
-    )
+            )
     public void setConfigurationService(final ConfigurationService configurationService) {
         this.configurationService = configurationService;
     }
 
-    @Reference(name = "EventAdmin", //
+    @Reference(
+            name = "EventAdmin", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY //
-    )
+            )
     public void setEventAdmin(final EventAdmin eventAdmin) {
         this.eventAdmin = eventAdmin;
     }
@@ -109,7 +111,8 @@ public class TamperDetectionServiceImpl implements TamperDetectionService, Confi
         final Map<String, TypedValue<?>> properties = new HashMap<>();
 
         if (tamperInstant.isPresent()) {
-            properties.put(TamperDetectionProperties.TIMESTAMP_PROPERTY_KEY.getValue(),
+            properties.put(
+                    TamperDetectionProperties.TIMESTAMP_PROPERTY_KEY.getValue(),
                     TypedValues.newLongValue(tamperInstant.get().getTime()));
         }
 
@@ -118,8 +121,8 @@ public class TamperDetectionServiceImpl implements TamperDetectionService, Confi
 
     @Override
     public void resetTamperStatus() throws KuraException {
-        configurationService.updateConfiguration(ownPid,
-                Collections.singletonMap(TamperDetectionServiceImpl.TAMPERED_KEY, false));
+        configurationService.updateConfiguration(
+                ownPid, Collections.singletonMap(TamperDetectionServiceImpl.TAMPERED_KEY, false));
     }
 
     private void postTamperEvent() {

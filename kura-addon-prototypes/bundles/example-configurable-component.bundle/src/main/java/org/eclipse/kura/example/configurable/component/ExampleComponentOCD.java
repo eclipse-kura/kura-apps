@@ -17,18 +17,19 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 // allow using _ in method names, it is needed for having ids containing '.'
 @SuppressWarnings("checkstyle:MethodName")
-@ObjectClassDefinition(id = "org.eclipse.kura.example.configurable.component.ExampleComponent", //
-                name = "ExampleComponent", //
-                description = "An example configurable component implementation." //
-)
+@ObjectClassDefinition(
+        id = "org.eclipse.kura.example.configurable.component.ExampleComponent", //
+        name = "ExampleComponent", //
+        description = "An example configurable component implementation." //
+        )
 public interface ExampleComponentOCD {
 
-        @AttributeDefinition(name = "An example property", //
-                        defaultValue = "foo", //
-                        description = "An example string property.", //
-                        required = true, //
-                        cardinality = 0 //
-        )
-        public String example_property();
-
+    @AttributeDefinition(
+            name = "An example property", //
+            defaultValue = "foo", //
+            description = "An example string property.", //
+            required = true, //
+            cardinality = 0 //
+            )
+    public String example_property();
 }

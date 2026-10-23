@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2011, 2026 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *  Red Hat Inc
@@ -25,7 +25,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.gpio.GPIOService;
 import org.eclipse.kura.gpio.KuraClosedDeviceException;
@@ -53,13 +52,13 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         enabled = true, //
         name = "org.eclipse.kura.example.gpio.GpioComponent", //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class } //
-)
-
+        service = {ConfigurableComponent.class} //
+        )
 @Designate(ocd = GpioComponentOCD.class, factory = false)
 public class GpioComponent implements ConfigurableComponent {
 
@@ -190,7 +189,6 @@ public class GpioComponent implements ConfigurableComponent {
                 submitPollTask(500, acquiredInputPins);
             }
         }
-
     }
 
     private void acquirePins() {
@@ -219,8 +217,8 @@ public class GpioComponent implements ConfigurableComponent {
                 logger.info("   Direction....: {}", directions[i]);
                 logger.info("   Mode.........: {}", modes[i]);
                 logger.info("   Trigger......: {}", triggers[i]);
-                List<KuraGPIOPin> acquiredPins = getPins(pin, getPinDirection(directions[i]), getPinMode(modes[i]),
-                        getPinTrigger(triggers[i]));
+                List<KuraGPIOPin> acquiredPins =
+                        getPins(pin, getPinDirection(directions[i]), getPinMode(modes[i]), getPinTrigger(triggers[i]));
                 acquiredPins.forEach(p -> {
                     try {
                         p.open();
@@ -240,8 +238,8 @@ public class GpioComponent implements ConfigurableComponent {
         }
     }
 
-    private List<KuraGPIOPin> getPins(String resource, KuraGPIODirection pinDirection, KuraGPIOMode pinMode,
-            KuraGPIOTrigger pinTrigger) {
+    private List<KuraGPIOPin> getPins(
+            String resource, KuraGPIODirection pinDirection, KuraGPIOMode pinMode, KuraGPIOTrigger pinTrigger) {
         List<KuraGPIOPin> pins = new ArrayList<>();
         // Resource can be terminal number, pin name or in the format
         // pinName:controller:line.
@@ -268,8 +266,7 @@ public class GpioComponent implements ConfigurableComponent {
                     if (!parts[2].trim().isEmpty() && !parts[2].trim().equals("*")) {
                         pinDescription.put("line", parts[2].trim());
                     }
-                    pins = this.gpioService.getPins(pinDescription, pinDirection, pinMode,
-                            pinTrigger);
+                    pins = this.gpioService.getPins(pinDescription, pinDirection, pinMode, pinTrigger);
                     break;
                 default:
                     logger.error("Invalid GPIO pin resource format: {}", resource);
@@ -281,8 +278,8 @@ public class GpioComponent implements ConfigurableComponent {
         return pins;
     }
 
-    private KuraGPIOPin getPinByNameOrTerminal(String[] parts, KuraGPIODirection pinDirection, KuraGPIOMode pinMode,
-            KuraGPIOTrigger pinTrigger) {
+    private KuraGPIOPin getPinByNameOrTerminal(
+            String[] parts, KuraGPIODirection pinDirection, KuraGPIOMode pinMode, KuraGPIOTrigger pinTrigger) {
         KuraGPIOPin pin = null;
         try {
             int terminal = Integer.parseInt(parts[0].trim());
@@ -294,37 +291,45 @@ public class GpioComponent implements ConfigurableComponent {
     }
 
     private void submitBlinkTask(long delayMs, final List<KuraGPIOPin> outputPins) {
-        this.blinkTask = this.executor.scheduleWithFixedDelay(() -> {
-            for (KuraGPIOPin outputPin : outputPins) {
-                try {
-                    logger.info("Setting GPIO pin {} to {}", outputPin, this.value);
-                    outputPin.setValue(this.value);
-                } catch (KuraUnavailableDeviceException | KuraClosedDeviceException | IOException e) {
-                    logException(outputPin, e);
-                }
-            }
-            this.value = !this.value;
-        }, 0, delayMs, TimeUnit.MILLISECONDS);
+        this.blinkTask = this.executor.scheduleWithFixedDelay(
+                () -> {
+                    for (KuraGPIOPin outputPin : outputPins) {
+                        try {
+                            logger.info("Setting GPIO pin {} to {}", outputPin, this.value);
+                            outputPin.setValue(this.value);
+                        } catch (KuraUnavailableDeviceException | KuraClosedDeviceException | IOException e) {
+                            logException(outputPin, e);
+                        }
+                    }
+                    this.value = !this.value;
+                },
+                0,
+                delayMs,
+                TimeUnit.MILLISECONDS);
     }
 
     private void submitPollTask(long delayMs, final List<KuraGPIOPin> inputPins) {
-        this.pollTask = this.executor.scheduleWithFixedDelay(() -> {
-            for (KuraGPIOPin inputPin : inputPins) {
-                try {
-                    logger.info("input pin {} value {}", inputPin, inputPin.getValue());
-                } catch (KuraUnavailableDeviceException | KuraClosedDeviceException | IOException e) {
-                    logException(inputPin, e);
-                }
-            }
-        }, 0, delayMs, TimeUnit.MILLISECONDS);
+        this.pollTask = this.executor.scheduleWithFixedDelay(
+                () -> {
+                    for (KuraGPIOPin inputPin : inputPins) {
+                        try {
+                            logger.info("input pin {} value {}", inputPin, inputPin.getValue());
+                        } catch (KuraUnavailableDeviceException | KuraClosedDeviceException | IOException e) {
+                            logException(inputPin, e);
+                        }
+                    }
+                },
+                0,
+                delayMs,
+                TimeUnit.MILLISECONDS);
     }
 
     private void attachPinListeners(final List<KuraGPIOPin> inputPins) {
         for (final KuraGPIOPin pin : inputPins) {
             logger.info("Attaching Pin Listener to GPIO pin {}", pin);
             try {
-                pin.addPinStatusListener(pinStatusListener -> logger.info("Pin status for GPIO pin {} changed to {}",
-                        pin, pinStatusListener));
+                pin.addPinStatusListener(pinStatusListener ->
+                        logger.info("Pin status for GPIO pin {} changed to {}", pin, pinStatusListener));
             } catch (Exception e) {
                 logException(pin, e);
             }
@@ -406,8 +411,9 @@ public class GpioComponent implements ConfigurableComponent {
 
     private void initGPIOServiceTracking() {
         String selectedGPIOServicePid = this.gpioComponentOptions.getGpioServicePid();
-        String filterString = String.format("(&(%s=%s)(kura.service.pid=%s))", Constants.OBJECTCLASS,
-                GPIOService.class.getName(), selectedGPIOServicePid);
+        String filterString = String.format(
+                "(&(%s=%s)(kura.service.pid=%s))",
+                Constants.OBJECTCLASS, GPIOService.class.getName(), selectedGPIOServicePid);
         Filter filter = null;
         try {
             filter = this.bundleContext.createFilter(filterString);

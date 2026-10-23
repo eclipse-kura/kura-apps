@@ -10,7 +10,6 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.factory.component.test;
 
 import java.io.BufferedReader;
@@ -53,7 +52,6 @@ public class ClientSimulator {
         } catch (Exception ex) {
             this.exception = ex;
         }
-
     }
 
     public String getResponseMessage() {
@@ -63,5 +61,4 @@ public class ClientSimulator {
     public Exception getException() {
         return this.exception;
     }
-
 }

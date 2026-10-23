@@ -27,5 +27,4 @@ public class ExampleComponentOptions {
     public String getExampleProperty() {
         return this.exampleProperty;
     }
-
 }

@@ -18,7 +18,6 @@ import static org.mockito.Mockito.mock;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.kura.example.configurable.component.ExampleComponent;
 import org.eclipse.kura.example.configurable.component.ExampleDependencyService;
 import org.junit.Test;
@@ -47,9 +46,11 @@ public class ExampleComponentTest {
     private void givenDependencyService() {
         this.dependencyService = mock(ExampleDependencyService.class);
         doAnswer(answer -> {
-            logger.info("I'm in a mock ExampleDependencyService");
-            return null;
-        }).when(this.dependencyService).run();
+                    logger.info("I'm in a mock ExampleDependencyService");
+                    return null;
+                })
+                .when(this.dependencyService)
+                .run();
     }
 
     private void givenExampleComponent() {
@@ -68,5 +69,4 @@ public class ExampleComponentTest {
     private void thenExampleOptionIs(String examplePropertyValue) {
         assertEquals(examplePropertyValue, this.exampleComponent.getOptions().getExampleProperty());
     }
-
 }

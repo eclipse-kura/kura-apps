@@ -23,7 +23,6 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.Password;
 import org.eclipse.kura.container.orchestration.ImageInstanceDescriptor;
@@ -40,7 +39,8 @@ public class DummyContainerSignatureValidationServiceTest {
     private static final String LATEST = "latest";
     private static final String ALPINE = "alpine";
     private static final String ALPINE_LATEST_SHA256_1234567890 = "alpine:latest@sha256:1234567890";
-    private DummyContainerSignatureValidationService containerSignatureValidationService = new DummyContainerSignatureValidationService();
+    private DummyContainerSignatureValidationService containerSignatureValidationService =
+            new DummyContainerSignatureValidationService();
 
     private static final String IMAGE_ID = "imageId";
     private static final String TRUST_ANCHOR = "trustAnchor";
@@ -145,7 +145,11 @@ public class DummyContainerSignatureValidationServiceTest {
         givenPropertyValue(ALPINE_LATEST_SHA256_1234567890);
         givenContainerSignatureValidationServiceWith(this.ocd);
 
-        whenVerifyWithAuthIsCalledWith(ALPINE, DEVELOP, TRUST_ANCHOR, false,
+        whenVerifyWithAuthIsCalledWith(
+                ALPINE,
+                DEVELOP,
+                TRUST_ANCHOR,
+                false,
                 new PasswordRegistryCredentials(Optional.empty(), USERNAME, new Password(PASSWORD)));
 
         thenNoExceptionOccurred();
@@ -157,7 +161,11 @@ public class DummyContainerSignatureValidationServiceTest {
         givenPropertyValue(ALPINE_LATEST_SHA256_1234567890);
         givenContainerSignatureValidationServiceWith(this.ocd);
 
-        whenVerifyWithAuthIsCalledWith(ALPINE, LATEST, TRUST_ANCHOR, false,
+        whenVerifyWithAuthIsCalledWith(
+                ALPINE,
+                LATEST,
+                TRUST_ANCHOR,
+                false,
                 new PasswordRegistryCredentials(Optional.empty(), USERNAME, new Password(PASSWORD)));
 
         thenNoExceptionOccurred();
@@ -194,7 +202,10 @@ public class DummyContainerSignatureValidationServiceTest {
         givenImageInstanceDescriptorWith(ALPINE, DEVELOP, IMAGE_ID);
         givenContainerSignatureValidationServiceWith(this.ocd);
 
-        whenVerifyImageInstanceDescriptorWithAuthIsCalledWith(this.imageDescriptor, TRUST_ANCHOR, false,
+        whenVerifyImageInstanceDescriptorWithAuthIsCalledWith(
+                this.imageDescriptor,
+                TRUST_ANCHOR,
+                false,
                 new PasswordRegistryCredentials(Optional.empty(), USERNAME, new Password(PASSWORD)));
 
         thenNoExceptionOccurred();
@@ -207,7 +218,10 @@ public class DummyContainerSignatureValidationServiceTest {
         givenImageInstanceDescriptorWith(ALPINE, LATEST, IMAGE_ID);
         givenContainerSignatureValidationServiceWith(this.ocd);
 
-        whenVerifyImageInstanceDescriptorWithAuthIsCalledWith(this.imageDescriptor, TRUST_ANCHOR, false,
+        whenVerifyImageInstanceDescriptorWithAuthIsCalledWith(
+                this.imageDescriptor,
+                TRUST_ANCHOR,
+                false,
                 new PasswordRegistryCredentials(Optional.empty(), USERNAME, new Password(PASSWORD)));
 
         thenNoExceptionOccurred();
@@ -232,8 +246,12 @@ public class DummyContainerSignatureValidationServiceTest {
     }
 
     private void givenImageInstanceDescriptorWith(String imageName, String imageTag, String imageId) {
-        this.imageDescriptor = ImageInstanceDescriptor.builder().setImageName(imageName).setImageTag(imageTag)
-                .setImageId(imageId).setImageLabels(new HashMap<>()).build();
+        this.imageDescriptor = ImageInstanceDescriptor.builder()
+                .setImageName(imageName)
+                .setImageTag(imageTag)
+                .setImageId(imageId)
+                .setImageLabels(new HashMap<>())
+                .build();
     }
 
     /*
@@ -249,25 +267,25 @@ public class DummyContainerSignatureValidationServiceTest {
 
     private void whenVerifyIsCalledWith(String imageName, String imageTag, String trustAnchor, boolean isVerify) {
         try {
-            this.validationResult = this.containerSignatureValidationService.verify(imageName, imageTag, trustAnchor,
-                    isVerify);
+            this.validationResult =
+                    this.containerSignatureValidationService.verify(imageName, imageTag, trustAnchor, isVerify);
         } catch (KuraException e) {
             this.occurredException = e;
         }
     }
 
-    private void whenVerifyWithAuthIsCalledWith(String imageName, String imageTag, String trustAnchor, boolean isVerify,
-            RegistryCredentials credentials) {
+    private void whenVerifyWithAuthIsCalledWith(
+            String imageName, String imageTag, String trustAnchor, boolean isVerify, RegistryCredentials credentials) {
         try {
-            this.validationResult = this.containerSignatureValidationService.verify(imageName, imageTag, trustAnchor,
-                    isVerify, credentials);
+            this.validationResult = this.containerSignatureValidationService.verify(
+                    imageName, imageTag, trustAnchor, isVerify, credentials);
         } catch (KuraException e) {
             this.occurredException = e;
         }
     }
 
-    private void whenVerifyImageInstanceDescriptorIsCalledWith(ImageInstanceDescriptor descriptor, String trustAnchor,
-            boolean isVerify) {
+    private void whenVerifyImageInstanceDescriptorIsCalledWith(
+            ImageInstanceDescriptor descriptor, String trustAnchor, boolean isVerify) {
         try {
             this.validationResult = this.containerSignatureValidationService.verify(descriptor, trustAnchor, isVerify);
         } catch (KuraException e) {
@@ -275,11 +293,11 @@ public class DummyContainerSignatureValidationServiceTest {
         }
     }
 
-    private void whenVerifyImageInstanceDescriptorWithAuthIsCalledWith(ImageInstanceDescriptor descriptor,
-            String trustAnchor, boolean isVerify, RegistryCredentials credentials) {
+    private void whenVerifyImageInstanceDescriptorWithAuthIsCalledWith(
+            ImageInstanceDescriptor descriptor, String trustAnchor, boolean isVerify, RegistryCredentials credentials) {
         try {
-            this.validationResult = this.containerSignatureValidationService.verify(descriptor, trustAnchor, isVerify,
-                    credentials);
+            this.validationResult =
+                    this.containerSignatureValidationService.verify(descriptor, trustAnchor, isVerify, credentials);
         } catch (KuraException e) {
             this.occurredException = e;
         }
@@ -308,7 +326,8 @@ public class DummyContainerSignatureValidationServiceTest {
             StringWriter sw = new StringWriter();
             this.occurredException.printStackTrace(new PrintWriter(sw));
 
-            errorMessage = String.format("No exception expected, \"%s\" found. Caused by: %s",
+            errorMessage = String.format(
+                    "No exception expected, \"%s\" found. Caused by: %s",
                     this.occurredException.getClass().getName(), sw.toString());
         }
 
@@ -317,6 +336,7 @@ public class DummyContainerSignatureValidationServiceTest {
 
     private <E extends Exception> void thenExceptionOccurred(Class<E> expectedException) {
         assertNotNull(this.occurredException);
-        assertEquals(expectedException.getName(), this.occurredException.getClass().getName());
+        assertEquals(
+                expectedException.getName(), this.occurredException.getClass().getName());
     }
 }

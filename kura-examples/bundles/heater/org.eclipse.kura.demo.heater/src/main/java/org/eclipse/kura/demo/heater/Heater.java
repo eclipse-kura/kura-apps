@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2011, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import org.eclipse.kura.cloudconnection.listener.CloudConnectionListener;
 import org.eclipse.kura.cloudconnection.listener.CloudDeliveryListener;
 import org.eclipse.kura.cloudconnection.message.KuraMessage;
@@ -39,12 +38,13 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, CloudConnectionListener.class, CloudDeliveryListener.class }, //
+        service = {ConfigurableComponent.class, CloudConnectionListener.class, CloudDeliveryListener.class}, //
         name = "org.eclipse.kura.demo.heater.Heater", //
         enabled = true //
-)
+        )
 @Designate(ocd = HeaterOCD.class, factory = false)
 public class Heater implements ConfigurableComponent, CloudConnectionListener, CloudDeliveryListener {
 
@@ -75,11 +75,12 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
         this.random = new SecureRandom();
     }
 
-    @Reference(name = "CloudPublisher", //
+    @Reference(
+            name = "CloudPublisher", //
             policy = ReferencePolicy.DYNAMIC, //
             unbind = "unsetCloudPublisher", //
             cardinality = ReferenceCardinality.OPTIONAL //
-    )
+            )
     public void setCloudPublisher(final CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
         this.cloudPublisher.registerCloudConnectionListener(Heater.this);
@@ -185,14 +186,18 @@ public class Heater implements ConfigurableComponent, CloudConnectionListener, C
 
         // schedule a new worker based on the properties of the service
         final int pubrate = ocd.publish_rate();
-        this.handle = this.worker.scheduleAtFixedRate(new Runnable() {
+        this.handle = this.worker.scheduleAtFixedRate(
+                new Runnable() {
 
-            @Override
-            public void run() {
-                Thread.currentThread().setName(getClass().getSimpleName());
-                doPublish(ocd);
-            }
-        }, 0, pubrate, TimeUnit.SECONDS);
+                    @Override
+                    public void run() {
+                        Thread.currentThread().setName(getClass().getSimpleName());
+                        doPublish(ocd);
+                    }
+                },
+                0,
+                pubrate,
+                TimeUnit.SECONDS);
     }
 
     /**

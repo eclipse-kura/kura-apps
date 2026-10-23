@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
 import org.eclipse.kura.configuration.ConfigurableComponent;
@@ -57,18 +56,18 @@ public class DelayComponentTest {
 
     private final GraphBuilder builder = new GraphBuilder();
     private WireGraphConfiguration wireGraphConfiguration;
-    private final BundleContext bundleContext = FrameworkUtil.getBundle(DelayComponentTest.class)
-            .getBundleContext();
+    private final BundleContext bundleContext =
+            FrameworkUtil.getBundle(DelayComponentTest.class).getBundleContext();
 
     String activeWirePid;
 
     @BeforeClass
     public static void setUpOnce() throws InterruptedException {
         try {
-            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
-            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty()).get(30,
-                    TimeUnit.SECONDS);
+            configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
+            wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
         } catch (Exception e) {
             throw new RuntimeException("Failed to setup WireGraphService", e);
         }
@@ -108,7 +107,8 @@ public class DelayComponentTest {
         }
 
         assertTrue(wgc.getWireComponentConfigurations().stream()
-                .anyMatch(wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
+                .anyMatch(
+                        wcc -> this.activeWirePid.equals(wcc.getConfiguration().getPid())));
     }
 
     @Test
@@ -129,8 +129,8 @@ public class DelayComponentTest {
         if (cc.getPid().equals(this.activeWirePid)) {
             Map<String, Object> props = cc.getConfigurationProperties();
             return DELAY_AVERAGE_NAME_DEFAULT == (int) props.get(DELAY_AVERAGE_NAME_PROP_NAME)
-                    && DELAY_STANDARD_DEVIATION_NAME_DEFAULT == (int) props
-                            .get(DELAY_STANDARD_DEVIATION_NAME_PROP_NAME);
+                    && DELAY_STANDARD_DEVIATION_NAME_DEFAULT
+                            == (int) props.get(DELAY_STANDARD_DEVIATION_NAME_PROP_NAME);
         }
         return false;
     }

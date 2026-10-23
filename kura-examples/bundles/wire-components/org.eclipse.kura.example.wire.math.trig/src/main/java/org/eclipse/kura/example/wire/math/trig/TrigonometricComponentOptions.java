@@ -1,20 +1,18 @@
 /*******************************************************************************
  * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.trig;
 
 import java.util.function.Function;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,19 +76,19 @@ public class TrigonometricComponentOptions {
 
     private Function<Double, Double> getTrigonometricFunction(TrigonometricFunction o) {
         switch (o) {
-        case COS:
-            return parameter -> Math.cos(parameter.doubleValue());
-        case TAN:
-            return parameter -> Math.tan(parameter.doubleValue());
-        case ASIN:
-            return parameter -> Math.asin(parameter.doubleValue());
-        case ACOS:
-            return parameter -> Math.acos(parameter.doubleValue());
-        case ATAN:
-            return parameter -> Math.atan(parameter.doubleValue());
-        case SIN:
-        default:
-            return parameter -> Math.sin(parameter.doubleValue());
+            case COS:
+                return parameter -> Math.cos(parameter.doubleValue());
+            case TAN:
+                return parameter -> Math.tan(parameter.doubleValue());
+            case ASIN:
+                return parameter -> Math.asin(parameter.doubleValue());
+            case ACOS:
+                return parameter -> Math.acos(parameter.doubleValue());
+            case ATAN:
+                return parameter -> Math.atan(parameter.doubleValue());
+            case SIN:
+            default:
+                return parameter -> Math.sin(parameter.doubleValue());
         }
     }
 }

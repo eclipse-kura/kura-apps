@@ -13,9 +13,7 @@
      Eurotech
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -26,7 +24,12 @@
 
     <name>Kura Apps Distribution</name>
     <description>Distribution packages for Kura Apps</description>
-    
+
+    <modules>
+        <module>kura-examples</module>
+        <module>kura-addon-prototypes</module>
+    </modules>
+
     <distributionManagement>
         <repository>
             <id>repo.eclipse.org</id>
@@ -78,9 +81,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <modules>
-        <module>kura-examples</module>
-        <module>kura-addon-prototypes</module>
-    </modules>
 </project>

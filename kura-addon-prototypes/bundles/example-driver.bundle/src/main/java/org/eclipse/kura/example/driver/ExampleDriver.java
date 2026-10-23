@@ -15,7 +15,6 @@ package org.eclipse.kura.example.driver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.channel.ChannelFlag;
 import org.eclipse.kura.channel.ChannelRecord;
@@ -36,11 +35,11 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, Driver.class } //
-)
-
+        service = {ConfigurableComponent.class, Driver.class} //
+        )
 @Designate(ocd = ExampleDriverOCD.class, factory = true)
 public class ExampleDriver implements ConfigurableComponent, Driver {
 
@@ -57,9 +56,9 @@ public class ExampleDriver implements ConfigurableComponent, Driver {
      * the ComponentContext and the ExampleComponentOCD as parameters.
      * All parameters in activate, modified, deactivate are optional and can be
      * removed if not needed
-     * 
+     *
      * Examples:
-     * 
+     *
      * public void activate()
      * public void activate(ExampleComponentOCD configuration)
      * public void activate(ComponentContext componentContext, final Map<String, Object> properties, final
@@ -116,7 +115,8 @@ public class ExampleDriver implements ConfigurableComponent, Driver {
 
         for (ChannelRecord chRecord : records) {
             try {
-                Double result = MeasureConverter.convertMeasure(this.options.getInputUnitMeasure(),
+                Double result = MeasureConverter.convertMeasure(
+                        this.options.getInputUnitMeasure(),
                         ExampleDriverChannelDescriptor.getInputData(chRecord.getChannelConfig()),
                         ExampleDriverChannelDescriptor.getOutputUnitMeasure(chRecord.getChannelConfig()));
 
@@ -134,18 +134,19 @@ public class ExampleDriver implements ConfigurableComponent, Driver {
     public void registerChannelListener(Map<String, Object> channelConfig, ChannelListener listener)
             throws ConnectionException {
 
-        this.channelListeners.add(new ExampleDriverListener(channelConfig.get(CHANNEL_CONFIG_NAME).toString(),
+        this.channelListeners.add(new ExampleDriverListener(
+                channelConfig.get(CHANNEL_CONFIG_NAME).toString(),
                 DataType.valueOf((String) channelConfig.get(CHANNEL_CONFIG_VALUE_TYPE)),
-                ExampleDriverChannelDescriptor.getInputData(channelConfig), this.options.getInputUnitMeasure(),
-                ExampleDriverChannelDescriptor.getOutputUnitMeasure(channelConfig), listener));
-
+                ExampleDriverChannelDescriptor.getInputData(channelConfig),
+                this.options.getInputUnitMeasure(),
+                ExampleDriverChannelDescriptor.getOutputUnitMeasure(channelConfig),
+                listener));
     }
 
     @Override
     public void unregisterChannelListener(ChannelListener listener) throws ConnectionException {
 
         this.channelListeners.removeIf(list -> list.getChannelListener().equals(listener));
-
     }
 
     @Override
@@ -153,16 +154,21 @@ public class ExampleDriver implements ConfigurableComponent, Driver {
 
         for (ChannelRecord chRecord : records) {
             try {
-                Double writingValue = MeasureConverter.convertFromDataType(chRecord.getValue(),
-                        chRecord.getValueType());
-                Double result = MeasureConverter.convertMeasure(this.options.getInputUnitMeasure(), writingValue,
+                Double writingValue =
+                        MeasureConverter.convertFromDataType(chRecord.getValue(), chRecord.getValueType());
+                Double result = MeasureConverter.convertMeasure(
+                        this.options.getInputUnitMeasure(),
+                        writingValue,
                         ExampleDriverChannelDescriptor.getOutputUnitMeasure(chRecord.getChannelConfig()));
 
                 chRecord.setChannelStatus(new ChannelStatus(ChannelFlag.SUCCESS));
                 chRecord.setTimestamp(System.currentTimeMillis());
 
-                logger.info("Input value {} in {}, has a value of {} in {}", chRecord.getValue().getValue(),
-                        this.options.getInputUnitMeasure(), result,
+                logger.info(
+                        "Input value {} in {}, has a value of {} in {}",
+                        chRecord.getValue().getValue(),
+                        this.options.getInputUnitMeasure(),
+                        result,
                         ExampleDriverChannelDescriptor.getOutputUnitMeasure(chRecord.getChannelConfig()));
 
             } catch (Exception ex) {
@@ -170,7 +176,6 @@ public class ExampleDriver implements ConfigurableComponent, Driver {
                 chRecord.setTimestamp(System.currentTimeMillis());
             }
         }
-
     }
 
     @Override
@@ -201,7 +206,5 @@ public class ExampleDriver implements ConfigurableComponent, Driver {
         public List<ChannelRecord> getChannelRecords() {
             return this.recordList;
         }
-
     }
-
 }

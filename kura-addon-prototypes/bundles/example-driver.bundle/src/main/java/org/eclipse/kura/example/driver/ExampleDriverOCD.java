@@ -19,24 +19,26 @@ import org.osgi.service.metatype.annotations.Option;
 
 // allow using _ in method names, it is needed for having ids containing '.'
 @SuppressWarnings("checkstyle:MethodName")
-@ObjectClassDefinition(id = "org.eclipse.kura.example.driver.ExampleDriver", //
+@ObjectClassDefinition(
+        id = "org.eclipse.kura.example.driver.ExampleDriver", //
         name = "KuraExampleDriver", //
         description = "An example driver component implementation." //
-)
+        )
 @ComponentPropertyType
 public @interface ExampleDriverOCD {
 
-    @AttributeDefinition(name = "Input Unit Measure", //
+    @AttributeDefinition(
+            name = "Input Unit Measure", //
             defaultValue = "METER", //
-            description = "Select the unit measure of the input data. During reading operation the ChannelRecord inputData setting is considered as input; during writing operation, the data set in the writing channel record is considered as input", //
+            description =
+                    "Select the unit measure of the input data. During reading operation the ChannelRecord inputData setting is considered as input; during writing operation, the data set in the writing channel record is considered as input", //
             required = true, //
             cardinality = 0, //
             options = { //
-                    @Option(label = "Meter", value = "METER"), //
-                    @Option(label = "Yard", value = "YARD"), //
-                    @Option(label = "Inch", value = "INCH") //
+                @Option(label = "Meter", value = "METER"), //
+                @Option(label = "Yard", value = "YARD"), //
+                @Option(label = "Inch", value = "INCH") //
             } //
-    )
+            )
     public String input_unit_measure();
-
 }

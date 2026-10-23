@@ -10,12 +10,10 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.driver;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.kura.channel.ChannelFlag;
 import org.eclipse.kura.channel.ChannelRecord;
 import org.eclipse.kura.channel.ChannelStatus;
@@ -39,8 +37,13 @@ public class ExampleDriverListener {
 
     private final ChannelListener channelListener;
 
-    public ExampleDriverListener(String chName, DataType type, Double inputData, UnitMeasure inputUm,
-            UnitMeasure outputUm, ChannelListener listener) {
+    public ExampleDriverListener(
+            String chName,
+            DataType type,
+            Double inputData,
+            UnitMeasure inputUm,
+            UnitMeasure outputUm,
+            ChannelListener listener) {
 
         this.channelName = chName;
         this.dataType = type;
@@ -77,12 +80,10 @@ public class ExampleDriverListener {
             } else {
                 logger.warn("Failed to create channelEvent");
             }
-
         }
     }
 
     public ChannelListener getChannelListener() {
         return this.channelListener;
     }
-
 }

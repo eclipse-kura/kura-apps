@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2011, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
-
 import org.eclipse.kura.cloudconnection.message.KuraMessage;
 import org.eclipse.kura.cloudconnection.publisher.CloudPublisher;
 import org.eclipse.kura.cloudconnection.subscriber.CloudSubscriber;
@@ -43,12 +42,13 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         enabled = true, //
         name = "org.eclipse.kura.example.serial.publisher.ExampleSerialPublisher", //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class } //
-)
+        service = {ConfigurableComponent.class} //
+        )
 @Designate(ocd = ExampleSerialPublisherOCD.class, factory = false)
 public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubscriberListener {
 
@@ -77,11 +77,12 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
         this.worker = Executors.newSingleThreadScheduledExecutor();
     }
 
-    @Reference(name = "CloudPublisher", //
+    @Reference(
+            name = "CloudPublisher", //
             policy = ReferencePolicy.DYNAMIC, //
             cardinality = ReferenceCardinality.OPTIONAL, //
             unbind = "unsetCloudPublisher" //
-    )
+            )
     public void setCloudPublisher(final CloudPublisher cloudPublisher) {
         this.cloudPublisher = cloudPublisher;
     }
@@ -90,11 +91,12 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
         this.cloudPublisher = null;
     }
 
-    @Reference(name = "CloudSubscriber", //
+    @Reference(
+            name = "CloudSubscriber", //
             policy = ReferencePolicy.DYNAMIC, //
             cardinality = ReferenceCardinality.OPTIONAL, //
             unbind = "unsetCloudSubscriber" //
-    )
+            )
     public void setCloudSubscriber(final CloudSubscriber cloudSubscriber) {
         this.cloudSubscriber = cloudSubscriber;
         this.cloudSubscriber.registerCloudSubscriberListener(ExampleSerialPublisher.this);
@@ -105,11 +107,12 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
         this.cloudSubscriber = null;
     }
 
-    @Reference(name = "ConnectionFactory", //
+    @Reference(
+            name = "ConnectionFactory", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unsetConnectionFactory" //
-    )
+            )
     public void setConnectionFactory(final ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
@@ -205,10 +208,14 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
             return;
         }
 
-        final String uri = new CommURI.Builder(port).withBaudRate(Integer.parseInt(ocd.serial_baudrate()))
+        final String uri = new CommURI.Builder(port)
+                .withBaudRate(Integer.parseInt(ocd.serial_baudrate()))
                 .withDataBits(Integer.parseInt(ocd.serial_data_bits()))
-                .withStopBits(Integer.parseInt(ocd.serial_stop_bits())).withParity(retrieveParity(ocd.serial_parity()))
-                .withOpenTimeout(1000).build().toString();
+                .withStopBits(Integer.parseInt(ocd.serial_stop_bits()))
+                .withParity(retrieveParity(ocd.serial_parity()))
+                .withOpenTimeout(1000)
+                .build()
+                .toString();
 
         try {
             this.commConnection = (CommConnection) this.connectionFactory.createConnection(uri, 1, false);
@@ -224,10 +231,10 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
 
     private int retrieveParity(final String sParity) {
         return switch (sParity) {
-        case "none" -> CommURI.PARITY_NONE;
-        case "odd" -> CommURI.PARITY_ODD;
-        case "even" -> CommURI.PARITY_EVEN;
-        default -> throw new IllegalArgumentException("Invalid parity: " + sParity);
+            case "none" -> CommURI.PARITY_NONE;
+            case "odd" -> CommURI.PARITY_ODD;
+            case "even" -> CommURI.PARITY_EVEN;
+            default -> throw new IllegalArgumentException("Invalid parity: " + sParity);
         };
     }
 
@@ -291,8 +298,8 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
         }
     }
 
-    private void processReceivedData(final byte[] buffer, final int length, final boolean echo,
-            final StringBuilder lineBuffer) {
+    private void processReceivedData(
+            final byte[] buffer, final int length, final boolean echo, final StringBuilder lineBuffer) {
         try {
             for (int i = 0; i < length; i++) {
                 final char ch = (char) buffer[i];
@@ -303,10 +310,10 @@ public class ExampleSerialPublisher implements ConfigurableComponent, CloudSubsc
                 }
 
                 // Gestione fine linea
-                if (ch == '\r') {  // Carriage Return
+                if (ch == '\r') { // Carriage Return
                     publishLine(lineBuffer.toString());
-                    lineBuffer.setLength(0);  // Reset buffer
-                } else if (ch != '\n') {  // Ignora Line Feed
+                    lineBuffer.setLength(0); // Reset buffer
+                } else if (ch != '\n') { // Ignora Line Feed
                     lineBuffer.append(ch);
                 }
             }

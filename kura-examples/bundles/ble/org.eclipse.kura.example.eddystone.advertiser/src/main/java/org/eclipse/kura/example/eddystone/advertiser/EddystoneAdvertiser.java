@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -33,13 +33,13 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class }, //
+        service = {ConfigurableComponent.class}, //
         enabled = true, //
         name = "org.eclipse.kura.example.eddystone.advertiser.EddystoneAdvertiser" //
-
-)
+        )
 @Designate(ocd = EddystoneAdvertiserOCD.class, factory = false)
 public class EddystoneAdvertiser implements ConfigurableComponent {
 
@@ -51,11 +51,12 @@ public class EddystoneAdvertiser implements ConfigurableComponent {
     private BluetoothLeBeaconAdvertiser<BluetoothLeEddystone> advertising;
     private EddystoneAdvertiserOptions options;
 
-    @Reference(name = "BluetoothLeService", //
+    @Reference(
+            name = "BluetoothLeService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unsetBluetoothLeService" //
-    )
+            )
     public void setBluetoothLeService(BluetoothLeService bluetoothLeService) {
         this.bluetoothLeService = bluetoothLeService;
     }
@@ -64,11 +65,12 @@ public class EddystoneAdvertiser implements ConfigurableComponent {
         this.bluetoothLeService = null;
     }
 
-    @Reference(name = "BluetoothLeEddystoneService", //
+    @Reference(
+            name = "BluetoothLeEddystoneService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY, //
             unbind = "unsetBluetoothLeEddystoneService" //
-    )
+            )
     public void setBluetoothLeEddystoneService(BluetoothLeEddystoneService bluetoothLeEddystoneService) {
         this.bluetoothLeEddystoneService = bluetoothLeEddystoneService;
     }
@@ -89,7 +91,6 @@ public class EddystoneAdvertiser implements ConfigurableComponent {
         update(ocd);
 
         logger.debug("Activating Eddystone Example... Done.");
-
     }
 
     @Deactivate
@@ -160,8 +161,8 @@ public class EddystoneAdvertiser implements ConfigurableComponent {
                     this.advertising = this.bluetoothLeEddystoneService.newBeaconAdvertiser(this.bluetoothLeAdapter);
                     configureBeacon();
                 } catch (KuraBluetoothBeaconAdvertiserNotAvailable e) {
-                    logger.error("Beacon Advertiser not available on {}", this.bluetoothLeAdapter.getInterfaceName(),
-                            e);
+                    logger.error(
+                            "Beacon Advertiser not available on {}", this.bluetoothLeAdapter.getInterfaceName(), e);
                 }
             }
         } else {
@@ -174,14 +175,17 @@ public class EddystoneAdvertiser implements ConfigurableComponent {
         try {
             BluetoothLeEddystone eddystone = new BluetoothLeEddystone();
             if ("UID".equals(this.options.getEddystoneFrametype())) {
-                eddystone.configureEddystoneUIDFrame(hexToByteArray(this.options.getUidNamespace()),
-                        hexToByteArray(this.options.getUidInstance()), this.options.getTxPower().shortValue());
+                eddystone.configureEddystoneUIDFrame(
+                        hexToByteArray(this.options.getUidNamespace()),
+                        hexToByteArray(this.options.getUidInstance()),
+                        this.options.getTxPower().shortValue());
             } else if ("URL".equals(this.options.getEddystoneFrametype())) {
-                eddystone.configureEddystoneURLFrame(this.options.getUrlUrl(), this.options.getTxPower().shortValue());
+                eddystone.configureEddystoneURLFrame(
+                        this.options.getUrlUrl(), this.options.getTxPower().shortValue());
             }
             this.advertising.updateBeaconAdvertisingData(eddystone);
-            this.advertising.updateBeaconAdvertisingInterval(this.options.getMinInterval(),
-                    this.options.getMaxInterval());
+            this.advertising.updateBeaconAdvertisingInterval(
+                    this.options.getMinInterval(), this.options.getMaxInterval());
 
             this.advertising.startBeaconAdvertising();
         } catch (KuraException e) {
@@ -192,8 +196,8 @@ public class EddystoneAdvertiser implements ConfigurableComponent {
     private static byte[] hexToByteArray(String hex) {
         byte[] hexArray = new byte[hex.length() / 2];
         for (int i = 0; i < hex.length(); i += 2) {
-            hexArray[i
-                    / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4) + Character.digit(hex.charAt(i + 1), 16));
+            hexArray[i / 2] =
+                    (byte) ((Character.digit(hex.charAt(i), 16) << 4) + Character.digit(hex.charAt(i + 1), 16));
         }
         return hexArray;
     }

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2022 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
-
 import org.eclipse.kura.KuraBluetoothConnectionException;
 import org.eclipse.kura.KuraBluetoothIOException;
 import org.eclipse.kura.KuraBluetoothResourceNotFoundException;
@@ -60,7 +59,9 @@ public class TiSensorTagTest {
 
         BluetoothLeDevice deviceMock = builder.getDevice();
 
-        doThrow(new KuraBluetoothConnectionException(KuraErrorCode.BLE_IO_ERROR)).when(deviceMock).connect();
+        doThrow(new KuraBluetoothConnectionException(KuraErrorCode.BLE_IO_ERROR))
+                .when(deviceMock)
+                .connect();
 
         verify(deviceMock, times(1)).connect();
         verify(deviceMock, times(2)).isConnected();
@@ -79,8 +80,8 @@ public class TiSensorTagTest {
 
         assertFalse(tag.isCC2650());
 
-        Map<String, TiSensorTagGattResources> gattResources = (Map<String, TiSensorTagGattResources>) TestUtil
-                .getFieldValue(tag, "gattResources");
+        Map<String, TiSensorTagGattResources> gattResources =
+                (Map<String, TiSensorTagGattResources>) TestUtil.getFieldValue(tag, "gattResources");
 
         assertNotNull(gattResources);
         assertEquals(1, gattResources.size());
@@ -103,8 +104,8 @@ public class TiSensorTagTest {
                 .addService(TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE, optoSvcMock)
                 .addService(TiSensorTagGatt.UUID_KEYS_SERVICE, keysSvcMock)
                 .addCharacteristic(TiSensorTagGatt.UUID_KEYS_SERVICE, TiSensorTagGatt.UUID_KEYS_STATUS, keysChrMock)
-                .addCharacteristic(TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE, TiSensorTagGatt.UUID_OPTO_SENSOR_VALUE,
-                        optoChrMock);
+                .addCharacteristic(
+                        TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE, TiSensorTagGatt.UUID_OPTO_SENSOR_VALUE, optoChrMock);
         TiSensorTag tag = builder.build(true);
 
         assertTrue(tag.isCC2650());
@@ -112,8 +113,8 @@ public class TiSensorTagTest {
         BluetoothLeDevice deviceMock = tag.getBluetoothLeDevice();
         verify(deviceMock, times(1)).connect();
 
-        Map<String, TiSensorTagGattResources> gattResources = (Map<String, TiSensorTagGattResources>) TestUtil
-                .getFieldValue(tag, "gattResources");
+        Map<String, TiSensorTagGattResources> gattResources =
+                (Map<String, TiSensorTagGattResources>) TestUtil.getFieldValue(tag, "gattResources");
 
         assertNotNull(gattResources);
         assertEquals(3, gattResources.size());
@@ -130,11 +131,12 @@ public class TiSensorTagTest {
     @Test
     public void testGetFWRevisionFail() throws KuraBluetoothResourceNotFoundException, KuraBluetoothIOException {
         BluetoothLeGattService infoSvcMock = mock(BluetoothLeGattService.class);
-        doThrow(new KuraBluetoothResourceNotFoundException("test")).when(infoSvcMock)
+        doThrow(new KuraBluetoothResourceNotFoundException("test"))
+                .when(infoSvcMock)
                 .findCharacteristic(TiSensorTagGatt.UUID_DEVINFO_FIRMWARE_REVISION);
 
-        TiSensorTagBuilder builder = new TiSensorTagBuilder(true, true).addService(TiSensorTagGatt.UUID_DEVINFO_SERVICE,
-                infoSvcMock);
+        TiSensorTagBuilder builder =
+                new TiSensorTagBuilder(true, true).addService(TiSensorTagGatt.UUID_DEVINFO_SERVICE, infoSvcMock);
         TiSensorTag tag = builder.build(true);
 
         assertEquals("", tag.getFirmareRevision());
@@ -147,10 +149,11 @@ public class TiSensorTagTest {
         when(bch.readValue()).thenReturn(fw.getBytes());
 
         BluetoothLeGattService infoSvcMock = mock(BluetoothLeGattService.class);
-        when(infoSvcMock.findCharacteristic(TiSensorTagGatt.UUID_DEVINFO_FIRMWARE_REVISION)).thenReturn(bch);
+        when(infoSvcMock.findCharacteristic(TiSensorTagGatt.UUID_DEVINFO_FIRMWARE_REVISION))
+                .thenReturn(bch);
 
-        TiSensorTagBuilder builder = new TiSensorTagBuilder(true, true).addService(TiSensorTagGatt.UUID_DEVINFO_SERVICE,
-                infoSvcMock);
+        TiSensorTagBuilder builder =
+                new TiSensorTagBuilder(true, true).addService(TiSensorTagGatt.UUID_DEVINFO_SERVICE, infoSvcMock);
         TiSensorTag tag = builder.build(true);
 
         assertEquals(fw, tag.getFirmareRevision());
@@ -221,7 +224,10 @@ public class TiSensorTagTest {
 
     @Test
     public void testEnableThermometer() throws Throwable {
-        testEnable(true, TiSensorTagGatt.UUID_TEMP_SENSOR_ENABLE, TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
+        testEnable(
+                true,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
                 "enableThermometer");
     }
 
@@ -231,19 +237,24 @@ public class TiSensorTagTest {
         doThrow(new KuraBluetoothIOException("test")).when(bch).writeValue(any());
 
         BluetoothLeGattService svcMock = mock(BluetoothLeGattService.class);
-        when(svcMock.findCharacteristic(TiSensorTagGatt.UUID_TEMP_SENSOR_ENABLE)).thenReturn(bch);
+        when(svcMock.findCharacteristic(TiSensorTagGatt.UUID_TEMP_SENSOR_ENABLE))
+                .thenReturn(bch);
 
         TiSensorTag tag = new TiSensorTagBuilder(true, true)
-                .addService(TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE, svcMock).build(true);
+                .addService(TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE, svcMock)
+                .build(true);
 
         tag.enableThermometer();
 
-        verify(bch, times(1)).writeValue(new byte[] { 1 });
+        verify(bch, times(1)).writeValue(new byte[] {1});
     }
 
     @Test
     public void testDisableThermometer() throws Throwable {
-        testDisable(true, TiSensorTagGatt.UUID_TEMP_SENSOR_ENABLE, TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
+        testDisable(
+                true,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
                 "disableThermometer");
     }
 
@@ -253,14 +264,16 @@ public class TiSensorTagTest {
         doThrow(new KuraBluetoothIOException("test")).when(bch).writeValue(any());
 
         BluetoothLeGattService svcMock = mock(BluetoothLeGattService.class);
-        when(svcMock.findCharacteristic(TiSensorTagGatt.UUID_TEMP_SENSOR_ENABLE)).thenReturn(bch);
+        when(svcMock.findCharacteristic(TiSensorTagGatt.UUID_TEMP_SENSOR_ENABLE))
+                .thenReturn(bch);
 
         TiSensorTag tag = new TiSensorTagBuilder(true, true)
-                .addService(TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE, svcMock).build(true);
+                .addService(TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE, svcMock)
+                .build(true);
 
         tag.disableThermometer();
 
-        verify(bch, times(1)).writeValue(new byte[] { 0 });
+        verify(bch, times(1)).writeValue(new byte[] {0});
     }
 
     @Test
@@ -270,7 +283,8 @@ public class TiSensorTagTest {
         doThrow(new KuraBluetoothIOException("test")).when(tempChrMock).readValue();
 
         TiSensorTagBuilder builder = new TiSensorTagBuilder(true, true)
-                .addService(TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE, tempSvcMock).addCharacteristic(
+                .addService(TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE, tempSvcMock)
+                .addCharacteristic(
                         TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE, TiSensorTagGatt.UUID_TEMP_SENSOR_VALUE, tempChrMock);
         TiSensorTag tag = builder.build(true);
 
@@ -279,23 +293,36 @@ public class TiSensorTagTest {
 
     @Test
     public void testReadTemperatureCc2650() throws Throwable {
-        byte[] val = { 1, 2, 2, 4 };
-        double[] expected = new double[] { 8, 4 };
-        testRead(val, expected, true, TiSensorTagGatt.UUID_TEMP_SENSOR_VALUE, TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
+        byte[] val = {1, 2, 2, 4};
+        double[] expected = new double[] {8, 4};
+        testRead(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
                 "readTemperature");
     }
 
     @Test
     public void testReadTemperature() throws Throwable {
-        byte[] val = { 1, 2, 2, 4 };
-        double[] expected = new double[] { 8.02, 26.64 };
-        testRead(val, expected, false, TiSensorTagGatt.UUID_TEMP_SENSOR_VALUE, TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
+        byte[] val = {1, 2, 2, 4};
+        double[] expected = new double[] {8.02, 26.64};
+        testRead(
+                val,
+                expected,
+                false,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
                 "readTemperature");
     }
 
     @Test
     public void testSetThermometerPeriod() throws Throwable {
-        testSetPeriod(true, TiSensorTagGatt.UUID_TEMP_SENSOR_PERIOD, TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
+        testSetPeriod(
+                true,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_PERIOD,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
                 "setThermometerPeriod");
     }
 
@@ -305,61 +332,89 @@ public class TiSensorTagTest {
         doThrow(new KuraBluetoothIOException("test")).when(bch).writeValue(any());
 
         BluetoothLeGattService svcMock = mock(BluetoothLeGattService.class);
-        when(svcMock.findCharacteristic(TiSensorTagGatt.UUID_TEMP_SENSOR_PERIOD)).thenReturn(bch);
+        when(svcMock.findCharacteristic(TiSensorTagGatt.UUID_TEMP_SENSOR_PERIOD))
+                .thenReturn(bch);
 
         TiSensorTag tag = new TiSensorTagBuilder(true, true)
-                .addService(TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE, svcMock).build(true);
+                .addService(TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE, svcMock)
+                .build(true);
 
         tag.setThermometerPeriod(1000);
 
-        verify(bch, times(1)).writeValue(new byte[] { -24 });
+        verify(bch, times(1)).writeValue(new byte[] {-24});
     }
 
     @Test
     public void testEnableTemperatureNotifications() throws Throwable {
-        byte[] val = { 1, 2, 2, 4 };
-        double[] expected = { 8, 4 };
-        testEnableNotifications(val, expected, true, TiSensorTagGatt.UUID_TEMP_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE, "enableTemperatureNotifications");
+        byte[] val = {1, 2, 2, 4};
+        double[] expected = {8, 4};
+        testEnableNotifications(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
+                "enableTemperatureNotifications");
     }
 
     @Test
     public void testDisableTemperatureNotifications() throws Throwable {
-        testDisableNotifications(true, TiSensorTagGatt.UUID_TEMP_SENSOR_VALUE, TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
+        testDisableNotifications(
+                true,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_TEMP_SENSOR_SERVICE,
                 "disableTemperatureNotifications");
     }
 
     @Test
     public void testEnableAccelerometer() throws Throwable {
-        byte[] config = { 2 };
+        byte[] config = {2};
 
-        testEnable(config, false, TiSensorTagGatt.UUID_ACC_SENSOR_ENABLE, TiSensorTagGatt.UUID_ACC_SENSOR_SERVICE,
+        testEnable(
+                config,
+                false,
+                TiSensorTagGatt.UUID_ACC_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_ACC_SENSOR_SERVICE,
                 "enableAccelerometer");
     }
 
     @Test
     public void testEnableAccelerometerCc2650() throws Throwable {
-        byte[] oldVal = { 0, 0, 0, 0, 1, 1, 1, 0, 0, 1 };
-        byte[] config = { 1, 0, 1, 0, 1, 1, 1, 0, 0, 1 };
-        byte[] writeVal = new byte[] { 1, 0 };
+        byte[] oldVal = {0, 0, 0, 0, 1, 1, 1, 0, 0, 1};
+        byte[] config = {1, 0, 1, 0, 1, 1, 1, 0, 0, 1};
+        byte[] writeVal = new byte[] {1, 0};
 
-        testEnable(oldVal, config, writeVal, true, TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE,
-                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, "enableAccelerometer");
+        testEnable(
+                oldVal,
+                config,
+                writeVal,
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+                "enableAccelerometer");
     }
 
     @Test
     public void testDisableAccelerometer() throws Throwable {
-        testDisable(false, TiSensorTagGatt.UUID_ACC_SENSOR_ENABLE, TiSensorTagGatt.UUID_ACC_SENSOR_SERVICE,
+        testDisable(
+                false,
+                TiSensorTagGatt.UUID_ACC_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_ACC_SENSOR_SERVICE,
                 "disableAccelerometer");
     }
 
     @Test
     public void testDisableAccelerometerCc2650() throws Throwable {
-        byte[] oldVal = { 0, 0, 0, 0, 1, 1, 1, 0, 0, 1 };
-        byte[] writeVal = new byte[] { 0, 0 };
+        byte[] oldVal = {0, 0, 0, 0, 1, 1, 1, 0, 0, 1};
+        byte[] writeVal = new byte[] {0, 0};
 
-        testDisable(oldVal, writeVal, true, TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE,
-                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, "disableAccelerometer");
+        testDisable(
+                oldVal,
+                writeVal,
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+                "disableAccelerometer");
     }
 
     @Test
@@ -373,7 +428,8 @@ public class TiSensorTagTest {
         when(svcMock.findCharacteristic(TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE)).thenReturn(bch);
 
         TiSensorTag tag = new TiSensorTagBuilder(true, true)
-                .addService(TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, svcMock).build(true);
+                .addService(TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, svcMock)
+                .build(true);
 
         tag.disableAccelerometer();
 
@@ -382,143 +438,220 @@ public class TiSensorTagTest {
 
     @Test
     public void testReadAccelerationCc2650() throws Throwable {
-        byte[] val = { 0, 1, 2, 3, 4, 5, 0, 4, 0, 8, 0, 16 };
-        double[] expected = new double[] { -0.25, 0.5, -1 };
+        byte[] val = {0, 1, 2, 3, 4, 5, 0, 4, 0, 8, 0, 16};
+        double[] expected = new double[] {-0.25, 0.5, -1};
 
-        testRead(val, expected, true, TiSensorTagGatt.UUID_MOV_SENSOR_VALUE, TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+        testRead(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
                 "readAcceleration");
     }
 
     @Test
     public void testReadAcceleration() throws Throwable {
-        byte[] val = { (byte) 129, (byte) 132, (byte) 255 };
-        double[] expected = new double[] { -1.98, -1.94, 0.02 };
+        byte[] val = {(byte) 129, (byte) 132, (byte) 255};
+        double[] expected = new double[] {-1.98, -1.94, 0.02};
 
-        testRead(val, expected, false, TiSensorTagGatt.UUID_ACC_SENSOR_VALUE, TiSensorTagGatt.UUID_ACC_SENSOR_SERVICE,
+        testRead(
+                val,
+                expected,
+                false,
+                TiSensorTagGatt.UUID_ACC_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_ACC_SENSOR_SERVICE,
                 "readAcceleration");
     }
 
     @Test
     public void testEnableAccelerationNotificationsCc2650() throws Throwable {
-        byte[] val = { 0, 1, 2, 3, 4, 5, 0, 4, 0, 8, 0, 16 };
-        double[] expected = { -0.25, 0.5, -1 };
-        testEnableNotifications(val, expected, true, TiSensorTagGatt.UUID_MOV_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, "enableAccelerationNotifications");
+        byte[] val = {0, 1, 2, 3, 4, 5, 0, 4, 0, 8, 0, 16};
+        double[] expected = {-0.25, 0.5, -1};
+        testEnableNotifications(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+                "enableAccelerationNotifications");
     }
 
     @Test
     public void testEnableAccelerationNotifications() throws Throwable {
-        byte[] val = { (byte) 129, (byte) 132, (byte) 255 };
-        double[] expected = { -1.98, -1.94, 0.02 };
-        testEnableNotifications(val, expected, false, TiSensorTagGatt.UUID_ACC_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_ACC_SENSOR_SERVICE, "enableAccelerationNotifications");
+        byte[] val = {(byte) 129, (byte) 132, (byte) 255};
+        double[] expected = {-1.98, -1.94, 0.02};
+        testEnableNotifications(
+                val,
+                expected,
+                false,
+                TiSensorTagGatt.UUID_ACC_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_ACC_SENSOR_SERVICE,
+                "enableAccelerationNotifications");
     }
 
     @Test
     public void testDisableAccelerationNotificationsCc2650() throws Throwable {
-        testDisableNotifications(true, TiSensorTagGatt.UUID_MOV_SENSOR_VALUE, TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+        testDisableNotifications(
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
                 "disableAccelerationNotifications");
     }
 
     @Test
     public void testDisableAccelerationNotifications() throws Throwable {
-        testDisableNotifications(false, TiSensorTagGatt.UUID_ACC_SENSOR_VALUE, TiSensorTagGatt.UUID_ACC_SENSOR_SERVICE,
+        testDisableNotifications(
+                false,
+                TiSensorTagGatt.UUID_ACC_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_ACC_SENSOR_SERVICE,
                 "disableAccelerationNotifications");
     }
 
     @Test
     public void testSetAccelerometerPeriodCc2650() throws Throwable {
-        testSetPeriod(true, TiSensorTagGatt.UUID_MOV_SENSOR_PERIOD, TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+        testSetPeriod(
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_PERIOD,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
                 "setAccelerometerPeriod");
     }
 
     @Test
     public void testSetAccelerometerPeriod() throws Throwable {
-        testSetPeriod(false, TiSensorTagGatt.UUID_ACC_SENSOR_PERIOD, TiSensorTagGatt.UUID_ACC_SENSOR_SERVICE,
+        testSetPeriod(
+                false,
+                TiSensorTagGatt.UUID_ACC_SENSOR_PERIOD,
+                TiSensorTagGatt.UUID_ACC_SENSOR_SERVICE,
                 "setAccelerometerPeriod");
     }
 
     @Test
     public void testEnableHygrometer() throws Throwable {
-        testEnable(true, TiSensorTagGatt.UUID_HUM_SENSOR_ENABLE, TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
+        testEnable(
+                true,
+                TiSensorTagGatt.UUID_HUM_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
                 "enableHygrometer");
     }
 
     @Test
     public void testDisableHygrometer() throws Throwable {
-        testDisable(true, TiSensorTagGatt.UUID_HUM_SENSOR_ENABLE, TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
+        testDisable(
+                true,
+                TiSensorTagGatt.UUID_HUM_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
                 "disableHygrometer");
     }
 
     @Test
     public void testReadHumidityCc2650() throws Throwable {
-        byte[] val = { 0, 1, 0, (byte) 128 };
+        byte[] val = {0, 1, 0, (byte) 128};
         float expected = 50;
 
-        testRead(val, expected, true, TiSensorTagGatt.UUID_HUM_SENSOR_VALUE, TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
+        testRead(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_HUM_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
                 "readHumidity");
     }
 
     @Test
     public void testReadHumidity() throws Throwable {
-        byte[] val = { 0, 1, (byte) 0xB0, (byte) 0x72 };
+        byte[] val = {0, 1, (byte) 0xB0, (byte) 0x72};
         float expected = 50;
 
-        testRead(val, expected, false, TiSensorTagGatt.UUID_HUM_SENSOR_VALUE, TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
+        testRead(
+                val,
+                expected,
+                false,
+                TiSensorTagGatt.UUID_HUM_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
                 "readHumidity");
     }
 
     @Test
     public void testEnableHumidityNotifications() throws Throwable {
-        byte[] val = { 0, 1, 0, (byte) 128 };
+        byte[] val = {0, 1, 0, (byte) 128};
         float expected = 50;
-        testEnableNotifications(val, expected, true, TiSensorTagGatt.UUID_HUM_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE, "enableHumidityNotifications");
+        testEnableNotifications(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_HUM_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
+                "enableHumidityNotifications");
     }
 
     @Test
     public void testDisableHumidityNotifications() throws Throwable {
-        testDisableNotifications(false, TiSensorTagGatt.UUID_HUM_SENSOR_VALUE, TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
+        testDisableNotifications(
+                false,
+                TiSensorTagGatt.UUID_HUM_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
                 "disableHumidityNotifications");
     }
 
     @Test
     public void testSetHumidityPeriod() throws Throwable {
-        testSetPeriod(false, TiSensorTagGatt.UUID_HUM_SENSOR_PERIOD, TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
+        testSetPeriod(
+                false,
+                TiSensorTagGatt.UUID_HUM_SENSOR_PERIOD,
+                TiSensorTagGatt.UUID_HUM_SENSOR_SERVICE,
                 "setHygrometerPeriod");
     }
 
     @Test
     public void testEnableMagnetometer() throws Throwable {
-        byte[] config = { 1 };
+        byte[] config = {1};
 
-        testEnable(config, false, TiSensorTagGatt.UUID_MAG_SENSOR_ENABLE, TiSensorTagGatt.UUID_MAG_SENSOR_SERVICE,
+        testEnable(
+                config,
+                false,
+                TiSensorTagGatt.UUID_MAG_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_MAG_SENSOR_SERVICE,
                 "enableMagnetometer");
     }
 
     @Test
     public void testEnableMagnetometerCc2650() throws Throwable {
-        byte[] oldVal = { 0, 0, 0, 0, 1, 1, 1, 0, 0, 1 };
-        byte[] config = { 1, 0, 1, 0, 1, 1, 1, 0, 0, 1 };
-        byte[] writeVal = new byte[] { 1, 0 };
+        byte[] oldVal = {0, 0, 0, 0, 1, 1, 1, 0, 0, 1};
+        byte[] config = {1, 0, 1, 0, 1, 1, 1, 0, 0, 1};
+        byte[] writeVal = new byte[] {1, 0};
 
-        testEnable(oldVal, config, writeVal, true, TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE,
-                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, "enableMagnetometer");
+        testEnable(
+                oldVal,
+                config,
+                writeVal,
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+                "enableMagnetometer");
     }
 
     @Test
     public void testDisableMagnetometer() throws Throwable {
-        testDisable(false, TiSensorTagGatt.UUID_MAG_SENSOR_ENABLE, TiSensorTagGatt.UUID_MAG_SENSOR_SERVICE,
+        testDisable(
+                false,
+                TiSensorTagGatt.UUID_MAG_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_MAG_SENSOR_SERVICE,
                 "disableMagnetometer");
     }
 
     @Test
     public void testDisableMagnetometerCc2650() throws Throwable {
-        byte[] oldVal = { 0, 0, 0, 0, 1, 1, 1, 0, 0, 1 };
-        byte[] writeVal = new byte[] { 0, 0 };
+        byte[] oldVal = {0, 0, 0, 0, 1, 1, 1, 0, 0, 1};
+        byte[] writeVal = new byte[] {0, 0};
 
-        testDisable(oldVal, writeVal, true, TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE,
-                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, "disableMagnetometer");
+        testDisable(
+                oldVal,
+                writeVal,
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+                "disableMagnetometer");
     }
 
     @Test
@@ -532,7 +665,8 @@ public class TiSensorTagTest {
         when(svcMock.findCharacteristic(TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE)).thenReturn(bch);
 
         TiSensorTag tag = new TiSensorTagBuilder(true, true)
-                .addService(TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, svcMock).build(true);
+                .addService(TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, svcMock)
+                .build(true);
 
         tag.disableMagnetometer();
 
@@ -541,77 +675,115 @@ public class TiSensorTagTest {
 
     @Test
     public void testReadMagneticFieldCc2650() throws Throwable {
-        byte[] val = { 0, 1, 2, 3, 4, 5, 0, 4, 0, 8, 0, 16, 0xF, 0x1A, 0x1F, 0x34, 0x3C, 0x68 };
-        float[] expected = new float[] { 1000, 2000.15f, 4000 };
+        byte[] val = {0, 1, 2, 3, 4, 5, 0, 4, 0, 8, 0, 16, 0xF, 0x1A, 0x1F, 0x34, 0x3C, 0x68};
+        float[] expected = new float[] {1000, 2000.15f, 4000};
 
-        testRead(val, expected, true, TiSensorTagGatt.UUID_MOV_SENSOR_VALUE, TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+        testRead(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
                 "readMagneticField");
     }
 
     @Test
     public void testReadMagneticField() throws Throwable {
-        byte[] val = { 0, (byte) 0x80, 0, (byte) 0x80, 0, (byte) 0xC0 };
-        float[] expected = new float[] { 1000, 1000, -500 };
+        byte[] val = {0, (byte) 0x80, 0, (byte) 0x80, 0, (byte) 0xC0};
+        float[] expected = new float[] {1000, 1000, -500};
 
-        testRead(val, expected, false, TiSensorTagGatt.UUID_MAG_SENSOR_VALUE, TiSensorTagGatt.UUID_MAG_SENSOR_SERVICE,
+        testRead(
+                val,
+                expected,
+                false,
+                TiSensorTagGatt.UUID_MAG_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_MAG_SENSOR_SERVICE,
                 "readMagneticField");
     }
 
     @Test
     public void testEnableMagneticFieldNotificationsCc2650() throws Throwable {
-        byte[] val = { 0, 1, 2, 3, 4, 5, 0, 4, 0, 8, 0, 16, 0xF, 0x1A, 0x1F, 0x34, 0x3C, 0x68 };
-        float[] expected = { 1000, 2000.15f, 4000 };
-        testEnableNotifications(val, expected, true, TiSensorTagGatt.UUID_MOV_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, "enableMagneticFieldNotifications");
+        byte[] val = {0, 1, 2, 3, 4, 5, 0, 4, 0, 8, 0, 16, 0xF, 0x1A, 0x1F, 0x34, 0x3C, 0x68};
+        float[] expected = {1000, 2000.15f, 4000};
+        testEnableNotifications(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+                "enableMagneticFieldNotifications");
     }
 
     @Test
     public void testEnableMagneticFieldNotifications() throws Throwable {
-        byte[] val = { 0, (byte) 0x80, 0, (byte) 0x80, 0, (byte) 0xC0 };
-        float[] expected = { 1000, 1000, -500 };
-        testEnableNotifications(val, expected, false, TiSensorTagGatt.UUID_MAG_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_MAG_SENSOR_SERVICE, "enableMagneticFieldNotifications");
+        byte[] val = {0, (byte) 0x80, 0, (byte) 0x80, 0, (byte) 0xC0};
+        float[] expected = {1000, 1000, -500};
+        testEnableNotifications(
+                val,
+                expected,
+                false,
+                TiSensorTagGatt.UUID_MAG_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_MAG_SENSOR_SERVICE,
+                "enableMagneticFieldNotifications");
     }
 
     @Test
     public void testDisableMagneticFieldNotificationsCc2650() throws Throwable {
-        testDisableNotifications(true, TiSensorTagGatt.UUID_MOV_SENSOR_VALUE, TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+        testDisableNotifications(
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
                 "disableMagneticFieldNotifications");
     }
 
     @Test
     public void testDisableMagneticFieldNotifications() throws Throwable {
-        testDisableNotifications(false, TiSensorTagGatt.UUID_MAG_SENSOR_VALUE, TiSensorTagGatt.UUID_MAG_SENSOR_SERVICE,
+        testDisableNotifications(
+                false,
+                TiSensorTagGatt.UUID_MAG_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_MAG_SENSOR_SERVICE,
                 "disableMagneticFieldNotifications");
     }
 
     @Test
     public void testSetMagnetometerPeriodCc2650() throws Throwable {
-        testSetPeriod(true, TiSensorTagGatt.UUID_MOV_SENSOR_PERIOD, TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+        testSetPeriod(
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_PERIOD,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
                 "setMagnetometerPeriod");
     }
 
     @Test
     public void testSetMagnetometerPeriod() throws Throwable {
-        testSetPeriod(false, TiSensorTagGatt.UUID_MAG_SENSOR_PERIOD, TiSensorTagGatt.UUID_MAG_SENSOR_SERVICE,
+        testSetPeriod(
+                false,
+                TiSensorTagGatt.UUID_MAG_SENSOR_PERIOD,
+                TiSensorTagGatt.UUID_MAG_SENSOR_SERVICE,
                 "setMagnetometerPeriod");
     }
 
     @Test
     public void testEnableBarometer() throws Throwable {
-        testEnable(true, TiSensorTagGatt.UUID_PRE_SENSOR_ENABLE, TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
+        testEnable(
+                true,
+                TiSensorTagGatt.UUID_PRE_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
                 "enableBarometer");
     }
 
     @Test
     public void testDisableBarometer() throws Throwable {
-        testDisable(true, TiSensorTagGatt.UUID_PRE_SENSOR_ENABLE, TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
+        testDisable(
+                true,
+                TiSensorTagGatt.UUID_PRE_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
                 "disableBarometer");
     }
 
     @Test
     public void testCalibrateBarometerNonCc2650() throws Throwable {
-        byte[] val = { 123 };
+        byte[] val = {123};
 
         BluetoothLeGattCharacteristic bch = mock(BluetoothLeGattCharacteristic.class);
         when(bch.readValue()).thenReturn(val);
@@ -619,15 +791,17 @@ public class TiSensorTagTest {
         BluetoothLeGattCharacteristic bch2 = mock(BluetoothLeGattCharacteristic.class);
 
         BluetoothLeGattService svcMock = mock(BluetoothLeGattService.class);
-        when(svcMock.findCharacteristic(TiSensorTagGatt.UUID_PRE_SENSOR_CALIBRATION)).thenReturn(bch);
+        when(svcMock.findCharacteristic(TiSensorTagGatt.UUID_PRE_SENSOR_CALIBRATION))
+                .thenReturn(bch);
         when(svcMock.findCharacteristic(TiSensorTagGatt.UUID_PRE_SENSOR_ENABLE)).thenReturn(bch2);
 
         TiSensorTag tag = new TiSensorTagBuilder(false, true)
-                .addService(TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE, svcMock).build(true);
+                .addService(TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE, svcMock)
+                .build(true);
 
         tag.calibrateBarometer();
 
-        verify(bch2, times(1)).writeValue(new byte[] { 2 });
+        verify(bch2, times(1)).writeValue(new byte[] {2});
         verify(bch, times(1)).readValue();
 
         byte[] cal = (byte[]) TestUtil.getFieldValue(tag, "pressureCalibration");
@@ -636,27 +810,42 @@ public class TiSensorTagTest {
 
     @Test
     public void testReadPressureCalibration() throws Throwable {
-        byte[] val = { 123 };
+        byte[] val = {123};
 
-        testRead(val, val, false, TiSensorTagGatt.UUID_PRE_SENSOR_CALIBRATION, TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
+        testRead(
+                val,
+                val,
+                false,
+                TiSensorTagGatt.UUID_PRE_SENSOR_CALIBRATION,
+                TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
                 "readCalibrationPressure");
     }
 
     @Test
     public void testReadPressureCc2650Short() throws Throwable {
-        byte[] val = { 0, 1, (byte) 0x63, (byte) 0xA0 };
+        byte[] val = {0, 1, (byte) 0x63, (byte) 0xA0};
         double expected = 1013.76;
 
-        testRead(val, expected, true, TiSensorTagGatt.UUID_PRE_SENSOR_VALUE, TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
+        testRead(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_PRE_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
                 "readPressure");
     }
 
     @Test
     public void testReadPressureCc2650Long() throws Throwable {
-        byte[] val = { 0, 1, 2, (byte) 0xB4, (byte) 0x8B, 0x01 };
+        byte[] val = {0, 1, 2, (byte) 0xB4, (byte) 0x8B, 0x01};
         double expected = 1013;
 
-        testRead(val, expected, true, TiSensorTagGatt.UUID_PRE_SENSOR_VALUE, TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
+        testRead(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_PRE_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
                 "readPressure");
     }
 
@@ -664,18 +853,20 @@ public class TiSensorTagTest {
     public void testReadPressure()
             throws KuraBluetoothResourceNotFoundException, KuraBluetoothIOException, NoSuchFieldException {
 
-        byte[] val = { 0, 1, 2, 3 };
-        byte[] cal = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5 };
+        byte[] val = {0, 1, 2, 3};
+        byte[] cal = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5};
         double expected = 3.18;
 
         BluetoothLeGattCharacteristic bch = mock(BluetoothLeGattCharacteristic.class);
         when(bch.readValue()).thenReturn(val);
 
         BluetoothLeGattService infoSvcMock = mock(BluetoothLeGattService.class);
-        when(infoSvcMock.findCharacteristic(TiSensorTagGatt.UUID_PRE_SENSOR_VALUE)).thenReturn(bch);
+        when(infoSvcMock.findCharacteristic(TiSensorTagGatt.UUID_PRE_SENSOR_VALUE))
+                .thenReturn(bch);
 
         TiSensorTag tag = new TiSensorTagBuilder(false, true)
-                .addService(TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE, infoSvcMock).build(true);
+                .addService(TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE, infoSvcMock)
+                .build(true);
 
         TestUtil.setFieldValue(tag, "pressureCalibration", cal);
 
@@ -684,108 +875,166 @@ public class TiSensorTagTest {
 
     @Test
     public void testEnablePressureNotifications() throws Throwable {
-        byte[] val = { 0, 1, 2, (byte) 0xB4, (byte) 0x8B, 0x01 };
+        byte[] val = {0, 1, 2, (byte) 0xB4, (byte) 0x8B, 0x01};
         double expected = 1013;
-        testEnableNotifications(val, expected, true, TiSensorTagGatt.UUID_PRE_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE, "enablePressureNotifications");
+        testEnableNotifications(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_PRE_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
+                "enablePressureNotifications");
     }
 
     @Test
     public void testDisablePressureNotifications() throws Throwable {
-        testDisableNotifications(false, TiSensorTagGatt.UUID_PRE_SENSOR_VALUE, TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
+        testDisableNotifications(
+                false,
+                TiSensorTagGatt.UUID_PRE_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
                 "disablePressureNotifications");
     }
 
     @Test
     public void testSetPressurePeriod() throws Throwable {
-        testSetPeriod(false, TiSensorTagGatt.UUID_PRE_SENSOR_PERIOD, TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
+        testSetPeriod(
+                false,
+                TiSensorTagGatt.UUID_PRE_SENSOR_PERIOD,
+                TiSensorTagGatt.UUID_PRE_SENSOR_SERVICE,
                 "setBarometerPeriod");
     }
 
     @Test
     public void testEnableGyroscope() throws Throwable {
-        byte[] config = { 1 };
+        byte[] config = {1};
 
-        testEnable(config, false, TiSensorTagGatt.UUID_GYR_SENSOR_ENABLE, TiSensorTagGatt.UUID_GYR_SENSOR_SERVICE,
+        testEnable(
+                config,
+                false,
+                TiSensorTagGatt.UUID_GYR_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_GYR_SENSOR_SERVICE,
                 "enableGyroscope");
     }
 
     @Test
     public void testEnableGyroscopeCc2650() throws Throwable {
-        byte[] oldVal = { 0, 0, 0, 0, 1, 1, 1, 0, 0, 1 };
-        byte[] config = { 1, 0, 1, 0, 1, 1, 1, 0, 0, 1 };
-        byte[] writeVal = new byte[] { 1, 0 };
+        byte[] oldVal = {0, 0, 0, 0, 1, 1, 1, 0, 0, 1};
+        byte[] config = {1, 0, 1, 0, 1, 1, 1, 0, 0, 1};
+        byte[] writeVal = new byte[] {1, 0};
 
-        testEnable(oldVal, config, writeVal, true, TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE,
-                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, "enableGyroscope");
+        testEnable(
+                oldVal,
+                config,
+                writeVal,
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+                "enableGyroscope");
     }
 
     @Test
     public void testDisableGyroscope() throws Throwable {
-        testDisable(false, TiSensorTagGatt.UUID_GYR_SENSOR_ENABLE, TiSensorTagGatt.UUID_GYR_SENSOR_SERVICE,
+        testDisable(
+                false,
+                TiSensorTagGatt.UUID_GYR_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_GYR_SENSOR_SERVICE,
                 "disableGyroscope");
     }
 
     @Test
     public void testDisableGyroscopeCc2650() throws Throwable {
-        byte[] oldVal = { 0, 0, 0, 0, 1, 1, 1, 0, 0, 1 };
-        byte[] writeVal = new byte[] { 0, 0 };
+        byte[] oldVal = {0, 0, 0, 0, 1, 1, 1, 0, 0, 1};
+        byte[] writeVal = new byte[] {0, 0};
 
-        testDisable(oldVal, writeVal, true, TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE,
-                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, "disableGyroscope");
+        testDisable(
+                oldVal,
+                writeVal,
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+                "disableGyroscope");
     }
 
     @Test
     public void testReadGyroscopeCc2650() throws Throwable {
-        byte[] val = { 0x0A, (byte) 0x17, 0x14, (byte) 0x2E, 0x5C, 0x0F };
-        float[] expected = new float[] { 90, 45, 30 };
+        byte[] val = {0x0A, (byte) 0x17, 0x14, (byte) 0x2E, 0x5C, 0x0F};
+        float[] expected = new float[] {90, 45, 30};
 
-        testRead(val, expected, true, TiSensorTagGatt.UUID_MOV_SENSOR_VALUE, TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+        testRead(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
                 "readGyroscope");
     }
 
     @Test
     public void testReadGyroscope() throws Throwable {
-        byte[] val = { 0x0A, (byte) 0x17, 0x14, (byte) 0x2E, 0x5C, 0x0F };
-        float[] expected = new float[] { 90, -45, 30 };
+        byte[] val = {0x0A, (byte) 0x17, 0x14, (byte) 0x2E, 0x5C, 0x0F};
+        float[] expected = new float[] {90, -45, 30};
 
-        testRead(val, expected, false, TiSensorTagGatt.UUID_GYR_SENSOR_VALUE, TiSensorTagGatt.UUID_GYR_SENSOR_SERVICE,
+        testRead(
+                val,
+                expected,
+                false,
+                TiSensorTagGatt.UUID_GYR_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_GYR_SENSOR_SERVICE,
                 "readGyroscope");
     }
 
     @Test
     public void testEnableGyroscopeNotificationsCc2650() throws Throwable {
-        byte[] val = { 0x0A, (byte) 0x17, 0x14, (byte) 0x2E, 0x5C, 0x0F };
-        float[] expected = new float[] { 90, 45, 30 };
+        byte[] val = {0x0A, (byte) 0x17, 0x14, (byte) 0x2E, 0x5C, 0x0F};
+        float[] expected = new float[] {90, 45, 30};
 
-        testEnableNotifications(val, expected, true, TiSensorTagGatt.UUID_MOV_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE, "enableGyroscopeNotifications");
+        testEnableNotifications(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+                "enableGyroscopeNotifications");
     }
 
     @Test
     public void testEnableGyroscopeNotifications() throws Throwable {
-        byte[] val = { 0x0A, (byte) 0x17, 0x14, (byte) 0x2E, 0x5C, 0x0F };
-        float[] expected = new float[] { 90, -45, 30 };
+        byte[] val = {0x0A, (byte) 0x17, 0x14, (byte) 0x2E, 0x5C, 0x0F};
+        float[] expected = new float[] {90, -45, 30};
 
-        testEnableNotifications(val, expected, false, TiSensorTagGatt.UUID_GYR_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_GYR_SENSOR_SERVICE, "enableGyroscopeNotifications");
+        testEnableNotifications(
+                val,
+                expected,
+                false,
+                TiSensorTagGatt.UUID_GYR_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_GYR_SENSOR_SERVICE,
+                "enableGyroscopeNotifications");
     }
 
     @Test
     public void testDisableGyroscopeNotificationsCc2650() throws Throwable {
-        testDisableNotifications(true, TiSensorTagGatt.UUID_MOV_SENSOR_VALUE, TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+        testDisableNotifications(
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
                 "disableGyroscopeNotifications");
     }
 
     @Test
     public void testDisableGyroscopeNotifications() throws Throwable {
-        testDisableNotifications(false, TiSensorTagGatt.UUID_GYR_SENSOR_VALUE, TiSensorTagGatt.UUID_GYR_SENSOR_SERVICE,
+        testDisableNotifications(
+                false,
+                TiSensorTagGatt.UUID_GYR_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_GYR_SENSOR_SERVICE,
                 "disableGyroscopeNotifications");
     }
 
     @Test
     public void testSetGyroscopePeriodCc2650() throws Throwable {
-        testSetPeriod(true, TiSensorTagGatt.UUID_MOV_SENSOR_PERIOD, TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
+        testSetPeriod(
+                true,
+                TiSensorTagGatt.UUID_MOV_SENSOR_PERIOD,
+                TiSensorTagGatt.UUID_MOV_SENSOR_SERVICE,
                 "setGyroscopePeriod");
     }
 
@@ -798,7 +1047,10 @@ public class TiSensorTagTest {
 
     @Test
     public void testEnableLuxometerCc2650() throws Throwable {
-        testEnable(true, TiSensorTagGatt.UUID_OPTO_SENSOR_ENABLE, TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE,
+        testEnable(
+                true,
+                TiSensorTagGatt.UUID_OPTO_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE,
                 "enableLuxometer");
     }
 
@@ -811,16 +1063,24 @@ public class TiSensorTagTest {
 
     @Test
     public void testDisableLuxometerCc2650() throws Throwable {
-        testDisable(true, TiSensorTagGatt.UUID_OPTO_SENSOR_ENABLE, TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE,
+        testDisable(
+                true,
+                TiSensorTagGatt.UUID_OPTO_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE,
                 "disableLuxometer");
     }
 
     @Test
     public void testReadLightCc2650() throws Throwable {
-        byte[] val = { (byte) 0xC4, 0x29 };
+        byte[] val = {(byte) 0xC4, 0x29};
         double expected = 100;
 
-        testRead(val, expected, true, TiSensorTagGatt.UUID_OPTO_SENSOR_VALUE, TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE,
+        testRead(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_OPTO_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE,
                 "readLight");
     }
 
@@ -833,11 +1093,16 @@ public class TiSensorTagTest {
 
     @Test
     public void testEnableLightNotificationsCc2650() throws Throwable {
-        byte[] val = { (byte) 0xC4, 0x29 };
+        byte[] val = {(byte) 0xC4, 0x29};
         double expected = 100;
 
-        testEnableNotifications(val, expected, true, TiSensorTagGatt.UUID_OPTO_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE, "enableLightNotifications");
+        testEnableNotifications(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_OPTO_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE,
+                "enableLightNotifications");
     }
 
     @Test
@@ -849,7 +1114,10 @@ public class TiSensorTagTest {
 
     @Test
     public void testDisableLightNotificationsCc2650() throws Throwable {
-        testDisableNotifications(true, TiSensorTagGatt.UUID_OPTO_SENSOR_VALUE, TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE,
+        testDisableNotifications(
+                true,
+                TiSensorTagGatt.UUID_OPTO_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE,
                 "disableLightNotifications");
     }
 
@@ -862,24 +1130,33 @@ public class TiSensorTagTest {
 
     @Test
     public void testSetLuxometerPeriodCc2650() throws Throwable {
-        testSetPeriod(true, TiSensorTagGatt.UUID_OPTO_SENSOR_PERIOD, TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE,
+        testSetPeriod(
+                true,
+                TiSensorTagGatt.UUID_OPTO_SENSOR_PERIOD,
+                TiSensorTagGatt.UUID_OPTO_SENSOR_SERVICE,
                 "setLuxometerPeriod");
     }
 
     @Test
     public void testEnableKeysNotifications() throws Throwable {
-        byte[] val = { 123 };
+        byte[] val = {123};
         int expected = 123;
 
         Consumer<Integer> callback = t -> assertEquals(expected, (int) t);
-        testEnableNotifications(val, expected, true, TiSensorTagGatt.UUID_KEYS_STATUS,
-                TiSensorTagGatt.UUID_KEYS_SERVICE, "enableKeysNotification", callback);
+        testEnableNotifications(
+                val,
+                expected,
+                true,
+                TiSensorTagGatt.UUID_KEYS_STATUS,
+                TiSensorTagGatt.UUID_KEYS_SERVICE,
+                "enableKeysNotification",
+                callback);
     }
 
     @Test
     public void testDisableKeysNotifications() throws Throwable {
-        testDisableNotifications(true, TiSensorTagGatt.UUID_KEYS_STATUS, TiSensorTagGatt.UUID_KEYS_SERVICE,
-                "disableKeysNotifications");
+        testDisableNotifications(
+                true, TiSensorTagGatt.UUID_KEYS_STATUS, TiSensorTagGatt.UUID_KEYS_SERVICE, "disableKeysNotifications");
     }
 
     @Test
@@ -891,8 +1168,8 @@ public class TiSensorTagTest {
 
     @Test
     public void testEnableIOServiceCc2650() throws Throwable {
-        testEnable(true, TiSensorTagGatt.UUID_IO_SENSOR_ENABLE, TiSensorTagGatt.UUID_IO_SENSOR_SERVICE,
-                "enableIOService");
+        testEnable(
+                true, TiSensorTagGatt.UUID_IO_SENSOR_ENABLE, TiSensorTagGatt.UUID_IO_SENSOR_SERVICE, "enableIOService");
     }
 
     @Test
@@ -904,16 +1181,24 @@ public class TiSensorTagTest {
 
     @Test
     public void testDisableIOServiceCc2650() throws Throwable {
-        testDisable(true, TiSensorTagGatt.UUID_IO_SENSOR_ENABLE, TiSensorTagGatt.UUID_IO_SENSOR_SERVICE,
+        testDisable(
+                true,
+                TiSensorTagGatt.UUID_IO_SENSOR_ENABLE,
+                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE,
                 "disableIOService");
     }
 
     @Test
     public void testSwitchOnRedLedCc2650() throws Throwable {
-        byte[] oldVal = { (byte) 0xF0 };
-        byte[] writeVal = { (byte) 0xF1 };
-        testDisable(oldVal, writeVal, true, TiSensorTagGatt.UUID_IO_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE, "switchOnRedLed");
+        byte[] oldVal = {(byte) 0xF0};
+        byte[] writeVal = {(byte) 0xF1};
+        testDisable(
+                oldVal,
+                writeVal,
+                true,
+                TiSensorTagGatt.UUID_IO_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE,
+                "switchOnRedLed");
     }
 
     @Test
@@ -925,10 +1210,15 @@ public class TiSensorTagTest {
 
     @Test
     public void testSwitchOffRedLedCc2650() throws Throwable {
-        byte[] oldVal = { (byte) 0xFF };
-        byte[] writeVal = { (byte) 0xFE };
-        testDisable(oldVal, writeVal, true, TiSensorTagGatt.UUID_IO_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE, "switchOffRedLed");
+        byte[] oldVal = {(byte) 0xFF};
+        byte[] writeVal = {(byte) 0xFE};
+        testDisable(
+                oldVal,
+                writeVal,
+                true,
+                TiSensorTagGatt.UUID_IO_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE,
+                "switchOffRedLed");
     }
 
     @Test
@@ -940,10 +1230,15 @@ public class TiSensorTagTest {
 
     @Test
     public void testSwitchOnGreenLedCc2650() throws Throwable {
-        byte[] oldVal = { (byte) 0xF0 };
-        byte[] writeVal = { (byte) 0xF2 };
-        testDisable(oldVal, writeVal, true, TiSensorTagGatt.UUID_IO_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE, "switchOnGreenLed");
+        byte[] oldVal = {(byte) 0xF0};
+        byte[] writeVal = {(byte) 0xF2};
+        testDisable(
+                oldVal,
+                writeVal,
+                true,
+                TiSensorTagGatt.UUID_IO_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE,
+                "switchOnGreenLed");
     }
 
     @Test
@@ -955,10 +1250,15 @@ public class TiSensorTagTest {
 
     @Test
     public void testSwitchOffGreenLedCc2650() throws Throwable {
-        byte[] oldVal = { (byte) 0xFF };
-        byte[] writeVal = { (byte) 0xFD };
-        testDisable(oldVal, writeVal, true, TiSensorTagGatt.UUID_IO_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE, "switchOffGreenLed");
+        byte[] oldVal = {(byte) 0xFF};
+        byte[] writeVal = {(byte) 0xFD};
+        testDisable(
+                oldVal,
+                writeVal,
+                true,
+                TiSensorTagGatt.UUID_IO_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE,
+                "switchOffGreenLed");
     }
 
     @Test
@@ -970,10 +1270,15 @@ public class TiSensorTagTest {
 
     @Test
     public void testSwitchOnBuzzerCc2650() throws Throwable {
-        byte[] oldVal = { (byte) 0xF0 };
-        byte[] writeVal = { (byte) 0xF4 };
-        testDisable(oldVal, writeVal, true, TiSensorTagGatt.UUID_IO_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE, "switchOnBuzzer");
+        byte[] oldVal = {(byte) 0xF0};
+        byte[] writeVal = {(byte) 0xF4};
+        testDisable(
+                oldVal,
+                writeVal,
+                true,
+                TiSensorTagGatt.UUID_IO_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE,
+                "switchOnBuzzer");
     }
 
     @Test
@@ -985,10 +1290,15 @@ public class TiSensorTagTest {
 
     @Test
     public void testSwitchOffBuzzerCc2650() throws Throwable {
-        byte[] oldVal = { (byte) 0xFF };
-        byte[] writeVal = { (byte) 0xFB };
-        testDisable(oldVal, writeVal, true, TiSensorTagGatt.UUID_IO_SENSOR_VALUE,
-                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE, "switchOffBuzzer");
+        byte[] oldVal = {(byte) 0xFF};
+        byte[] writeVal = {(byte) 0xFB};
+        testDisable(
+                oldVal,
+                writeVal,
+                true,
+                TiSensorTagGatt.UUID_IO_SENSOR_VALUE,
+                TiSensorTagGatt.UUID_IO_SENSOR_SERVICE,
+                "switchOffBuzzer");
     }
 
     @Test
@@ -1004,15 +1314,18 @@ public class TiSensorTagTest {
         BluetoothLeGattService svcMock = mock(BluetoothLeGattService.class);
         when(svcMock.findCharacteristic(characteristic)).thenReturn(bch);
 
-        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true).addService(service, svcMock).build(true);
+        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true)
+                .addService(service, svcMock)
+                .build(true);
 
         TestUtil.invokePrivate(tag, method);
 
-        verify(bch, times(1)).writeValue(new byte[] { 0 });
+        verify(bch, times(1)).writeValue(new byte[] {0});
     }
 
-    private void testDisable(byte[] oldVal, byte[] writeVal, boolean cc2650, UUID characteristic, UUID service,
-            String method) throws Throwable {
+    private void testDisable(
+            byte[] oldVal, byte[] writeVal, boolean cc2650, UUID characteristic, UUID service, String method)
+            throws Throwable {
 
         BluetoothLeGattCharacteristic bch = mock(BluetoothLeGattCharacteristic.class);
         when(bch.readValue()).thenReturn(oldVal);
@@ -1020,7 +1333,9 @@ public class TiSensorTagTest {
         BluetoothLeGattService svcMock = mock(BluetoothLeGattService.class);
         when(svcMock.findCharacteristic(characteristic)).thenReturn(bch);
 
-        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true).addService(service, svcMock).build(true);
+        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true)
+                .addService(service, svcMock)
+                .build(true);
 
         TestUtil.invokePrivate(tag, method);
 
@@ -1035,15 +1350,24 @@ public class TiSensorTagTest {
         BluetoothLeGattService svcMock = mock(BluetoothLeGattService.class);
         when(svcMock.findCharacteristic(characteristic)).thenReturn(bch);
 
-        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true).addService(service, svcMock).build(true);
+        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true)
+                .addService(service, svcMock)
+                .build(true);
 
         TestUtil.invokePrivate(tag, method);
 
         verify(bch, times(1)).disableValueNotifications();
     }
 
-    private void testEnable(byte[] oldVal, byte[] config, byte[] writeVal, boolean cc2650, UUID characteristic,
-            UUID service, String method) throws Throwable {
+    private void testEnable(
+            byte[] oldVal,
+            byte[] config,
+            byte[] writeVal,
+            boolean cc2650,
+            UUID characteristic,
+            UUID service,
+            String method)
+            throws Throwable {
 
         BluetoothLeGattCharacteristic bch = mock(BluetoothLeGattCharacteristic.class);
         when(bch.readValue()).thenReturn(oldVal);
@@ -1051,7 +1375,9 @@ public class TiSensorTagTest {
         BluetoothLeGattService svcMock = mock(BluetoothLeGattService.class);
         when(svcMock.findCharacteristic(characteristic)).thenReturn(bch);
 
-        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true).addService(service, svcMock).build(true);
+        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true)
+                .addService(service, svcMock)
+                .build(true);
 
         TestUtil.invokePrivate(tag, method, config);
 
@@ -1066,7 +1392,9 @@ public class TiSensorTagTest {
         BluetoothLeGattService svcMock = mock(BluetoothLeGattService.class);
         when(svcMock.findCharacteristic(characteristic)).thenReturn(bch);
 
-        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true).addService(service, svcMock).build(true);
+        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true)
+                .addService(service, svcMock)
+                .build(true);
 
         TestUtil.invokePrivate(tag, method, config);
 
@@ -1079,61 +1407,78 @@ public class TiSensorTagTest {
         BluetoothLeGattService svcMock = mock(BluetoothLeGattService.class);
         when(svcMock.findCharacteristic(characteristic)).thenReturn(bch);
 
-        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true).addService(service, svcMock).build(true);
+        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true)
+                .addService(service, svcMock)
+                .build(true);
 
         TestUtil.invokePrivate(tag, method);
 
-        byte[] config = new byte[] { 1 };
+        byte[] config = new byte[] {1};
 
         verify(bch, times(1)).writeValue(config);
     }
 
-    private void testEnableNotifications(byte[] val, double[] expected, boolean cc2650, UUID characteristic,
-            UUID service, String method) throws Throwable {
+    private void testEnableNotifications(
+            byte[] val, double[] expected, boolean cc2650, UUID characteristic, UUID service, String method)
+            throws Throwable {
 
         Consumer<double[]> callback = t -> assertArrayEquals(expected, t, EPS);
 
         testEnableNotifications(val, expected, cc2650, characteristic, service, method, callback);
     }
 
-    private void testEnableNotifications(byte[] val, double expected, boolean cc2650, UUID characteristic, UUID service,
-            String method) throws Throwable {
+    private void testEnableNotifications(
+            byte[] val, double expected, boolean cc2650, UUID characteristic, UUID service, String method)
+            throws Throwable {
 
         Consumer<Double> callback = t -> assertEquals(expected, t, EPS);
 
         testEnableNotifications(val, expected, cc2650, characteristic, service, method, callback);
     }
 
-    private void testEnableNotifications(byte[] val, float expected, boolean cc2650, UUID characteristic, UUID service,
-            String method) throws Throwable {
+    private void testEnableNotifications(
+            byte[] val, float expected, boolean cc2650, UUID characteristic, UUID service, String method)
+            throws Throwable {
 
         Consumer<Float> callback = t -> assertEquals(expected, t, EPS);
 
         testEnableNotifications(val, expected, cc2650, characteristic, service, method, callback);
     }
 
-    private void testEnableNotifications(byte[] val, float[] expected, boolean cc2650, UUID characteristic,
-            UUID service, String method) throws Throwable {
+    private void testEnableNotifications(
+            byte[] val, float[] expected, boolean cc2650, UUID characteristic, UUID service, String method)
+            throws Throwable {
 
         Consumer<float[]> callback = t -> assertArrayEquals(expected, t, (float) EPS);
 
         testEnableNotifications(val, expected, cc2650, characteristic, service, method, callback);
     }
 
-    private <T> void testEnableNotifications(byte[] val, T expected, boolean cc2650, UUID characteristic, UUID service,
-            String method, Consumer<T> callback) throws Throwable {
+    private <T> void testEnableNotifications(
+            byte[] val,
+            T expected,
+            boolean cc2650,
+            UUID characteristic,
+            UUID service,
+            String method,
+            Consumer<T> callback)
+            throws Throwable {
 
         BluetoothLeGattCharacteristic bch = mock(BluetoothLeGattCharacteristic.class);
         doAnswer(invocation -> {
-            Consumer<byte[]> consumer = invocation.getArgument(0, Consumer.class);
-            consumer.accept(val);
-            return null;
-        }).when(bch).enableValueNotifications(any());
+                    Consumer<byte[]> consumer = invocation.getArgument(0, Consumer.class);
+                    consumer.accept(val);
+                    return null;
+                })
+                .when(bch)
+                .enableValueNotifications(any());
 
         BluetoothLeGattService svcMock = mock(BluetoothLeGattService.class);
         when(svcMock.findCharacteristic(characteristic)).thenReturn(bch);
 
-        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true).addService(service, svcMock).build(true);
+        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true)
+                .addService(service, svcMock)
+                .build(true);
 
         TestUtil.invokePrivate(tag, method, callback);
     }
@@ -1144,15 +1489,17 @@ public class TiSensorTagTest {
         testRead(val, expected, cc2650, characteristic, service, method, Assert::assertArrayEquals);
     }
 
-    private void testRead(byte[] val, float[] expected, boolean cc2650, UUID characteristic, UUID service,
-            String method) throws Throwable {
+    private void testRead(
+            byte[] val, float[] expected, boolean cc2650, UUID characteristic, UUID service, String method)
+            throws Throwable {
 
-        testRead(val, expected, cc2650, characteristic, service, method,
-                (e, a) -> assertArrayEquals(e, a, (float) EPS));
+        testRead(
+                val, expected, cc2650, characteristic, service, method, (e, a) -> assertArrayEquals(e, a, (float) EPS));
     }
 
-    private void testRead(byte[] val, double[] expected, boolean cc2650, UUID characteristic, UUID service,
-            String method) throws Throwable {
+    private void testRead(
+            byte[] val, double[] expected, boolean cc2650, UUID characteristic, UUID service, String method)
+            throws Throwable {
 
         testRead(val, expected, cc2650, characteristic, service, method, (e, a) -> assertArrayEquals(e, a, EPS));
     }
@@ -1169,8 +1516,15 @@ public class TiSensorTagTest {
         testRead(val, expected, cc2650, characteristic, service, method, (e, a) -> assertEquals(e, a, EPS));
     }
 
-    private <T> void testRead(byte[] val, T expected, boolean cc2650, UUID characteristic, UUID service, String method,
-            Assertion<T> assertion) throws Throwable {
+    private <T> void testRead(
+            byte[] val,
+            T expected,
+            boolean cc2650,
+            UUID characteristic,
+            UUID service,
+            String method,
+            Assertion<T> assertion)
+            throws Throwable {
 
         BluetoothLeGattCharacteristic bch = mock(BluetoothLeGattCharacteristic.class);
         when(bch.readValue()).thenReturn(val);
@@ -1178,7 +1532,9 @@ public class TiSensorTagTest {
         BluetoothLeGattService infoSvcMock = mock(BluetoothLeGattService.class);
         when(infoSvcMock.findCharacteristic(characteristic)).thenReturn(bch);
 
-        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true).addService(service, infoSvcMock).build(true);
+        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true)
+                .addService(service, infoSvcMock)
+                .build(true);
 
         assertion.assertEq(expected, (T) TestUtil.invokePrivate(tag, method));
     }
@@ -1189,13 +1545,14 @@ public class TiSensorTagTest {
         BluetoothLeGattService svcMock = mock(BluetoothLeGattService.class);
         when(svcMock.findCharacteristic(characteristic)).thenReturn(bch);
 
-        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true).addService(service, svcMock).build(true);
+        TiSensorTag tag = new TiSensorTagBuilder(cc2650, true)
+                .addService(service, svcMock)
+                .build(true);
 
         TestUtil.invokePrivate(tag, method, 1000);
 
-        verify(bch, times(1)).writeValue(new byte[] { -24 });
+        verify(bch, times(1)).writeValue(new byte[] {-24});
     }
-
 }
 
 interface Assertion<T> {
@@ -1224,7 +1581,6 @@ class TiSensorTagBuilder {
             when(deviceMock.isConnected()).thenReturn(true);
             when(deviceMock.isServicesResolved()).thenReturn(true);
         }
-
     }
 
     public TiSensorTagBuilder addService(UUID id, BluetoothLeGattService service)
@@ -1235,10 +1591,12 @@ class TiSensorTagBuilder {
         return this;
     }
 
-    public TiSensorTagBuilder addCharacteristic(UUID serviceId, UUID CharacteristicId,
-            BluetoothLeGattCharacteristic characteristic) throws KuraBluetoothResourceNotFoundException {
+    public TiSensorTagBuilder addCharacteristic(
+            UUID serviceId, UUID CharacteristicId, BluetoothLeGattCharacteristic characteristic)
+            throws KuraBluetoothResourceNotFoundException {
 
-        when(deviceMock.findService(serviceId).findCharacteristic(CharacteristicId)).thenReturn(characteristic);
+        when(deviceMock.findService(serviceId).findCharacteristic(CharacteristicId))
+                .thenReturn(characteristic);
 
         return this;
     }
@@ -1261,5 +1619,4 @@ class TiSensorTagBuilder {
 
         return tag;
     }
-
 }

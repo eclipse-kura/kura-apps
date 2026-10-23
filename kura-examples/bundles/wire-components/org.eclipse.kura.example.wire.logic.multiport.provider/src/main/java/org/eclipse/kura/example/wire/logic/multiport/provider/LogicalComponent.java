@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2020, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -15,7 +15,6 @@ package org.eclipse.kura.example.wire.logic.multiport.provider;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
@@ -44,22 +43,29 @@ import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
-        service = { ConfigurableComponent.class, WireComponent.class, Producer.class, Consumer.class,
-                MultiportWireReceiver.class, WireEmitter.class }, //
+        service = {
+            ConfigurableComponent.class,
+            WireComponent.class,
+            Producer.class,
+            Consumer.class,
+            MultiportWireReceiver.class,
+            WireEmitter.class
+        }, //
         enabled = true, //
         name = "org.eclipse.kura.example.wire.logic.multiport.provider.LogicalComponent", //
         property = { //
-                "input.cardinality.minimum:Integer=2", //
-                "input.cardinality.maximum:Integer=2", //
-                "input.cardinality.default:Integer=2", //
-                "output.cardinality.minimum:Integer=1", //
-                "output.cardinality.maximum:Integer=1", //
-                "output.cardinality.default:Integer=1", //
-                "kura.ui.service.hide:Boolean=true" //
+            "input.cardinality.minimum:Integer=2", //
+            "input.cardinality.maximum:Integer=2", //
+            "input.cardinality.default:Integer=2", //
+            "output.cardinality.minimum:Integer=1", //
+            "output.cardinality.maximum:Integer=1", //
+            "output.cardinality.default:Integer=1", //
+            "kura.ui.service.hide:Boolean=true" //
         } //
-)
+        )
 @Designate(ocd = LogicalComponentOCD.class, factory = true)
 public class LogicalComponent implements WireEmitter, ConfigurableComponent, MultiportWireReceiver {
 
@@ -71,10 +77,11 @@ public class LogicalComponent implements WireEmitter, ConfigurableComponent, Mul
     protected LogicalComponentOptions options;
     protected BundleContext context;
 
-    @Reference(name = "WireHelperService", //
+    @Reference(
+            name = "WireHelperService", //
             policy = ReferencePolicy.STATIC, //
             cardinality = ReferenceCardinality.MANDATORY //
-    )
+            )
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         this.wireHelperService = wireHelperService;
     }
@@ -83,8 +90,8 @@ public class LogicalComponent implements WireEmitter, ConfigurableComponent, Mul
     @Activate
     public void activate(ComponentContext componentContext, LogicalComponentOCD ocd) {
         logger.info("activating...");
-        this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
         logger.info("activated, properties: {}", ocd);
         this.context = componentContext.getBundleContext();
         updated(componentContext, ocd);
@@ -96,7 +103,9 @@ public class LogicalComponent implements WireEmitter, ConfigurableComponent, Mul
         logger.info("updating...");
         this.options = new LogicalComponentOptions(ocd, this.context);
         logger.info("updated, properties: {}", ocd);
-        this.options.getPortAggregatorFactory().build(this.wireSupport.getReceiverPorts())
+        this.options
+                .getPortAggregatorFactory()
+                .build(this.wireSupport.getReceiverPorts())
                 .onWireReceive(this::onWireReceive);
         logger.info("updating...done");
     }
@@ -128,7 +137,8 @@ public class LogicalComponent implements WireEmitter, ConfigurableComponent, Mul
     }
 
     private Boolean extractOperand(WireEnvelope wireEnvelope, String operandName) {
-        final Map<String, TypedValue<?>> properties = wireEnvelope.getRecords().get(0).getProperties();
+        final Map<String, TypedValue<?>> properties =
+                wireEnvelope.getRecords().get(0).getProperties();
         return (Boolean) properties.get(operandName).getValue();
     }
 
@@ -138,8 +148,9 @@ public class LogicalComponent implements WireEmitter, ConfigurableComponent, Mul
         if (this.options.isUnaryOperator()) {
             result = this.options.getBooleanFunction().apply(firstOperand, null);
         } else {
-            result = this.options.getBooleanFunction().apply(firstOperand,
-                    extractOperand(wireEnvelopes.get(1), this.options.getSecondOperandName()));
+            result = this.options
+                    .getBooleanFunction()
+                    .apply(firstOperand, extractOperand(wireEnvelopes.get(1), this.options.getSecondOperandName()));
         }
         WireRecord toBeEmitted = new WireRecord(
                 Collections.singletonMap(this.options.getResultName(), TypedValues.newBooleanValue(result)));

@@ -1,20 +1,18 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.example.wire.math.multiport;
 
 import java.util.Map;
-
 import org.eclipse.kura.wire.graph.BarrierAggregatorFactory;
 import org.eclipse.kura.wire.graph.CachingAggregatorFactory;
 import org.eclipse.kura.wire.graph.PortAggregatorFactory;
@@ -40,15 +38,15 @@ public class AbstractDualportMathComponentOptions {
         this.firstOperandName = getSafe(properties.get(FIRST_OPERAND_NAME_PROP_NAME), OPERAND_NAME_DEFAULT);
         this.secondOperandName = getSafe(properties.get(SECOND_OPERAND_NAME_PROP_NAME), OPERAND_NAME_DEFAULT);
         this.resultName = getSafe(properties.get(RESULT_NAME_PROP_NAME), RESULT_NAME_DEFAULT);
-        final boolean useBarrier = getSafe(properties.get(BARRIER_MODALITY_PROPERTY_KEY),
-                BARRIER_MODALITY_PROPERTY_DEFAULT);
+        final boolean useBarrier =
+                getSafe(properties.get(BARRIER_MODALITY_PROPERTY_KEY), BARRIER_MODALITY_PROPERTY_DEFAULT);
         if (useBarrier) {
-            this.portAggregatorFactory = context
-                    .getService(context.getServiceReference(BarrierAggregatorFactory.class)); // TODO fix service
+            this.portAggregatorFactory =
+                    context.getService(context.getServiceReference(BarrierAggregatorFactory.class)); // TODO fix service
             // reference count
         } else {
-            this.portAggregatorFactory = context
-                    .getService(context.getServiceReference(CachingAggregatorFactory.class));
+            this.portAggregatorFactory =
+                    context.getService(context.getServiceReference(CachingAggregatorFactory.class));
         }
     }
 

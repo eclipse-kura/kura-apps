@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
@@ -44,23 +43,30 @@ import org.osgi.service.wireadmin.Wire;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Component(immediate = true, //
+@Component(
+        immediate = true, //
         configurationPolicy = ConfigurationPolicy.REQUIRE, //
         enabled = true, //
         name = "org.eclipse.kura.example.wire.WireComponentExample", //
         property = { //
-                "input.cardinality.minimum:Integer=1", //
-                "input.cardinality.maximum:Integer=1", //
-                "input.cardinality.default:Integer=1", //
-                "output.cardinality.minimum:Integer=1", //
-                "output.cardinality.maximum:Integer=1", //
-                "output.cardinality.default:Integer=1", //
-                "input.port.names=0=card1", //
-                "output.port.names=0=result" //
-        },  //
-        service = { ConfigurableComponent.class, WireEmitter.class, WireReceiver.class, WireComponent.class,
-                Producer.class, Consumer.class } //
-)
+            "input.cardinality.minimum:Integer=1", //
+            "input.cardinality.maximum:Integer=1", //
+            "input.cardinality.default:Integer=1", //
+            "output.cardinality.minimum:Integer=1", //
+            "output.cardinality.maximum:Integer=1", //
+            "output.cardinality.default:Integer=1", //
+            "input.port.names=0=card1", //
+            "output.port.names=0=result" //
+        }, //
+        service = {
+            ConfigurableComponent.class,
+            WireEmitter.class,
+            WireReceiver.class,
+            WireComponent.class,
+            Producer.class,
+            Consumer.class
+        } //
+        )
 @Designate(ocd = WireComponentExampleOCD.class, factory = true)
 public class WireComponentExample implements ConfigurableComponent, WireEmitter, WireReceiver {
 
@@ -83,9 +89,9 @@ public class WireComponentExample implements ConfigurableComponent, WireEmitter,
      * the ComponentContext and the ExampleComponentOCD as parameters.
      * All parameters in activate, modified, deactivate are optional and can be
      * removed if not needed
-     * 
+     *
      * Examples:
-     * 
+     *
      * public void activate()
      * public void activate(ExampleComponentOCD configuration)
      * public void activate(ComponentContext componentContext, final Map<String, Object> properties, final
@@ -96,8 +102,8 @@ public class WireComponentExample implements ConfigurableComponent, WireEmitter,
     public void activate(ComponentContext componentContext, WireComponentExampleOCD properties) {
         logger.info("Activating WireComponentExample...");
 
-        this.wireSupportService = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupportService = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
 
         updated(properties);
 
@@ -152,7 +158,8 @@ public class WireComponentExample implements ConfigurableComponent, WireEmitter,
 
         wireEnvelope.getRecords().forEach(selectedRecord -> {
             selectedRecord.getProperties().entrySet().stream()
-                    .filter(entry -> this.options.getChannelFilterName().equals(entry.getKey())).findAny()
+                    .filter(entry -> this.options.getChannelFilterName().equals(entry.getKey()))
+                    .findAny()
                     .ifPresent(entry -> {
                         wireRecordReference.set(selectedRecord);
                         channelValueReference.set(entry.getValue().getValue().toString());
@@ -166,17 +173,17 @@ public class WireComponentExample implements ConfigurableComponent, WireEmitter,
 
         List<WireRecord> emittingRecords = new ArrayList<>();
         Map<String, TypedValue<?>> props = new HashMap<>();
-        props.put("Emitted Value",
-                TypedValues.newStringValue(String.format("You choose the channel %s, whose value is %s",
+        props.put(
+                "Emitted Value",
+                TypedValues.newStringValue(String.format(
+                        "You choose the channel %s, whose value is %s",
                         this.options.getChannelFilterName(), channelValueReference.get())));
         emittingRecords.add(new WireRecord(props));
         this.wireSupportService.emit(emittingRecords);
-
     }
 
     @Override
     public void consumersConnected(Wire[] wires) {
         this.wireSupportService.consumersConnected(wires);
     }
-
 }
