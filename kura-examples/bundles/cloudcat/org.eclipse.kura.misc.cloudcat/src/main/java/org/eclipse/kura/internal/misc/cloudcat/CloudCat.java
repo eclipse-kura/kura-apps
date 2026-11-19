@@ -15,10 +15,11 @@ package org.eclipse.kura.internal.misc.cloudcat;
 import static org.eclipse.kura.configuration.ConfigurationService.KURA_SERVICE_PID;
 
 import java.util.Map;
-import org.eclipse.kura.KuraException;
-import org.eclipse.kura.cloud.CloudClient;
-import org.eclipse.kura.cloud.CloudService;
+import java.util.function.Consumer;
+import org.eclipse.kura.cloudconnection.CloudEndpoint;
 import org.eclipse.kura.configuration.ConfigurableComponent;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -33,48 +34,34 @@ public class CloudCat implements ConfigurableComponent {
     private static final Logger logger = LoggerFactory.getLogger(CloudCat.class);
 
     private CloudCatOptions options;
-    private CloudService firstCloudService;
-    private CloudService secondCloudService;
-    private CloudClient firstCloudClient;
-    private CloudClient secondCloudClient;
-    private CloudClientRelay firstCloudClientRelay;
-    private CloudClientRelay secondCloudClientRelay;
+    private CloudEndpoint firstCloudEndpoint;
+    private CloudEndpoint secondCloudEndpoint;
+    private CloudEndpointRelay firstCloudEndpointRelay;
+    private CloudEndpointRelay secondCloudEndpointRelay;
 
-    private ServiceTracker<CloudService, CloudService> firstCloudServiceTracker;
-    private ServiceTracker<CloudService, CloudService> secondCloudServiceTracker;
+    private ServiceTracker<CloudEndpoint, CloudEndpoint> firstCloudEndpointTracker;
+    private ServiceTracker<CloudEndpoint, CloudEndpoint> secondCloudEndpointTracker;
 
     private ComponentContext componentContext;
 
-    private void bindFirstCloudService(CloudService firstCloudService) {
-        this.firstCloudService = firstCloudService;
-
-        try {
-            this.firstCloudClient = this.firstCloudService.newCloudClient(this.options.getFirstCloudClientAppId());
-            initClients();
-        } catch (KuraException e) {
-            logger.error("CloudClient: {} instantiation failed", this.options.getFirstCloudClientAppId(), e);
-        }
+    private void bindFirstCloudEndpoint(CloudEndpoint firstCloudEndpoint) {
+        this.firstCloudEndpoint = firstCloudEndpoint;
+        initRelays();
     }
 
-    private void bindSecondCloudService(CloudService secondCloudService) {
-        this.secondCloudService = secondCloudService;
-
-        try {
-            this.secondCloudClient = this.secondCloudService.newCloudClient(this.options.getSecondCloudClientAppId());
-            initClients();
-        } catch (KuraException e) {
-            logger.error("CloudClient: {} instantiation failed", this.options.getSecondCloudClientAppId(), e);
-        }
+    private void bindSecondCloudEndpoint(CloudEndpoint secondCloudEndpoint) {
+        this.secondCloudEndpoint = secondCloudEndpoint;
+        initRelays();
     }
 
-    private void unbindFirstCloudService(CloudService firstCloudService) {
-        cleanupClients();
-        this.firstCloudService = null;
+    private void unbindFirstCloudEndpoint(CloudEndpoint firstCloudEndpoint) {
+        cleanupRelays();
+        this.firstCloudEndpoint = null;
     }
 
-    private void unbindSecondCloudService(CloudService firstCloudService) {
-        cleanupClients();
-        this.secondCloudService = null;
+    private void unbindSecondCloudEndpoint(CloudEndpoint secondCloudEndpoint) {
+        cleanupRelays();
+        this.secondCloudEndpoint = null;
     }
 
     protected void activate(ComponentContext ctx, Map<String, Object> properties) {
@@ -107,144 +94,102 @@ public class CloudCat implements ConfigurableComponent {
             return;
         }
 
-        // Start trackers
         try {
-            Filter filter = this.componentContext
-                    .getBundleContext()
-                    .createFilter("(" + KURA_SERVICE_PID + "=" + this.options.getFirstCloudServicePid() + ")");
-            this.firstCloudServiceTracker = new ServiceTracker<>(
-                    this.componentContext.getBundleContext(),
-                    filter,
-                    new ServiceTrackerCustomizer<CloudService, CloudService>() {
-
-                        @Override
-                        public CloudService addingService(ServiceReference<CloudService> reference) {
-                            CloudService cloudService = CloudCat.this
-                                    .componentContext
-                                    .getBundleContext()
-                                    .getService(reference);
-                            bindFirstCloudService(cloudService);
-                            return cloudService;
-                        }
-
-                        @Override
-                        public void modifiedService(ServiceReference<CloudService> reference, CloudService service) {
-                            // Ignore
-                        }
-
-                        @Override
-                        public void removedService(ServiceReference<CloudService> reference, CloudService service) {
-                            unbindFirstCloudService(service);
-                        }
-                    });
-            this.firstCloudServiceTracker.open();
+            this.firstCloudEndpointTracker = openCloudEndpointTracker(
+                    this.options.getFirstCloudServicePid(),
+                    this::bindFirstCloudEndpoint,
+                    this::unbindFirstCloudEndpoint);
+            this.secondCloudEndpointTracker = openCloudEndpointTracker(
+                    this.options.getSecondCloudServicePid(),
+                    this::bindSecondCloudEndpoint,
+                    this::unbindSecondCloudEndpoint);
         } catch (InvalidSyntaxException e) {
             logger.error("Invalid filter", e);
-            return;
-        }
-
-        try {
-            Filter filter = this.componentContext
-                    .getBundleContext()
-                    .createFilter("(" + KURA_SERVICE_PID + "=" + this.options.getSecondCloudServicePid() + ")");
-            this.secondCloudServiceTracker = new ServiceTracker<>(
-                    this.componentContext.getBundleContext(),
-                    filter,
-                    new ServiceTrackerCustomizer<CloudService, CloudService>() {
-
-                        @Override
-                        public CloudService addingService(ServiceReference<CloudService> reference) {
-                            CloudService cloudService = CloudCat.this
-                                    .componentContext
-                                    .getBundleContext()
-                                    .getService(reference);
-                            bindSecondCloudService(cloudService);
-                            return cloudService;
-                        }
-
-                        @Override
-                        public void modifiedService(ServiceReference<CloudService> reference, CloudService service) {
-                            // Ignore
-                        }
-
-                        @Override
-                        public void removedService(ServiceReference<CloudService> reference, CloudService service) {
-                            unbindSecondCloudService(service);
-                        }
-                    });
-            this.secondCloudServiceTracker.open();
-        } catch (InvalidSyntaxException e) {
-            logger.error("Invalid filter", e);
-            return;
         }
     }
 
-    private void initClients() {
-        if (this.firstCloudClient != null
-                && this.secondCloudClient != null
-                && this.firstCloudClientRelay == null
-                && this.secondCloudClientRelay == null) {
+    private ServiceTracker<CloudEndpoint, CloudEndpoint> openCloudEndpointTracker(
+            String cloudEndpointPid, Consumer<CloudEndpoint> bind, Consumer<CloudEndpoint> unbind)
+            throws InvalidSyntaxException {
+        final BundleContext bundleContext = this.componentContext.getBundleContext();
+        final Filter filter = bundleContext.createFilter("(&(" + Constants.OBJECTCLASS + "="
+                + CloudEndpoint.class.getName() + ")(" + KURA_SERVICE_PID + "=" + cloudEndpointPid + "))");
+
+        final ServiceTracker<CloudEndpoint, CloudEndpoint> tracker = new ServiceTracker<>(
+                bundleContext, filter, new ServiceTrackerCustomizer<CloudEndpoint, CloudEndpoint>() {
+
+                    @Override
+                    public CloudEndpoint addingService(ServiceReference<CloudEndpoint> reference) {
+                        CloudEndpoint cloudEndpoint = bundleContext.getService(reference);
+                        if (cloudEndpoint != null) {
+                            bind.accept(cloudEndpoint);
+                        }
+                        return cloudEndpoint;
+                    }
+
+                    @Override
+                    public void modifiedService(ServiceReference<CloudEndpoint> reference, CloudEndpoint service) {
+                        // Ignore
+                    }
+
+                    @Override
+                    public void removedService(ServiceReference<CloudEndpoint> reference, CloudEndpoint service) {
+                        unbind.accept(service);
+                        bundleContext.ungetService(reference);
+                    }
+                });
+        tracker.open();
+        return tracker;
+    }
+
+    private void initRelays() {
+        if (this.firstCloudEndpoint != null
+                && this.secondCloudEndpoint != null
+                && this.firstCloudEndpointRelay == null
+                && this.secondCloudEndpointRelay == null) {
             logger.info("Initializing relay");
 
-            this.firstCloudClientRelay = new CloudClientRelay(
-                    this.firstCloudClient,
-                    this.secondCloudClient,
+            this.firstCloudEndpointRelay = new CloudEndpointRelay(
+                    this.firstCloudEndpoint,
+                    this.options.getFirstCloudClientAppId(),
+                    this.secondCloudEndpoint,
+                    this.options.getSecondCloudClientAppId(),
                     this.options.getFirstCloudClientDataSubscriptions(),
                     this.options.getFirstCloudClientControlSubscriptions());
 
-            this.secondCloudClientRelay = new CloudClientRelay(
-                    this.secondCloudClient,
-                    this.firstCloudClient,
+            this.secondCloudEndpointRelay = new CloudEndpointRelay(
+                    this.secondCloudEndpoint,
+                    this.options.getSecondCloudClientAppId(),
+                    this.firstCloudEndpoint,
+                    this.options.getFirstCloudClientAppId(),
                     this.options.getSecondCloudClientDataSubscriptions(),
                     this.options.getSecondCloudClientControlSubscriptions());
 
-            this.firstCloudClientRelay.listen();
-            this.secondCloudClientRelay.listen();
-
-            if (this.firstCloudClientRelay.isConnected()) {
-                this.firstCloudClientRelay.subscribe();
-            }
-            if (this.secondCloudClientRelay.isConnected()) {
-                this.secondCloudClientRelay.subscribe();
-            }
+            this.firstCloudEndpointRelay.start();
+            this.secondCloudEndpointRelay.start();
         }
     }
 
     private void cleanup() {
-        if (this.firstCloudServiceTracker != null) {
-            this.firstCloudServiceTracker.close();
-            this.firstCloudServiceTracker = null;
+        if (this.firstCloudEndpointTracker != null) {
+            this.firstCloudEndpointTracker.close();
+            this.firstCloudEndpointTracker = null;
         }
-        if (this.secondCloudServiceTracker != null) {
-            this.secondCloudServiceTracker.close();
-            this.secondCloudServiceTracker = null;
+        if (this.secondCloudEndpointTracker != null) {
+            this.secondCloudEndpointTracker.close();
+            this.secondCloudEndpointTracker = null;
         }
-        cleanupClients();
+        cleanupRelays();
     }
 
-    private void cleanupClients() {
-        if (this.firstCloudClientRelay != null) {
-            this.firstCloudClientRelay.unlisten();
-            if (this.firstCloudClientRelay.isConnected()) {
-                this.firstCloudClientRelay.unsubscribe();
-            }
-            this.firstCloudClientRelay = null;
+    private void cleanupRelays() {
+        if (this.firstCloudEndpointRelay != null) {
+            this.firstCloudEndpointRelay.stop();
+            this.firstCloudEndpointRelay = null;
         }
-        if (this.secondCloudClientRelay != null) {
-            this.secondCloudClientRelay.unlisten();
-            if (this.secondCloudClientRelay.isConnected()) {
-                this.secondCloudClientRelay.unsubscribe();
-            }
-            this.secondCloudClientRelay = null;
-        }
-
-        if (this.firstCloudClient != null) {
-            this.firstCloudClient.release();
-            this.firstCloudClient = null;
-        }
-        if (this.secondCloudClient != null) {
-            this.secondCloudClient.release();
-            this.secondCloudClient = null;
+        if (this.secondCloudEndpointRelay != null) {
+            this.secondCloudEndpointRelay.stop();
+            this.secondCloudEndpointRelay = null;
         }
     }
 }

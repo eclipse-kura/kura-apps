@@ -146,9 +146,9 @@ public class CloudCatOptions {
             properties.put(SECOND_CLOUD_SERVICE_PID, "org.eclipse.kura.cloud.CloudService-2");
             properties.put(FIRST_CLOUD_CLIENT_APP_ID, "CLOUDCAT1");
             properties.put(SECOND_CLOUD_CLIENT_APP_ID, "CLOUDCAT2");
-            properties.put(FIRST_CLOUD_CLIENT_CONTROL_SUBSCRPTIONS, "");
+            properties.put(FIRST_CLOUD_CLIENT_CONTROL_SUBSCRPTIONS, "#;1");
             properties.put(FIRST_CLOUD_CLIENT_DATA_SUBSCRPTIONS, "");
-            properties.put(SECOND_CLOUD_CLIENT_CONTROL_SUBSCRPTIONS, "");
+            properties.put(SECOND_CLOUD_CLIENT_CONTROL_SUBSCRPTIONS, "#;1");
             properties.put(SECOND_CLOUD_CLIENT_DATA_SUBSCRPTIONS, "#;0");
 
             defaultProperties = properties;

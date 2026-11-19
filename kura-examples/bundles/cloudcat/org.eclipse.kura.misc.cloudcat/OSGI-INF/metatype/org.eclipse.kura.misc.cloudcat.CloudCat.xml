@@ -2,109 +2,109 @@
 <!--
 
     Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
-  
+
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
     which is available at https://www.eclipse.org/legal/epl-2.0/
- 
-	SPDX-License-Identifier: EPL-2.0
-	
-	Contributors:
-	 Eurotech
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+     Eurotech
 
 -->
 <MetaData xmlns="http://www.osgi.org/xmlns/metatype/v1.2.0" localization="en_us">
     <OCD id="org.eclipse.kura.misc.cloudcat.CloudCat"
-         name="CloudCat" 
-         description="Creates a pair of CloudClient instances and copies messages between them.
-         In a typical scenario, the first client connects to the cloud platform broker via the default CloudService.
-         The second client connects to the embedded broker via a second CloudService instance.
-         An external process, connected to the embedded broker, can optionally subscribe to the topic namespace of the second client i.e.
+         name="CloudCat"
+         description="Copies messages between two Kapua cloud connections, each one on behalf of its own application ID.
+         In a typical scenario, the first cloud connection connects to the cloud platform broker via the default cloud connection.
+         The second one connects to the embedded broker via a second cloud connection instance.
+         An external process, connected to the embedded broker, can optionally subscribe to the topic namespace of the second application i.e.
          second-account-name/second-device-id/second.cloud.client.app.id/# to receive data messages and $EDC/second-account-name/second-device-id/second.cloud.client.app.id/#
-         to receive control messages where the account name and devide ID are configured in the DataTransportService layer of the CloudClient's CloudService.
-         Messages will be relayed between the first and second client preserving the application topic and the QoS of the incoming meessage:
+         to receive control messages where the account name and device ID are configured in the DataTransportService layer of the cloud connection.
+         Messages matching the configured subscriptions will be relayed between the first and second application preserving the application topic, using the QoS of the matching subscription:
          [$EDC/]first-account-name/first-device-id/first.cloud.client.app.id/app-topic &lt;-&gt; [$EDC/]second-account-name/second-device-id/second.cloud.client.app.id/app-topic.">
-        
+
         <AD id="relay.enable"
             name="Relay Enable"
             type="Boolean"
             cardinality="0"
             required="true"
-            default="false" 
-            description="Enable relaying messages between CloudClient instances."/>
-        
+            default="false"
+            description="Enable relaying messages between the two cloud connections."/>
+
         <AD id="first.cloud.service.pid"
-            name="First CloudService PID"
+            name="First Cloud Connection PID"
             type="String"
             cardinality="0"
             required="true"
             default="org.eclipse.kura.cloud.CloudService"
-            description="The PID of the CloudService used by the first CloudClient, e.g. org.eclipse.kura.cloud.CloudService.">
+            description="The kura.service.pid of the first Kapua cloud connection, e.g. org.eclipse.kura.cloud.CloudService.">
         </AD>
-        
+
         <AD id="second.cloud.service.pid"
-            name="Second CloudService PID"
+            name="Second Cloud Connection PID"
             type="String"
             cardinality="0"
             required="true"
             default="org.eclipse.kura.cloud.CloudService-2"
-            description="The PID of the CloudService used by the first CloudClient, e.g. org.eclipse.kura.cloud.CloudService-2.">
+            description="The kura.service.pid of the second Kapua cloud connection, e.g. org.eclipse.kura.cloud.CloudService-2.">
         </AD>
-        
+
         <AD id="first.cloud.client.app.id"
-            name="First CloudClient App ID"
+            name="First App ID"
             type="String"
             cardinality="0"
             required="true"
             default="CLOUDCAT1"
-            description="The application identifier of the first CloudClient.">
+            description="The application identifier used on the first cloud connection.">
         </AD>
 
         <AD id="second.cloud.client.app.id"
-            name="Second CloudClient App ID"
+            name="Second App ID"
             type="String"
             cardinality="0"
             required="true"
             default="CLOUDCAT2"
-            description="The application identifier of the second CloudClient.">
+            description="The application identifier used on the second cloud connection.">
         </AD>
-            
+
         <AD id="first.cloud.client.control.subscriptions"
-            name="First CloudClient Control Subscriptions"
+            name="First Control Subscriptions"
             type="String"
             cardinality="0"
             required="false"
-            default=""
-            description="Comma-separated list of control subscriptions, each in the form control-app-topic;Qos. Usually not needed in virtue of the CloudService default subscription.">
+            default="#;1"
+            description="Comma-separated list of control subscriptions on the first cloud connection, each in the form control-app-topic;Qos. Only the control messages matching these subscriptions are relayed.">
         </AD>
-        
+
         <AD id="second.cloud.client.control.subscriptions"
-            name="Second CloudClient Control Subscriptions"
+            name="Second Control Subscriptions"
             type="String"
             cardinality="0"
             required="false"
-            default=""
-            description="Comma-separated list of control subscriptions, each in the form control-app-topic;Qos. Usually not needed in virtue of the CloudService default subscription.">       
+            default="#;1"
+            description="Comma-separated list of control subscriptions on the second cloud connection, each in the form control-app-topic;Qos. Only the control messages matching these subscriptions are relayed.">
         </AD>
-        
+
         <AD id="first.cloud.client.data.subscriptions"
-            name="First CloudClient Data Subscriptions"
+            name="First Data Subscriptions"
             type="String"
             cardinality="0"
             required="false"
             default=""
-            description="Comma-separated list of data subscriptions, each in the form data-app-topic;Qos. Usually not needed.">
+            description="Comma-separated list of data subscriptions on the first cloud connection, each in the form data-app-topic;Qos. Usually not needed.">
         </AD>
-        
+
         <AD id="second.cloud.client.data.subscriptions"
-            name="Second CloudClient Data Subscriptions"
+            name="Second Data Subscriptions"
             type="String"
             cardinality="0"
             required="false"
             default="#;0"
-            description="Comma-separated list of data subscriptions, each in the form data-app-topic;Qos.">
+            description="Comma-separated list of data subscriptions on the second cloud connection, each in the form data-app-topic;Qos.">
         </AD>
-        
+
     </OCD>
     <Designate pid="org.eclipse.kura.misc.cloudcat.CloudCat" factoryPid="org.eclipse.kura.misc.cloudcat.CloudCat">
         <Object ocdref="org.eclipse.kura.misc.cloudcat.CloudCat"/>

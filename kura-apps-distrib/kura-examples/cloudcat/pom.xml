@@ -30,7 +30,7 @@
         <jar.name>kura-cloudcat-example.bundle-${project.version}.jar</jar.name>
         <package.name>kura-cloudcat-example</package.name>
         <summary>Eclipse Kura Addon for CloudCat</summary>
-        <long.description>CloudService relay that republishes messages across cloud stacks for the
+        <long.description>Cloud connection relay that republishes messages across cloud stacks for the
             Eclipse Kura Framework.</long.description>
     </properties>
 
