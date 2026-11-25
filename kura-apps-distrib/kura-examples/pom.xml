@@ -184,6 +184,7 @@
                             <phase>package</phase>
                             <configuration>
                                 <verbose>true</verbose>
+                                <attach>false</attach>
                                 <deb>${basedir}/target/deb/${package.name}_${package.version}-${package.revision}_${deb.architecture}.deb</deb>
                                 <snapshotExpand>true</snapshotExpand>
                                 <snapshotTemplate>${package.snapshot}</snapshotTemplate>
