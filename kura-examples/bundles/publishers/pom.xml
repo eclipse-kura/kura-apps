@@ -33,4 +33,18 @@
         <module>org.eclipse.kura.example.serial.publisher</module>
     </modules>
 
+    <build>
+        <plugins>
+            <!-- Aggregator POM only: do not deploy it. Not inherited, so the bundles below are still deployed -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <inherited>false</inherited>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
